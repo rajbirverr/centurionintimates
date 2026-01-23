@@ -50,16 +50,16 @@ export async function getCartItems(): Promise<{ success: boolean; items?: CartIt
     // Deduplicate items by (product_id + variant) - keep the most recent one and sum quantities
     const itemsMap = new Map<string, CartItemDB>()
     const items = (cartItems || []) as CartItemDB[]
-    
+
     for (const item of items) {
       const key = `${item.product_id}-${item.variant}`
       const existing = itemsMap.get(key)
-      
+
       if (existing) {
         // Merge duplicates: sum quantities, keep most recent
         const mergedQuantity = existing.quantity + item.quantity
         const mostRecent = new Date(item.updated_at) > new Date(existing.updated_at) ? item : existing
-        
+
         itemsMap.set(key, {
           ...mostRecent,
           quantity: mergedQuantity
@@ -68,11 +68,11 @@ export async function getCartItems(): Promise<{ success: boolean; items?: CartIt
         itemsMap.set(key, item)
       }
     }
-    
+
     // If duplicates were found and merged, update the database
     if (items.length !== itemsMap.size) {
       console.log(`[getCartItems] Found ${items.length - itemsMap.size} duplicate items, merging...`)
-      
+
       // Delete duplicates and keep only the merged items
       const mergedItems = Array.from(itemsMap.values())
       const duplicateIds = items
@@ -82,14 +82,14 @@ export async function getCartItems(): Promise<{ success: boolean; items?: CartIt
           return merged && merged.id !== item.id
         })
         .map(item => item.id)
-      
+
       if (duplicateIds.length > 0) {
         // Delete duplicates
         await supabase
           .from('cart_items')
           .delete()
           .in('id', duplicateIds)
-        
+
         // Update the kept items with merged quantities
         for (const mergedItem of mergedItems) {
           const original = items.find(i => i.id === mergedItem.id)
@@ -122,7 +122,7 @@ export async function addCartItem(data: AddCartItemData): Promise<{ success: boo
 
     // Strategy: Try to insert first. If it fails due to unique constraint, then update.
     // This is more efficient than always checking first, and handles race conditions better.
-    
+
     // First, try to insert
     const { data: newItem, error: insertError } = await supabase
       .from('cart_items')
@@ -142,7 +142,7 @@ export async function addCartItem(data: AddCartItemData): Promise<{ success: boo
       // If insert failed due to unique constraint violation, item exists - update it
       if (insertError.code === '23505' || insertError.message?.includes('duplicate key') || insertError.message?.includes('unique constraint')) {
         console.log('[addCartItem] Item exists (unique constraint), updating instead...')
-        
+
         // Fetch existing item to get current quantity
         // Use maybeSingle() to handle case where item might not exist (race condition)
         const { data: existingItem, error: fetchError } = await supabase
@@ -188,9 +188,9 @@ export async function addCartItem(data: AddCartItemData): Promise<{ success: boo
         const currentQuantity = Number(existingItem.quantity) || 0
         const quantityToAdd = Number(data.quantity) || 1
         const newQuantity = currentQuantity + quantityToAdd
-        
+
         console.log('[addCartItem] Updating existing item - Current:', currentQuantity, '+ Adding:', quantityToAdd, '= New:', newQuantity)
-        
+
         const { data: updatedItem, error: updateError } = await supabase
           .from('cart_items')
           .update({
@@ -218,10 +218,9 @@ export async function addCartItem(data: AddCartItemData): Promise<{ success: boo
 
     // Insert succeeded - item was new
     console.log('[addCartItem] New item inserted successfully - Quantity:', newItem.quantity)
-    return { success: true, item: newItem as CartItemDB }
     revalidatePath('/cart')
     revalidatePath('/checkout')
-    return { success: true, item: cartItem }
+    return { success: true, item: newItem as CartItemDB }
   } catch (error: any) {
     console.error('Error in addCartItem:', error)
     return { success: false, error: error.message || 'Failed to add cart item' }

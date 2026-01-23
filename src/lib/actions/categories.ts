@@ -15,6 +15,7 @@ export interface Category {
 
 export interface Subcategory {
   id: string
+  category_id?: string
   name: string
   slug: string
   description?: string
@@ -282,7 +283,7 @@ export async function uploadCategoryImageToStorage(file: File): Promise<{ succes
     }
 
     const supabase = createAdminClient()
-    
+
     // Generate unique filename
     const fileExt = file.name.split('.').pop()
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
@@ -320,7 +321,7 @@ export async function uploadCategoryImageToStorage(file: File): Promise<{ succes
 export async function getCategoriesForCarousel(): Promise<Array<{ id: string; name: string; image: string }>> {
   try {
     const supabase = await createServerSupabaseClient()
-    
+
     const { data: categories, error } = await supabase
       .from('categories')
       .select('id, name, image_url')

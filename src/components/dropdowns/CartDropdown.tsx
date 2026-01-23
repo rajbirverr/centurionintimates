@@ -6,7 +6,7 @@ import BaseDropdown from './BaseDropdown';
 import { useCart } from '@/context/CartContext';
 
 // Define shipping options
-const shippingOptions = [
+const shippingOptions: { id: 'standard' | 'express'; name: string; price: number; estimate: string }[] = [
   { id: 'standard', name: 'Standard Shipping', price: 120, estimate: '3-5 business days' },
   { id: 'express', name: 'Express Shipping', price: 350, estimate: '1-2 business days' }
 ];
@@ -31,18 +31,18 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
   onMouseLeave
 }) => {
   const { items: cartItems, updateQuantity, removeItem, subtotal: cartSubtotal, setShippingMethod, shippingMethod: cartShippingMethod, shippingCost: cartShippingCost, total: cartTotal, isLoggedIn } = useCart();
-  const [selectedShipping, setSelectedShipping] = useState(cartShippingMethod || shippingOptions[0].id);
-  
+  const [selectedShipping, setSelectedShipping] = useState<'standard' | 'express'>(cartShippingMethod || 'standard');
+
   // Sync selectedShipping with cartShippingMethod
   React.useEffect(() => {
     setSelectedShipping(cartShippingMethod || 'standard');
   }, [cartShippingMethod]);
-  
+
   // Use cart context values
   const subtotal = cartSubtotal;
-  
+
   // Handle shipping change - update cart context
-  const handleShippingChange = (shippingId: string) => {
+  const handleShippingChange = (shippingId: 'standard' | 'express') => {
     setSelectedShipping(shippingId);
     const shippingMap: Record<string, 'standard' | 'express'> = {
       'standard': 'standard',
@@ -52,22 +52,22 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
       setShippingMethod(shippingMap[shippingId]);
     }
   };
-  
+
   // Use cart context shipping cost and total
   const shippingCost = cartShippingCost;
   const total = cartTotal;
-  
+
   // Handle quantity change - use cart context
   const handleQuantityChange = (id: string | number, color: string, newQuantity: number) => {
     if (newQuantity < 1) return;
     updateQuantity(id, newQuantity, color);
   };
-  
+
   // Handle item removal - use cart context
   const handleRemoveItem = (id: string | number, color: string) => {
     removeItem(id, color);
   };
-  
+
   return (
     <BaseDropdown
       isOpen={isOpen}
@@ -78,20 +78,20 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
       <div className="bg-white py-6">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-[#5a4c46] text-xl font-light text-center mb-6">Your Shopping Bag</h2>
-          
+
           {!isLoggedIn ? (
             /* Login prompt - show when user is not logged in */
             <div className="text-center py-8">
               <p className="text-[#84756f] mb-6">Please login or create an account to view your cart.</p>
               <div className="flex flex-col gap-3 max-w-xs mx-auto">
-                <Link 
+                <Link
                   href="/login"
                   className="w-full py-3 bg-black text-white hover:bg-[#1a1a1a] uppercase tracking-[0.1em] text-xs font-normal rounded-[14px] transition-all duration-200 text-center"
                   onClick={() => onMouseLeave()}
                 >
                   LOGIN
                 </Link>
-                <Link 
+                <Link
                   href="/account/register"
                   className="w-full py-3 border border-[#5a4c46] text-[#5a4c46] hover:bg-[#5a4c46] hover:text-white uppercase tracking-[0.1em] text-xs font-normal rounded-[14px] transition-all duration-200 text-center"
                   onClick={() => onMouseLeave()}
@@ -108,13 +108,13 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                   <div key={`${item.id}-${item.color}`} className="border-b border-[#e5e2e0] py-4 flex items-start">
                     {/* Product image */}
                     <div className="bg-[#f3f0ef] w-20 h-20 flex-shrink-0 flex items-center justify-center">
-                      <img 
-                        src={item.image} 
+                      <img
+                        src={item.image}
                         alt={item.name}
-                        className="h-full w-full object-contain" 
+                        className="h-full w-full object-contain"
                       />
                     </div>
-                    
+
                     {/* Product details */}
                     <div className="ml-4 flex-grow">
                       <div className="flex justify-between">
@@ -122,11 +122,11 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                         <p className="text-[#5a4c46] text-sm">₹{item.price * item.quantity}</p>
                       </div>
                       <p className="text-[#84756f] text-xs mt-1">Color: {item.color}</p>
-                      
+
                       {/* Quantity selector and remove button */}
                       <div className="flex justify-between items-center mt-4">
                         <div className="flex items-center border border-[#e5e2e0]">
-                          <button 
+                          <button
                             className="px-2 py-1 text-[#84756f] hover:text-[#5a4c46] focus:outline-none"
                             onClick={() => handleQuantityChange(item.id, item.color, item.quantity - 1)}
                             aria-label="Decrease quantity"
@@ -134,7 +134,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                             -
                           </button>
                           <span className="px-2 py-1 text-sm">{item.quantity}</span>
-                          <button 
+                          <button
                             className="px-2 py-1 text-[#84756f] hover:text-[#5a4c46] focus:outline-none"
                             onClick={() => handleQuantityChange(item.id, item.color, item.quantity + 1)}
                             aria-label="Increase quantity"
@@ -142,7 +142,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                             +
                           </button>
                         </div>
-                        <button 
+                        <button
                           className="text-[#84756f] text-xs hover:text-[#5a4c46] underline focus:outline-none"
                           onClick={() => handleRemoveItem(item.id, item.color)}
                         >
@@ -153,24 +153,24 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                   </div>
                 ))}
               </div>
-              
+
               {/* Order summary */}
               <div className="bg-[#f3f0ef] p-4">
                 <h3 className="text-[#5a4c46] text-sm font-medium mb-4 uppercase tracking-wider">Order Summary</h3>
-                
+
                 {/* Subtotal */}
                 <div className="flex justify-between mb-2">
                   <span className="text-[#84756f] text-sm">Subtotal</span>
                   <span className="text-[#5a4c46] text-sm">₹{subtotal}</span>
                 </div>
-                
+
                 {/* Shipping options */}
                 <div className="mb-4">
                   <p className="text-[#84756f] text-sm mb-2">Shipping</p>
                   <div className="space-y-2">
                     {shippingOptions.map(option => (
                       <div key={option.id} className="flex items-center">
-                        <input 
+                        <input
                           type="radio"
                           id={option.id}
                           name="shipping"
@@ -187,7 +187,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Total */}
                 <div className="border-t border-[#e5e2e0] pt-4 mb-4">
                   <div className="flex justify-between font-medium">
@@ -195,17 +195,17 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
                     <span className="text-[#5a4c46] text-sm">₹{total}</span>
                   </div>
                 </div>
-                
+
                 {/* Checkout button */}
-                <Link 
+                <Link
                   href="/checkout"
                   className="block w-full bg-[#5a4c46] text-white hover:bg-[#4a3c36] px-4 py-2 uppercase text-xs tracking-[0.2em] transition-colors duration-200 mb-2 text-center"
                 >
                   Checkout
                 </Link>
-                
+
                 {/* Continue shopping */}
-                <button 
+                <button
                   className="w-full border border-[#5a4c46] text-[#5a4c46] hover:bg-[#5a4c46] hover:text-white px-4 py-2 uppercase text-xs tracking-[0.2em] transition-colors duration-200"
                   onClick={() => onMouseLeave()}
                 >
@@ -217,7 +217,7 @@ const CartDropdown: React.FC<CartDropdownProps> = ({
             /* Empty cart */
             <div className="text-center py-8">
               <p className="text-[#84756f] mb-6">Your shopping bag is empty.</p>
-              <button 
+              <button
                 className="border border-[#5a4c46] text-[#5a4c46] hover:bg-[#5a4c46] hover:text-white px-8 py-2 uppercase text-xs tracking-[0.2em] transition-colors duration-200"
                 onClick={() => onMouseLeave()}
               >

@@ -46,7 +46,7 @@ export default async function AllProductsPage({
       .select('id, name, slug')
       .eq('slug', params.category)
       .single()
-    
+
     if (categoryError) {
       // Log error but continue - will show all products
       console.error('[CATEGORY FILTER] Error fetching category:', {
@@ -54,7 +54,7 @@ export default async function AllProductsPage({
         error: categoryError
       })
     }
-    
+
     if (category && category.id) {
       categoryId = category.id
       categoryName = category.name
@@ -84,7 +84,7 @@ export default async function AllProductsPage({
       .eq('category_id', categoryId)
       .eq('slug', params.subcategory)
       .single()
-    
+
     if (subcategory?.id) {
       subcategoryId = subcategory.id
     }
@@ -101,7 +101,7 @@ export default async function AllProductsPage({
   if (categoryId) {
     // Only show products with this exact category_id (will exclude NULL automatically)
     query = query.eq('category_id', categoryId)
-    
+
     // Filter by subcategory_id if subcategory is provided
     // Note: Requires products table to have subcategory_id column
     // Run: ALTER TABLE products ADD COLUMN IF NOT EXISTS subcategory_id UUID REFERENCES category_subcategories(id);
@@ -126,7 +126,7 @@ export default async function AllProductsPage({
       .from('products')
       .select('*')
       .eq('status', 'published')
-    
+
     if (categoryId) {
       retryQuery.eq('category_id', categoryId)
       if (subcategoryId) {
@@ -135,7 +135,7 @@ export default async function AllProductsPage({
     } else if (params.category) {
       retryQuery.eq('category_id', '00000000-0000-0000-0000-000000000000')
     }
-    
+
     const retryResult = await retryQuery.order('created_at', { ascending: false })
     products = retryResult.data
     error = retryResult.error
@@ -146,21 +146,21 @@ export default async function AllProductsPage({
     console.error('[PRODUCT QUERY] Error fetching products:', error)
     // Return empty array on error to prevent crash
   }
-  
+
   // Ensure products is always an array
   const safeProducts = products || []
 
   // Fetch images for products - only if we have products
   let images: Array<{ product_id: string; image_url: string; is_primary: boolean }> = []
   const productIds = safeProducts.map(p => p.id)
-  
+
   if (productIds.length > 0) {
     const { data: imagesData, error: imagesError } = await supabase
       .from('product_images')
       .select('product_id, image_url, is_primary')
       .in('product_id', productIds)
       .eq('is_primary', true)
-    
+
     if (imagesError) {
       console.error('[PRODUCT IMAGES] Error fetching images:', imagesError)
     } else {
@@ -171,13 +171,13 @@ export default async function AllProductsPage({
   // Fetch categories for products that have category_id
   const categoryIds = [...new Set(safeProducts.map(p => p.category_id).filter((id): id is string => Boolean(id)))]
   let categoriesData: Array<{ id: string; name: string; slug: string }> = []
-  
+
   if (categoryIds.length > 0) {
     const { data, error: categoriesError } = await supabase
       .from('categories')
       .select('id, name, slug')
       .in('id', categoryIds)
-    
+
     if (categoriesError) {
       console.error('[CATEGORIES] Error fetching categories:', categoriesError)
     } else {
@@ -195,17 +195,17 @@ export default async function AllProductsPage({
     const productImage = images.find(img => img.product_id === product.id)
     const categoryId = product.category_id
     const category = categoryId ? categoryMap.get(categoryId) || null : null
-    
+
     // Validate and format price
     const priceNumber = product.price ? Number(product.price) : 0
-    const formattedPrice = isNaN(priceNumber) || priceNumber <= 0 
-      ? '₹0' 
+    const formattedPrice = isNaN(priceNumber) || priceNumber <= 0
+      ? '₹0'
       : `₹${priceNumber.toLocaleString('en-IN')}`
-    
+
     // Use placeholder data URI if no image found (1x1 transparent pixel)
     // This prevents broken image icons while maintaining layout
     const productImageUrl = productImage?.image_url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkIi8+PC9zdmc+'
-    
+
     return {
       id: product.id,
       name: product.name || 'Unnamed Product',
@@ -230,7 +230,7 @@ export default async function AllProductsPage({
 
   // Fetch filter configurations
   const filterConfigsResult = await getFilterConfigs()
-  const filterConfigs = filterConfigsResult.success ? filterConfigsResult.data : []
+  const filterConfigs = filterConfigsResult.success && filterConfigsResult.data ? filterConfigsResult.data : []
 
   // Fetch jewelry categories for filter bar
   const categories = await getJewelryCategories()
@@ -239,18 +239,18 @@ export default async function AllProductsPage({
     <div className="app bg-[#fafafa]">
       {/* Category Filter Bar - Positioned below header */}
       <CategoryFilterBar categories={categories} />
-      
+
       {/* Subcategory Grid - Show when category is selected */}
       {categorySlug && categoryName && subcategories.length > 0 && (
-        <SubcategoryGrid 
+        <SubcategoryGrid
           subcategories={subcategories}
           categorySlug={categorySlug}
           categoryName={categoryName}
         />
       )}
-      
+
       <div className="max-w-[1440px] mx-auto px-2 md:px-8 py-1 md:py-2">
-        <ProductGridClient 
+        <ProductGridClient
           products={productsWithImages}
           recommendedProducts={recommendedProducts}
           filterConfigs={filterConfigs}

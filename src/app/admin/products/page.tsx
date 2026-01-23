@@ -3,6 +3,8 @@ import { getAllProducts } from '@/lib/actions/products'
 import { getAllCategories } from '@/lib/actions/categories'
 import CarouselCheckboxes from '@/components/admin/CarouselCheckboxes'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminProductsPage() {
   const products = await getAllProducts()
   const categories = await getAllCategories()
@@ -89,13 +91,12 @@ export default async function AdminProductsPage() {
                     {product.inventory_count}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      product.status === 'published' 
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.status === 'published'
                         ? 'bg-green-100 text-green-800'
                         : product.status === 'draft'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
                       {product.status}
                     </span>
                   </td>

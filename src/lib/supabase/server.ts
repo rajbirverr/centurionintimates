@@ -1,6 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { createClient } from '@/lib/supabase'
 
 /**
  * Server-side Supabase client for SSR

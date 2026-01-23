@@ -6,13 +6,15 @@ import HeroImageUpload from '@/components/admin/HeroImageUpload'
 import ShowcaseCardImageUpload from '@/components/admin/ShowcaseCardImageUpload'
 import HomepageCarouselProducts from '@/components/admin/HomepageCarouselProducts'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboardPage() {
   const supabase = await createServerSupabaseClient()
-  
+
   // Fetch stats
   const products = await getAllProducts()
   const orders = await getAllOrders()
-  
+
   // Get total revenue
   const totalRevenue = orders
     .filter(order => order.payment_status === 'paid')
@@ -109,12 +111,11 @@ export default async function AdminDashboardPage() {
                       ₹{order.total.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                          order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                              'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {order.status}
                       </span>
                     </td>

@@ -9,7 +9,7 @@ interface RecommendedProductsProps {
 
 const RecommendedProducts: React.FC<RecommendedProductsProps> = ({ products }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [wishlist, setWishlist] = useState<(number | string)[]>([]);
   const [visibleProducts, setVisibleProducts] = useState<Product[]>([]);
   const [productsPerPage, setProductsPerPage] = useState(5);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -76,7 +76,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({ products }) =
 
   const totalPages = Math.ceil(products.length / productsPerPage);
 
-  const handleToggleWishlist = (productId: number, e: React.MouseEvent) => {
+  const handleToggleWishlist = (productId: number | string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -160,27 +160,25 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({ products }) =
           <button
             key={index}
             onClick={() => !isTransitioning && setCurrentPage(index + 1)}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-              currentPage === index + 1 
-                ? "bg-[#69696e] w-4" 
-                : "bg-[#d1d1d6]"
-            }`}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${currentPage === index + 1
+              ? "bg-[#69696e] w-4"
+              : "bg-[#d1d1d6]"
+              }`}
             aria-label={`Go to page ${index + 1}`}
           />
         ))}
       </div>
 
       {/* iOS-style scroll carousel with swipe support */}
-      <div 
+      <div
         className="relative overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div 
-          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 transition-all duration-500 ease-out ${
-            isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'
-          }`}
+        <div
+          className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 transition-all duration-500 ease-out ${isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'
+            }`}
         >
           {visibleProducts.map((product) => (
             <div key={product.id} className="group relative">
@@ -192,7 +190,7 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({ products }) =
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {/* iOS-style interactive heart button with haptic-like animation */}
                   <button
                     onClick={(e) => handleToggleWishlist(product.id, e)}
@@ -227,34 +225,32 @@ const RecommendedProducts: React.FC<RecommendedProductsProps> = ({ products }) =
             </div>
           ))}
         </div>
-        
+
         {/* iOS-style minimal edge swipe buttons */}
         <button
           onClick={goToPrevious}
           disabled={currentPage === 1 || isTransitioning}
-          className={`absolute left-0 top-0 bottom-0 w-12 flex items-center justify-start pl-1 focus:outline-none transition-opacity duration-300 ${
-            currentPage === 1 ? 'opacity-0 cursor-default' : 'opacity-70 hover:opacity-100'
-          }`}
+          className={`absolute left-0 top-0 bottom-0 w-12 flex items-center justify-start pl-1 focus:outline-none transition-opacity duration-300 ${currentPage === 1 ? 'opacity-0 cursor-default' : 'opacity-70 hover:opacity-100'
+            }`}
           aria-label="Previous"
         >
           <div className="w-8 h-8 rounded-full bg-white/70 backdrop-blur flex items-center justify-center shadow-sm">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 19L8 12L15 5" stroke="#68686e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M15 19L8 12L15 5" stroke="#68686e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
         </button>
-        
+
         <button
           onClick={goToNext}
           disabled={currentPage >= totalPages || isTransitioning}
-          className={`absolute right-0 top-0 bottom-0 w-12 flex items-center justify-end pr-1 focus:outline-none transition-opacity duration-300 ${
-            currentPage >= totalPages ? 'opacity-0 cursor-default' : 'opacity-70 hover:opacity-100'
-          }`}
+          className={`absolute right-0 top-0 bottom-0 w-12 flex items-center justify-end pr-1 focus:outline-none transition-opacity duration-300 ${currentPage >= totalPages ? 'opacity-0 cursor-default' : 'opacity-70 hover:opacity-100'
+            }`}
           aria-label="Next"
         >
           <div className="w-8 h-8 rounded-full bg-white/70 backdrop-blur flex items-center justify-center shadow-sm">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 5L16 12L9 19" stroke="#68686e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 5L16 12L9 19" stroke="#68686e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
         </button>

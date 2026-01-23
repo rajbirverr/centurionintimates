@@ -26,6 +26,7 @@ export interface Product {
   watermark_color?: string
   watermark_font_size?: number
   watermark_position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+  watermark_text?: string
   in_shine_carousel?: boolean
   in_drip_carousel?: boolean
   in_category_carousel?: boolean
@@ -87,7 +88,7 @@ export async function getAllProducts(): Promise<Product[]> {
 export async function getProductById(id: string): Promise<Product | null> {
   try {
     const supabase = await createServerSupabaseClient()
-    
+
     // Try to select all fields including watermark fields
     // If watermark columns don't exist, Supabase will return null/undefined for those fields
     const { data, error } = await supabase
@@ -150,7 +151,7 @@ export async function createProduct(data: CreateProductData) {
     // Remove watermark_enabled and watermark_color from insert if columns don't exist yet
     // This prevents errors until migrations are run
     const { watermark_enabled, watermark_color, ...safeInsertData } = data
-    
+
     const supabase = createAdminClient()
     const { data: product, error } = await supabase
       .from('products')
@@ -191,12 +192,12 @@ export async function updateProduct(data: UpdateProductData) {
     }
 
     const { id, ...updateData } = data
-    
+
     // Note: watermark_enabled and watermark_color are included in updateData
     // They will be included in the update if the columns exist
     // If columns don't exist, Supabase will ignore them or return an error (handled below)
     const safeUpdateData = updateData
-    
+
     const supabase = createAdminClient()
     const { data: product, error } = await supabase
       .from('products')
@@ -324,12 +325,12 @@ export async function getShineCarouselProducts(): Promise<Array<{ id: string; na
       console.error('Error fetching Shine carousel products:', error)
       return []
     }
-    
+
     if (!products || products.length === 0) {
       console.log('No products found for Shine carousel')
       return []
     }
-    
+
     console.log(`Found ${products.length} products for Shine carousel:`, products.map(p => p.name))
 
     // Get primary images for each product
@@ -337,7 +338,7 @@ export async function getShineCarouselProducts(): Promise<Array<{ id: string; na
       products.map(async (product) => {
         // Get primary image (or first image if no primary)
         let imageUrl = '/placeholder-product.png'
-        
+
         const { data: primaryImage } = await supabase
           .from('product_images')
           .select('image_url')
@@ -345,7 +346,7 @@ export async function getShineCarouselProducts(): Promise<Array<{ id: string; na
           .eq('is_primary', true)
           .limit(1)
           .maybeSingle()
-        
+
         if (primaryImage?.image_url) {
           imageUrl = primaryImage.image_url
         } else {
@@ -356,7 +357,7 @@ export async function getShineCarouselProducts(): Promise<Array<{ id: string; na
             .eq('product_id', product.id)
             .limit(1)
             .maybeSingle()
-          
+
           if (firstImage?.image_url) {
             imageUrl = firstImage.image_url
           }
@@ -403,19 +404,19 @@ export async function getDripCarouselProducts(): Promise<Array<{ id: number | st
       console.error('Error fetching Drip carousel products:', error)
       return []
     }
-    
+
     if (!products || products.length === 0) {
       console.log('No products found for Drip carousel')
       return []
     }
-    
+
     console.log(`Found ${products.length} products for Drip carousel:`, products.map(p => p.name))
 
     // Get primary images for each product
     const productsWithImages = await Promise.all(
       products.map(async (product) => {
         let imageUrl = '/placeholder-product.png'
-        
+
         // Get primary image (or first image if no primary)
         const { data: primaryImage } = await supabase
           .from('product_images')
@@ -424,7 +425,7 @@ export async function getDripCarouselProducts(): Promise<Array<{ id: number | st
           .eq('is_primary', true)
           .limit(1)
           .maybeSingle()
-        
+
         if (primaryImage?.image_url) {
           imageUrl = primaryImage.image_url
         } else {
@@ -435,7 +436,7 @@ export async function getDripCarouselProducts(): Promise<Array<{ id: number | st
             .eq('product_id', product.id)
             .limit(1)
             .maybeSingle()
-          
+
           if (firstImage?.image_url) {
             imageUrl = firstImage.image_url
           }
@@ -476,12 +477,12 @@ export async function getCategoryCarouselProducts(): Promise<Array<{ id: string;
       console.error('Error fetching Category carousel products:', error)
       return []
     }
-    
+
     if (!products || products.length === 0) {
       console.log('No products found for Category carousel')
       return []
     }
-    
+
     console.log(`Found ${products.length} products for Category carousel:`, products.map(p => p.name))
 
     // Get images and category names for each product
@@ -489,7 +490,7 @@ export async function getCategoryCarouselProducts(): Promise<Array<{ id: string;
       products.map(async (product) => {
         // Get primary image (or first image if no primary)
         let imageUrl = '/placeholder-product.png'
-        
+
         const { data: primaryImage } = await supabase
           .from('product_images')
           .select('image_url')
@@ -497,7 +498,7 @@ export async function getCategoryCarouselProducts(): Promise<Array<{ id: string;
           .eq('is_primary', true)
           .limit(1)
           .maybeSingle()
-        
+
         if (primaryImage?.image_url) {
           imageUrl = primaryImage.image_url
         } else {
@@ -507,7 +508,7 @@ export async function getCategoryCarouselProducts(): Promise<Array<{ id: string;
             .eq('product_id', product.id)
             .limit(1)
             .maybeSingle()
-          
+
           if (firstImage?.image_url) {
             imageUrl = firstImage.image_url
           }
@@ -521,7 +522,7 @@ export async function getCategoryCarouselProducts(): Promise<Array<{ id: string;
             .select('name')
             .eq('id', product.category_id)
             .maybeSingle()
-          
+
           if (category?.name) {
             categoryName = category.name.toUpperCase()
           }

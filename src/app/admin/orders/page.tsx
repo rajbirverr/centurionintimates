@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { getAllOrders } from '@/lib/actions/orders'
 import { Badge } from '@/components/admin/ui'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminOrdersPage() {
   const orders = await getAllOrders()
 
@@ -64,9 +66,9 @@ export default async function AdminOrdersPage() {
                     <Badge
                       variant={
                         order.status === 'delivered' ? 'success' :
-                        order.status === 'processing' ? 'info' :
-                        order.status === 'cancelled' ? 'danger' :
-                        'warning'
+                          order.status === 'processing' ? 'info' :
+                            order.status === 'cancelled' ? 'danger' :
+                              'warning'
                       }
                     >
                       {order.status}
@@ -76,9 +78,9 @@ export default async function AdminOrdersPage() {
                     <Badge
                       variant={
                         order.payment_status === 'paid' ? 'success' :
-                        order.payment_status === 'failed' ? 'danger' :
-                        order.payment_status === 'refunded' ? 'warning' :
-                        'default'
+                          order.payment_status === 'failed' ? 'danger' :
+                            order.payment_status === 'refunded' ? 'warning' :
+                              'default'
                       }
                     >
                       {order.payment_status}

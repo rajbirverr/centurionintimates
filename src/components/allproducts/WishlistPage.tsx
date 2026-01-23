@@ -11,7 +11,7 @@ interface WishlistPageProps {
 }
 
 const WishlistPage: React.FC<WishlistPageProps> = ({ onBack }) => {
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [wishlist, setWishlist] = useState<(number | string)[]>([]);
   const [wishlistedProducts, setWishlistedProducts] = useState<Product[]>([]);
   const [showWishlistToast, setShowWishlistToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -38,7 +38,7 @@ const WishlistPage: React.FC<WishlistPageProps> = ({ onBack }) => {
     setWishlistedProducts(filtered);
   }, [wishlist]);
 
-  const handleToggleWishlist = (productId: number) => {
+  const handleToggleWishlist = (productId: number | string) => {
     setWishlist(prevWishlist => {
       if (prevWishlist.includes(productId)) {
         // Remove from wishlist
@@ -89,9 +89,8 @@ const WishlistPage: React.FC<WishlistPageProps> = ({ onBack }) => {
 
       {/* Wishlist toast notification */}
       <div
-        className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black text-white py-2 px-4 rounded-full text-sm transition-opacity duration-300 z-50 ${
-          showWishlistToast ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black text-white py-2 px-4 rounded-full text-sm transition-opacity duration-300 z-50 ${showWishlistToast ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
       >
         {toastMessage}
       </div>

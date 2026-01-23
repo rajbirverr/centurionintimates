@@ -4,6 +4,8 @@ import { deleteCategory } from '@/lib/actions/categories'
 import { Button, Badge } from '@/components/admin/ui'
 import DeleteCategoryButton from '@/components/admin/DeleteCategoryButton'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminCategoriesPage() {
   const categories = await getAllCategories()
 

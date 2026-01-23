@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { getAllBlogsForAdmin, deleteBlog } from '@/lib/actions/blogs';
 import { revalidatePath } from 'next/cache';
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminBlogsPage() {
     const result = await getAllBlogsForAdmin();
     const blogs = result.success ? result.data : [];
