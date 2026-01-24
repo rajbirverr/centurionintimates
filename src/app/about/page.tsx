@@ -1,30 +1,15 @@
-"use client"
-
 import React from 'react';
-import BaseDropdown from './BaseDropdown';
 
-interface AboutDropdownProps {
-  isOpen: boolean;
-  navHeight: number;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}
+export const metadata = {
+  title: 'About Us - centurionshoppe',
+  description: 'Learn about centurionshoppe\'s journey and mission to empower women through beautiful jewelry.',
+};
 
-const AboutDropdown: React.FC<AboutDropdownProps> = ({
-  isOpen,
-  navHeight,
-  onMouseEnter,
-  onMouseLeave
-}) => {
+export default function AboutPage() {
   return (
-    <BaseDropdown
-      isOpen={isOpen}
-      navHeight={navHeight}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <main className="min-h-screen bg-white">
       <div className="py-12 md:py-16">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-4 md:px-8">
           {/* Main Quote */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#5a4c46] uppercase tracking-wide mb-8">
@@ -73,8 +58,6 @@ const AboutDropdown: React.FC<AboutDropdownProps> = ({
           </div>
         </div>
       </div>
-    </BaseDropdown>
+    </main>
   );
-};
-
-export default AboutDropdown;
+}

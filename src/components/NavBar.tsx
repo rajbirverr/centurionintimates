@@ -334,9 +334,9 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
         ref={navBarRef}
       >
         <div className="max-w-[1440px] mx-auto px-4 md:px-8">
-          <div className="flex items-center justify-between py-1 min-w-0">
+          <div className="flex items-center justify-between py-1">
             {/* Left menu items */}
-            <div className="hidden md:flex items-center space-x-10 flex-shrink-0">
+            <div className="hidden md:flex items-center space-x-10">
               {/* Shop dropdown */}
               <div className="relative">
                 <button
@@ -381,7 +381,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden flex items-center flex-shrink-0" style={{ width: '80px' }}>
+            <div className="md:hidden flex items-center w-20">
               <button
                 className="text-[#5a4c46] focus:outline-none"
                 onClick={toggleMobileMenu}
@@ -395,14 +395,14 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
             </div>
 
             {/* Center logo */}
-            <div className="flex-1 md:flex-none flex items-center justify-center md:justify-start min-w-0 px-2">
-              <Link href="/" className="font-normal text-[#784D2C] text-2xl sm:text-3xl whitespace-nowrap" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>
+            <div className="flex-1 md:flex-none flex items-center justify-center md:justify-start">
+              <Link href="/" className="font-normal text-[#784D2C] text-3xl" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>
                 centurion
               </Link>
             </div>
 
             {/* Right menu items */}
-            <div className="hidden md:flex items-center space-x-8 flex-shrink-0">
+            <div className="hidden md:flex items-center space-x-8">
               {/* Search button */}
               <div className="relative">
                 <button
@@ -461,7 +461,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
             </div>
 
             {/* Mobile right icons */}
-            <div className="md:hidden flex items-center justify-end space-x-5 flex-shrink-0" style={{ minWidth: '60px', maxWidth: '80px' }}>
+            <div className="md:hidden flex items-center justify-end space-x-5 w-20">
               <button
                 className="text-[#5a4c46] focus:outline-none"
                 aria-label="Search"
@@ -568,16 +568,16 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
 
       {/* Mobile Menu - Opens below navbar */}
       <div 
-        className={`md:hidden fixed left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-40 overflow-y-auto ${
+        className={`md:hidden fixed left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-40 overflow-hidden ${
           showMobileMenu ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
         }`}
         style={{ 
-          top: showMobileMenu ? `${navHeight || 73}px` : '0',
-          maxHeight: `calc(100vh - ${navHeight || 73}px)`,
-          transform: showMobileMenu ? 'translateY(0)' : 'translateY(-10px)',
-          transition: 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s, top 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+          top: `${mobileMenuTop || (navHeight || 73)}px`,
+          maxHeight: showMobileMenu ? `calc(100vh - ${mobileMenuTop || (navHeight || 73)}px)` : '0',
+          transition: 'opacity 0.2s ease-out, max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s ease-out'
         }}
       >
+        <div className="overflow-y-auto" style={{ maxHeight: `calc(100vh - ${mobileMenuTop || (navHeight || 73)}px)` }}>
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6">
           {/* Search input */}
           <div className="relative mb-8">
@@ -705,7 +705,11 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
               <span>Shop</span>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </Link>
-            <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
+            <Link 
+              href="/about"
+              className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100"
+              onClick={() => setShowMobileMenu(false)}
+            >
               <span>About</span>
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             </Link>
@@ -735,6 +739,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
               <option>United States (USD $)</option>
             </select>
           </div>
+        </div>
         </div>
       </div>
     </>
