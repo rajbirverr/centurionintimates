@@ -23,7 +23,7 @@
     --ring: 0 0% 3.9%;
     --radius: 0.5rem;
   }
- 
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -117,7 +117,7 @@
   src: url('https://ext.same-assets.com/2896541614/344479640.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @layer components {
@@ -162,6 +162,7 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -182,7 +183,7 @@
   backdrop-filter: blur(10px) saturate(150%);
   -webkit-backdrop-filter: blur(10px) saturate(150%);
   border: 0.5px solid rgba(255, 180, 140, 0.3);
-  box-shadow: 
+  box-shadow:
     0 2px 8px 0 rgba(255, 160, 120, 0.15),
     inset 0 0.5px 0 0 rgba(255, 255, 255, 0.3);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -200,19 +201,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    transparent 50%,
-    rgba(255, 200, 160, 0.1) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 50%,
+      rgba(255, 200, 160, 0.1) 100%);
   pointer-events: none;
 }
 
 .liquid-glass-button:hover {
   background: rgba(255, 200, 160, 0.65);
   border-color: rgba(255, 180, 140, 0.5);
-  box-shadow: 
+  box-shadow:
     0 4px 12px 0 rgba(255, 160, 120, 0.25),
     inset 0 0.5px 0 0 rgba(255, 255, 255, 0.4);
   transform: scale(1.02);
@@ -229,10 +228,10 @@
   backdrop-filter: blur(8px) saturate(120%);
   -webkit-backdrop-filter: blur(8px) saturate(120%);
   border: 1px solid rgba(220, 220, 220, 0.5);
-  box-shadow: 
+  box-shadow:
     0 2px 8px 0 rgba(0, 0, 0, 0.06),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
-  transition: 
+  transition:
     background 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -249,7 +248,7 @@
 .white-glass-button:hover {
   background: rgba(250, 250, 250, 0.95);
   border-color: rgba(210, 210, 210, 0.6);
-  box-shadow: 
+  box-shadow:
     0 4px 12px 0 rgba(0, 0, 0, 0.08),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
   color: #403b38;
@@ -258,7 +257,7 @@
 .white-glass-button:active {
   background: rgba(240, 240, 240, 0.92);
   border-color: rgba(200, 200, 200, 0.55);
-  box-shadow: 
+  box-shadow:
     0 1px 4px 0 rgba(0, 0, 0, 0.05),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.7);
   color: #403b38;
@@ -277,10 +276,10 @@
   backdrop-filter: blur(8px) saturate(150%);
   -webkit-backdrop-filter: blur(8px) saturate(150%);
   border: 1.5px solid rgba(218, 208, 194, 0.6);
-  box-shadow: 
+  box-shadow:
     0 2px 4px 0 rgba(90, 76, 70, 0.1),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-  transition: 
+  transition:
     background 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     backdrop-filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
     -webkit-backdrop-filter 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -298,12 +297,10 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    transparent 40%,
-    rgba(232, 222, 208, 0.25) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.35) 0%,
+      transparent 40%,
+      rgba(232, 222, 208, 0.25) 100%);
   border-radius: 4px;
   pointer-events: none;
   opacity: 0;
@@ -315,7 +312,7 @@
   backdrop-filter: blur(10px) saturate(160%);
   -webkit-backdrop-filter: blur(10px) saturate(160%);
   border-color: rgba(200, 190, 180, 0.8);
-  box-shadow: 
+  box-shadow:
     0 4px 12px 0 rgba(90, 76, 70, 0.15),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.4),
     inset 0 -1px 0 0 rgba(200, 190, 180, 0.2);
@@ -328,7 +325,7 @@
 
 .form-checkbox:active {
   transform: translateY(0px);
-  transition: 
+  transition:
     background 0.15s cubic-bezier(0.36, 0, 0.66, -0.56),
     backdrop-filter 0.15s cubic-bezier(0.36, 0, 0.66, -0.56),
     -webkit-backdrop-filter 0.15s cubic-bezier(0.36, 0, 0.66, -0.56),
@@ -342,13 +339,13 @@
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border-color: rgba(232, 222, 208, 0.9);
-  box-shadow: 
+  box-shadow:
     0 0 16px 6px rgba(232, 222, 208, 0.8),
     0 0 24px 12px rgba(218, 208, 194, 0.6),
     0 2px 8px 0 rgba(90, 76, 70, 0.2),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
   animation: lightGlow 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transition: 
+  transition:
     background 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
     backdrop-filter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
     -webkit-backdrop-filter 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -366,7 +363,7 @@
   height: 8px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(232, 222, 208, 0.9) 70%, transparent 100%);
-  box-shadow: 
+  box-shadow:
     0 0 8px 4px rgba(255, 255, 255, 0.9),
     0 0 12px 6px rgba(232, 222, 208, 0.7),
     0 0 16px 8px rgba(218, 208, 194, 0.4);
@@ -375,7 +372,7 @@
 
 @keyframes lightGlow {
   0% {
-    box-shadow: 
+    box-shadow:
       0 0 4px 2px rgba(232, 222, 208, 0.5),
       0 0 8px 4px rgba(218, 208, 194, 0.3),
       0 2px 4px 0 rgba(90, 76, 70, 0.15),
@@ -383,8 +380,9 @@
     backdrop-filter: blur(8px) saturate(140%);
     -webkit-backdrop-filter: blur(8px) saturate(140%);
   }
+
   50% {
-    box-shadow: 
+    box-shadow:
       0 0 20px 10px rgba(232, 222, 208, 1),
       0 0 36px 18px rgba(218, 208, 194, 0.8),
       0 4px 16px 0 rgba(90, 76, 70, 0.3),
@@ -392,8 +390,9 @@
     backdrop-filter: blur(14px) saturate(200%);
     -webkit-backdrop-filter: blur(14px) saturate(200%);
   }
+
   100% {
-    box-shadow: 
+    box-shadow:
       0 0 16px 6px rgba(232, 222, 208, 0.8),
       0 0 24px 12px rgba(218, 208, 194, 0.6),
       0 2px 8px 0 rgba(90, 76, 70, 0.2),
@@ -404,18 +403,21 @@
 }
 
 @keyframes lightPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: translate(-50%, -50%);
-    box-shadow: 
+    box-shadow:
       0 0 8px 4px rgba(255, 255, 255, 0.9),
       0 0 12px 6px rgba(232, 222, 208, 0.7),
       0 0 16px 8px rgba(218, 208, 194, 0.4);
   }
+
   50% {
     opacity: 0.9;
     transform: translate(-50%, -50%);
-    box-shadow: 
+    box-shadow:
       0 0 12px 6px rgba(255, 255, 255, 1),
       0 0 18px 10px rgba(232, 222, 208, 0.9),
       0 0 24px 14px rgba(218, 208, 194, 0.6);
@@ -460,7 +462,7 @@ button.quick-add:active {
   position: relative;
 }
 
-.shop-button:hover + .shop-dropdown,
+.shop-button:hover+.shop-dropdown,
 .shop-dropdown:hover {
   display: block !important;
 }
@@ -485,6 +487,7 @@ button.quick-add:active {
   from {
     transform: translateY(-100%);
   }
+
   to {
     transform: translateY(0);
   }
@@ -515,12 +518,15 @@ button.quick-add:active {
     transform: translateY(100%);
     opacity: 0;
   }
+
   10% {
     opacity: 1;
   }
+
   90% {
     opacity: 1;
   }
+
   100% {
     transform: translateY(-100%);
     opacity: 0;
@@ -528,10 +534,14 @@ button.quick-add:active {
 }
 
 @keyframes logoFade {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
-  30%, 70% {
+
+  30%,
+  70% {
     opacity: 0;
   }
 }
@@ -551,17 +561,20 @@ button.quick-add:active {
   border-radius: 50%;
   opacity: 0;
   z-index: 2;
-  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 
-              0 0 20px 4px rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8),
+    0 0 20px 4px rgba(255, 215, 0, 0.6);
   animation: sparkle 2s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes sparkle {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0;
     transform: scale(0.1);
   }
+
   50% {
     opacity: 1;
     transform: scale(1);
@@ -573,6 +586,7 @@ button.quick-add:active {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -653,7 +667,7 @@ button.quick-add:active {
   .hero-section {
     max-height: 90vh;
   }
-  
+
   .credits-container-compact {
     height: 100px;
   }
@@ -661,12 +675,15 @@ button.quick-add:active {
 
 /* Hide scrollbar utility */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari and Opera */
+  display: none;
+  /* Chrome, Safari and Opera */
 }
 
 /* React Phone Input Styling */
@@ -722,6 +739,7 @@ button.quick-add:active {
     opacity: 0;
     transform: translate(-50%, -10px);
   }
+
   to {
     opacity: 1;
     transform: translate(-50%, 0);

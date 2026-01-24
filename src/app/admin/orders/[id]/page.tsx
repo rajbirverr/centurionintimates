@@ -7,6 +7,8 @@ interface OrderDetailPageProps {
   params: Promise<{ id: string }>
 }
 
+export const dynamic = 'force-dynamic'
+
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleString('en-US', {
     year: 'numeric',

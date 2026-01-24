@@ -4,6 +4,60 @@ import { revalidatePath } from 'next/cache'
 import { getServerUser } from '@/lib/supabase/server'
 import { createAdminClient, verifyAdmin } from '@/lib/supabase/admin'
 
+// Upload product image file to Supabase Storage
+export async function uploadProductImageToStorage(file: File): Promise<{ success: boolean; url?: string; error?: string }> {
+  try {
+    const user = await getServerUser()
+    if (!user) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    const isAdmin = await verifyAdmin(user.id)
+    if (!isAdmin) {
+      return { success: false, error: 'Unauthorized' }
+    }
+
+    if (!file.type.startsWith('image/')) {
+      return { success: false, error: 'Only image files are allowed' }
+    }
+
+    const supabase = createAdminClient()
+    
+    const fileExt = file.name.split('.').pop()
+    const fileName = `products/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+    
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('images')
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        upsert: false
+      })
+
+    if (uploadError) {
+      console.error('Error uploading to storage:', uploadError)
+      if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
+        return { 
+          success: false, 
+          error: 'Storage bucket "images" not found. Please create it in Supabase Storage.' 
+        }
+      }
+      return { success: false, error: uploadError.message || 'Failed to upload image' }
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('images')
+      .getPublicUrl(fileName)
+
+    return { success: true, url: urlData.publicUrl }
+  } catch (error: any) {
+    console.error('Error in uploadProductImageToStorage:', error)
+    return { success: false, error: error.message || 'Failed to upload image' }
+  }
+}
+
 export interface ProductImage {
   id: string
   product_id: string

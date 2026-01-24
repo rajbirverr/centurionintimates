@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { getHomepageSetsData, getProductsForFilter, getProductsByCategorySlug, getAllProductsForSets, type HomepageSetsFilter } from '@/lib/actions/homepage-sets'
 
 // Default values outside component to avoid recreating on each render
@@ -58,11 +57,26 @@ interface HomepageSetsSectionProps {
   }
 }
 
+// Helper function to ensure image URL is absolute
+const getAbsoluteImageUrl = (url: string | null | undefined): string | null => {
+  if (!url) return null
+  // If already absolute URL, return as is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url
+  }
+  // If relative URL starting with /, make it absolute using current origin
+  if (url.startsWith('/')) {
+    return typeof window !== 'undefined' ? `${window.location.origin}${url}` : url
+  }
+  return url
+}
+
 export default function HomepageSetsSection({ initialData }: HomepageSetsSectionProps) {
   const [data, setData] = useState<any>(initialData || null)
   const [loading, setLoading] = useState(!initialData)
   const [activeFilterId, setActiveFilterId] = useState<string | null>(null)
   const [products, setProducts] = useState<any[]>(initialData?.products || [])
+  const [expandedProductId, setExpandedProductId] = useState<string | null>(null)
 
   // Use database data or defaults
   const section = useMemo(() => data?.section || defaultSection, [data?.section])
@@ -167,7 +181,15 @@ export default function HomepageSetsSection({ initialData }: HomepageSetsSection
   }
 
   return (
-    <section className="w-full bg-white">
+    <section 
+      className="w-full bg-white"
+      onClick={() => {
+        // Collapse expanded product when clicking on empty space
+        if (expandedProductId) {
+          setExpandedProductId(null)
+        }
+      }}
+    >
       <div className="max-w-[1440px] mx-auto px-4 md:px-6 lg:px-12 pt-8 md:pt-12 pb-12 md:pb-16">
         {/* Title - EXACT Honeylove styling */}
         <h2 className="font-normal text-[#2B2B2B] text-[36px] leading-[100%] md:text-[56px] mx-auto max-w-[300px] md:max-w-[800px] mb-12 md:mb-16 text-center">
@@ -199,50 +221,90 @@ export default function HomepageSetsSection({ initialData }: HomepageSetsSection
         {products.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-14">
             {products.map((product) => (
-              <div key={product.id} className="flex flex-col justify-between items-start">
+              <div 
+                key={product.id} 
+                className="flex flex-col justify-between items-start"
+                onClick={(e) => {
+                  // Stop propagation so clicking inside product card doesn't collapse
+                  e.stopPropagation()
+                }}
+              >
                 <div className="flex flex-col justify-between items-start w-full grow">
                   <div className="flex flex-col justify-start items-start w-full">
                     {/* Product Image - EXACT aspect ratio */}
                     <div className="relative box-border aspect-[100/127] w-full mb-4 overflow-hidden bg-white">
-                      {product.image_url ? (
-                        <Image
-                          src={product.image_url}
-                          alt={product.name}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                          unoptimized={product.image_url.includes('supabase.co') || product.image_url.includes('supabase.in')}
-                        />
-                      ) : (
+                      {(() => {
+                        const imageUrl = getAbsoluteImageUrl(product.image_url)
+                        return imageUrl ? (
+                          <img
+                            key={imageUrl}
+                            src={imageUrl}
+                            alt={product.name}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            loading="lazy"
+                            onError={(e) => {
+                              console.error('Image failed to load:', imageUrl);
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-100">
                           <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                         </div>
-                      )}
+                        )
+                      })()}
                     </div>
 
                     {/* Product Info - EXACT Honeylove structure */}
                     <div className="text-left w-full">
                       {/* Category Name - ABOVE product name */}
                       {product.category && (
-                        <p className="text-xs md:text-sm text-[#2B2B2B]/70 uppercase tracking-wide mb-1 font-normal">
+                        <p className="text-xs md:text-sm text-[#5a4c46]/70 uppercase tracking-[0.15em] mb-1 font-light">
                           {product.category.name}
                         </p>
                       )}
 
                       {/* Product Name */}
                       <div className="mb-2">
-                        <Link
-                          href={`/product/${product.slug}`}
-                          className="text-base font-normal text-[#2B2B2B] hover:underline inline-block"
-                        >
-                          {product.name}
-                        </Link>
+                        <div className="text-base font-normal text-[#403b38]">
+                          {expandedProductId === product.id ? (
+                            <Link
+                              href={`/product/${product.slug}`}
+                              className="hover:underline inline-block"
+                            >
+                              {product.name}
+                            </Link>
+                          ) : (
+                            <>
+                              <Link
+                                href={`/product/${product.slug}`}
+                                className="hover:underline inline-block"
+                              >
+                                {product.name.split(' ').slice(0, 4).join(' ')}
+                                {product.name.split(' ').length > 4 && '...'}
+                              </Link>
+                              {product.name.split(' ').length > 4 && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    setExpandedProductId(product.id)
+                                  }}
+                                  className="block text-xs text-[#5a4c46]/50 hover:text-[#5a4c46] mt-0.5 font-light"
+                                >
+                                  more
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
                       </div>
 
                       {/* Price */}
-                      <p className="text-base text-[#2B2B2B] font-normal mb-3">
+                      <p className="text-base text-[#403b38] font-light mb-3">
                         ₹{product.price.toLocaleString('en-IN')}
                       </p>
 
@@ -268,7 +330,7 @@ export default function HomepageSetsSection({ initialData }: HomepageSetsSection
                       {/* Shop Link */}
                       <Link
                         href={`/product/${product.slug}`}
-                        className="inline-block text-base font-normal text-[#2B2B2B] hover:underline"
+                        className="inline-block text-base font-normal text-[#403b38] hover:underline"
                       >
                         Shop
                       </Link>
@@ -288,7 +350,7 @@ export default function HomepageSetsSection({ initialData }: HomepageSetsSection
         <div className="flex justify-center">
           <Link
             href={section?.button_link || '/all-products'}
-            className="inline-block bg-[#2d2d2d] hover:bg-black text-white px-8 py-3 md:px-10 md:py-4 text-sm md:text-base font-medium transition-colors"
+            className="inline-block bg-[#5a4c46] hover:bg-[#4a3c36] text-white px-8 py-3 md:px-10 md:py-4 text-sm md:text-base font-light transition-colors uppercase tracking-[0.1em]"
           >
             {section?.button_text || 'SHOP BEST SELLERS'}
           </Link>

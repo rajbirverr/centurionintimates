@@ -57,9 +57,11 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const isMobile = window.innerWidth < 768;
 
-      // Only hide dropdown when scrolling if not hovering on either trigger or dropdown
-      if (activeDropdown && !navItemHoverRef.current && !dropdownHoverRef.current) {
+      // On mobile, don't close dropdown on scroll (user might be scrolling inside dropdown)
+      // On desktop, only hide dropdown when scrolling if not hovering on either trigger or dropdown
+      if (activeDropdown && !isMobile && !navItemHoverRef.current && !dropdownHoverRef.current) {
         setActiveDropdown(null);
       }
 
@@ -139,6 +141,27 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
     };
   }, []);
 
+  const [dropdownTop, setDropdownTop] = useState(0);
+
+  // Measure navbar position for dropdown
+  const updateDropdownPosition = () => {
+    if (navBarRef.current) {
+      const rect = navBarRef.current.getBoundingClientRect();
+      setDropdownTop(rect.bottom);
+    }
+  };
+
+  // Update position on scroll/resize
+  useEffect(() => {
+    updateDropdownPosition();
+    window.addEventListener('resize', updateDropdownPosition);
+    window.addEventListener('scroll', updateDropdownPosition);
+    return () => {
+      window.removeEventListener('resize', updateDropdownPosition);
+      window.removeEventListener('scroll', updateDropdownPosition);
+    };
+  }, []);
+
   const toggleDropdown = (dropdown: DropdownType) => {
     // Clear any pending timeouts
     if (closeTimeoutRef.current) {
@@ -150,6 +173,11 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       openTimeoutRef.current = null;
     }
 
+    // Update position before opening
+    const willOpen = activeDropdown !== dropdown;
+    if (willOpen) {
+      updateDropdownPosition();
+    }
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
@@ -277,6 +305,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
   // Handle cart icon click with navigation
   const handleCartClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (onNavigate) {
       onNavigate('cart');
     } else {
@@ -292,7 +321,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       </div>
 
       <nav
-        className={`w-full bg-white border-b border-gray-100 py-4 shadow-sm ${activeDropdown ? 'z-50' : 'z-30'} relative ${isSticky ? 'fixed top-0 left-0 right-0 animate-slideDown' : ''}`}
+        className={`w-full bg-white border-b border-gray-100 py-4 shadow-sm ${activeDropdown ? 'z-[60]' : 'z-30'} relative ${isSticky ? 'fixed top-0 left-0 right-0 animate-slideDown' : ''}`}
         ref={navBarRef}
       >
         <div className="max-w-[1440px] mx-auto px-4 md:px-8">
@@ -343,7 +372,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
             </div>
 
             {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
+            <div className="md:hidden flex items-center w-20">
               <button
                 className="text-[#5a4c46] focus:outline-none"
                 onClick={toggleMobileMenu}
@@ -357,7 +386,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
             </div>
 
             {/* Center logo */}
-            <div className="flex-shrink-0 flex items-center mx-auto md:mx-0">
+            <div className="flex-1 md:flex-none flex items-center justify-center md:justify-start">
               <Link href="/" className="font-normal text-[#784D2C] text-3xl" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>
                 centurion
               </Link>
@@ -423,7 +452,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
             </div>
 
             {/* Mobile right icons */}
-            <div className="md:hidden flex items-center space-x-5">
+            <div className="md:hidden flex items-center justify-end space-x-5 w-20">
               <button
                 className="text-[#5a4c46] focus:outline-none"
                 aria-label="Search"
@@ -462,7 +491,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       <div id="shop-dropdown" data-dropdown="shop">
         <ShopDropdown
           isOpen={activeDropdown === 'shop'}
-          navHeight={navHeight}
+          navHeight={dropdownTop}
           onMouseEnter={() => handleDropdownMouseEnter('shop')}
           onMouseLeave={handleDropdownMouseLeave}
           categories={categories}
@@ -473,7 +502,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       <div id="about-dropdown" data-dropdown="about">
         <AboutDropdown
           isOpen={activeDropdown === 'about'}
-          navHeight={navHeight}
+          navHeight={dropdownTop}
           onMouseEnter={() => handleDropdownMouseEnter('about')}
           onMouseLeave={handleDropdownMouseLeave}
         />
@@ -483,7 +512,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       <div id="futures-dropdown" data-dropdown="futures">
         <FuturesDropdown
           isOpen={activeDropdown === 'futures'}
-          navHeight={navHeight}
+          navHeight={dropdownTop}
           onMouseEnter={() => handleDropdownMouseEnter('futures')}
           onMouseLeave={handleDropdownMouseLeave}
         />
@@ -493,7 +522,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       <div id="search-dropdown" data-dropdown="search">
         <SearchDropdown
           isOpen={activeDropdown === 'search'}
-          navHeight={navHeight}
+          navHeight={dropdownTop}
           onMouseEnter={() => handleDropdownMouseEnter('search')}
           onMouseLeave={handleDropdownMouseLeave}
         />
@@ -503,7 +532,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       <div id="account-dropdown" data-dropdown="account">
         <AccountDropdown
           isOpen={activeDropdown === 'account'}
-          navHeight={navHeight}
+          navHeight={dropdownTop}
           onMouseEnter={() => handleDropdownMouseEnter('account')}
           onMouseLeave={handleDropdownMouseLeave}
         />
@@ -513,16 +542,16 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       <div id="cart-dropdown" data-dropdown="cart">
         <CartDropdown
           isOpen={activeDropdown === 'cart'}
-          navHeight={navHeight}
+          navHeight={dropdownTop}
           onMouseEnter={() => handleDropdownMouseEnter('cart')}
           onMouseLeave={handleDropdownMouseLeave}
         />
       </div>
 
-      {/* Overlay when dropdown is open on mobile */}
+      {/* Overlay when dropdown is open - desktop only */}
       {activeDropdown && (
         <div
-          className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="hidden md:block fixed inset-0 bg-transparent z-30"
           onClick={() => setActiveDropdown(null)}
           aria-hidden="true"
         />

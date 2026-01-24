@@ -7,6 +7,7 @@ interface ShineCarouselProduct {
     name: string
     location: string
     image: string
+    slug?: string
 }
 
 interface ShineCarouselProps {
@@ -107,14 +108,14 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
 
     if (products.length === 0) {
         return (
-            <div className="absolute bottom-0 left-0 right-0 h-[75%] z-10 flex items-center justify-center">
-                <p className="text-gray-400 text-sm">No products in carousel</p>
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-gray-100">
+                <p className="text-gray-400 text-sm font-light">No products in carousel</p>
             </div>
         )
     }
 
     return (
-        <div className="absolute bottom-0 left-0 right-0 h-[75%] z-10">
+        <div className="absolute inset-0 z-10">
             {/* Carousel Container */}
             <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
                 {/* Carousel items */}
@@ -138,11 +139,10 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                         return (
                             <div
                                 key={product.id}
-                                className="absolute inset-0 transition-all duration-500 ease-in-out overflow-hidden"
+                                className="absolute inset-0 transition-all duration-500 ease-in-out overflow-hidden rounded-3xl"
                                 style={{
                                     opacity,
                                     zIndex,
-                                    transform: isActive ? 'scale(1)' : 'scale(0.95)',
                                     pointerEvents: isActive ? 'auto' : 'none'
                                 }}
                                 onClick={() => {
@@ -151,44 +151,65 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                     resumeAutoRotation()
                                 }}
                             >
+                                {/* Full product image as background */}
                                 <img
                                     src={product.image}
                                     alt={product.name}
-                                    className="absolute inset-0 w-full h-full object-cover object-center transition-all duration-500 ease-in-out"
-                                    style={{
-                                        transform: isActive ? 'scale(1.02)' : 'scale(1)'
-                                    }}
+                                    className="absolute inset-0 w-full h-full object-cover object-center"
                                 />
 
-                                <div className="absolute inset-0 flex flex-col justify-end p-4 z-10">
-                                    <div className="mt-auto text-center mb-2">
-                                        <h3 className="text-white drop-shadow-lg text-xl sm:text-2xl font-medium" style={{
+                                {/* Dark gradient overlay at bottom for text readability */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
+
+                                {/* Text overlay - bottom left corner */}
+                                <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
+                                    {/* Large bold product name */}
+                                    <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight" style={{
+                                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                                        fontWeight: '700',
+                                        letterSpacing: '-0.02em'
+                                    }}>
+                                        {product.name}
+                                    </h3>
+                                    {/* Smaller subtitle */}
+                                    <p className="text-white text-sm sm:text-base font-normal mb-4" style={{
+                                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                                        fontWeight: '400',
+                                        letterSpacing: '0.01em'
+                                    }}>
+                                        {product.location}
+                                    </p>
+                                    {/* Button with white border */}
+                                    <a
+                                        href={product.slug ? `/product/${product.slug}` : `/product/${product.id}`}
+                                        className="inline-block pointer-events-auto"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                        }}
+                                    >
+                                        <button className="px-6 py-2.5 rounded-full border-2 border-white text-white text-sm font-medium transition-all duration-200 hover:bg-white/10" style={{
                                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-                                            letterSpacing: '0.01em',
-                                            fontWeight: '400',
-                                            textShadow: '0 2px 8px rgba(0, 0, 0, 0.5)'
-                                        }}>{product.name}</h3>
-                                        <p className="text-white/90 drop-shadow-md text-xs sm:text-sm uppercase tracking-[0.2em] font-light" style={{
-                                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-                                            fontWeight: '300',
-                                            textShadow: '0 1px 4px rgba(0, 0, 0, 0.5)'
-                                        }}>{product.location}</p>
-                                    </div>
+                                            fontWeight: '500',
+                                            letterSpacing: '0.05em'
+                                        }}>
+                                            VIEW PRODUCT
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                         )
                     })}
                 </div>
 
-                {/* Navigation Controls */}
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-2 sm:space-x-3 z-20 px-4">
+                {/* Navigation Controls - minimal dots at bottom center */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-2 z-20">
                     {products.map((_, index) => {
                         const isActive = activeIndex === index
                         return (
                             <button
                                 key={index}
                                 aria-label={`Go to slide ${index + 1}`}
-                                className="relative transition-all duration-500 ease-out flex-shrink-0 focus:outline-none group"
+                                className="relative transition-all duration-300 ease-out flex-shrink-0 focus:outline-none"
                                 onClick={() => {
                                     pauseAutoRotation()
                                     handleDotClick(index)
@@ -197,21 +218,9 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                             >
                                 <div className="relative flex items-center justify-center">
                                     {isActive ? (
-                                        <div className="relative">
-                                            <div className="flex items-center space-x-1">
-                                                <div
-                                                    className="w-8 h-0.5 sm:w-10 sm:h-1 bg-[#784D2C] rounded-full transition-all duration-500"
-                                                    style={{
-                                                        boxShadow: '0 0 12px rgba(120, 77, 44, 0.5)'
-                                                    }}
-                                                ></div>
-                                                <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-[#784D2C] rounded-full"></div>
-                                            </div>
-                                        </div>
+                                        <div className="w-2 h-2 bg-white rounded-full"></div>
                                     ) : (
-                                        <div
-                                            className="w-6 h-0.5 sm:w-8 sm:h-0.5 bg-[#5a4c46]/30 rounded-full transition-all duration-300 group-hover:bg-[#5a4c46]/50 group-hover:w-7 group-hover:sm:w-9"
-                                        ></div>
+                                        <div className="w-1.5 h-1.5 bg-white/50 rounded-full hover:bg-white/70 transition-all duration-300"></div>
                                     )}
                                 </div>
                             </button>

@@ -3,6 +3,7 @@ import ProductGrid from '@/components/ProductGrid';
 import CategoryCarousel from '@/components/CategoryCarousel';
 import HomepageSetsSection from '@/components/homepage/HomepageSetsSection';
 import ShineCarousel from '@/components/homepage/ShineCarousel';
+import VisitShopButton from '@/components/homepage/VisitShopButton';
 import { getHomepageData } from '@/lib/actions/homepage';
 import { getHomepageSetsData } from '@/lib/actions/homepage-sets';
 
@@ -119,110 +120,51 @@ export default async function HomePage() {
             <div className="relative overflow-hidden rounded-3xl bg-black group cursor-pointer shadow-lg">
               <div className="aspect-[4/5] relative">
                 {showcaseCardImageUrl ? (
-                  <img
-                    src={showcaseCardImageUrl}
-                    alt="Luxury jewelry"
-                    className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                    style={{ objectPosition: "center 10%" }}
-                  />
+                  <>
+                    <img
+                      src={showcaseCardImageUrl}
+                      alt="Luxury jewelry"
+                      className="absolute inset-0 w-full h-full object-cover object-center"
+                      style={{ objectPosition: "center 10%" }}
+                    />
+                    
+                    {/* Dark gradient overlay at bottom for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
+
+                    {/* Text overlay - bottom left corner */}
+                    <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
+                      {/* Large bold title */}
+                      <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight" style={{
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                        fontWeight: '700',
+                        letterSpacing: '-0.02em'
+                      }}>
+                        The<br />
+                        <span style={{ fontWeight: '700' }}>Jewelry</span>
+                      </h3>
+                      {/* Smaller subtitle */}
+                      <p className="text-white text-sm sm:text-base font-normal mb-4" style={{
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                        fontWeight: '400',
+                        letterSpacing: '0.01em'
+                      }}>
+                        Collection
+                      </p>
+                      {/* Visit shop button - always visible */}
+                      <VisitShopButton />
+                    </div>
+                  </>
                 ) : (
                   <div className="absolute inset-0 w-full h-full bg-gray-200 animate-pulse"></div>
                 )}
-
-                {/* Text overlay */}
-                <div className="absolute bottom-0 left-0 w-full p-6">
-                  <div className="text-[10px] font-light tracking-[0.3em] mb-2" style={{ color: 'rgba(90, 76, 70, 0.7)', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif', letterSpacing: '0.2em' }}>ELEGANT ESSENCE</div>
-                  <div className="text-[2rem] md:text-[2.5rem] lg:text-[3rem] mb-3 leading-none" style={{
-                    color: 'rgba(120, 77, 44, 0.7)',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-                    fontWeight: '300',
-                    letterSpacing: '0.01em'
-                  }}>
-                    The<br />
-                    <span style={{
-                      color: 'rgba(120, 77, 44, 0.8)',
-                      fontWeight: '400'
-                    }}>Jewelry</span>
-                  </div>
-                  <div className="text-lg md:text-xl lg:text-2xl text-right w-full leading-tight" style={{
-                    color: 'rgba(120, 77, 44, 0.7)',
-                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-                    fontWeight: '300',
-                    letterSpacing: '0.01em'
-                  }}>
-                    Collection
-                  </div>
-                </div>
-
-                {/* Visit site button */}
-                <div className="absolute bottom-6 left-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <Link href="/all-products">
-                    <button className="flex items-center space-x-2 backdrop-blur-md text-white px-4 py-2.5 rounded-full text-sm transition-all duration-300 border border-red-400/30 hover:bg-red-600/50" style={{
-                      background: 'rgba(220, 38, 38, 0.4)',
-                      backdropFilter: 'blur(10px) saturate(150%)',
-                      WebkitBackdropFilter: 'blur(10px) saturate(150%)',
-                      boxShadow: '0 2px 8px 0 rgba(220, 38, 38, 0.2), inset 0 1px 0 0 rgba(255, 255, 255, 0.2)',
-                      color: '#ffffff'
-                    }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 17L17 7M17 7H7M17 7V17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                      <span style={{ color: '#ffffff', fontWeight: '400' }}>Visit shop</span>
-                    </button>
-                  </Link>
-                </div>
               </div>
             </div>
 
             {/* Second Jewelry Card with Shine Carousel */}
             <div className="relative overflow-hidden rounded-3xl bg-black group shadow-lg">
               <div className="aspect-[4/5] relative">
-                {/* Solid white background */}
-                <div
-                  className="absolute inset-0 w-full h-full"
-                  style={{ backgroundColor: "#ffffff" }}
-                ></div>
-
-                {/* Text overlay - positioned above carousel */}
-                <div className="absolute top-2 sm:top-3 left-0 w-full p-4 sm:p-6 text-[#5a4c46] z-30 pointer-events-none">
-                  <div className="flex flex-row items-start gap-2 sm:gap-3 md:gap-4">
-                    {/* The Shine title - left side */}
-                    <div className="text-[2rem] sm:text-[2.5rem] md:text-5xl lg:text-6xl font-light tracking-wide opacity-100 leading-none flex-shrink-0" style={{
-                      fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-                      color: '#5a4c46',
-                      fontWeight: '300'
-                    }}>
-                      The<br />
-                      <span className="text-[#784D2C] font-medium tracking-wide" style={{ fontWeight: '400' }}>Shine</span>
-                    </div>
-                    {/* Text box - right side on all screens */}
-                    <div
-                      className="backdrop-blur-sm px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg inline-block shadow-sm self-start flex-shrink"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(0, 123, 255, 0.5) 0%, rgba(107, 114, 128, 0.5) 50%, rgba(0, 123, 255, 0.5) 100%)',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-                        maxWidth: 'calc(100% - 120px)',
-                        width: 'fit-content'
-                      }}
-                    >
-                      <p className="text-white text-[10px] sm:text-xs md:text-base lg:text-lg max-w-[300px] sm:max-w-[400px] tracking-wide leading-relaxed" style={{
-                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
-                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)'
-                      }}>
-                        Wear what feels good. Match your mood. Be the queen you are born to be.
-                        <span className="inline-block ml-1">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF0000" className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5">
-                            <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-                          </svg>
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Shine Carousel */}
+                {/* Shine Carousel - fills entire card */}
                 <ShineCarousel products={shineCarouselProducts} />
-
               </div>
             </div>
           </div>

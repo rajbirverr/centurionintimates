@@ -310,12 +310,12 @@ export async function updateProductCarouselFlags(
 /**
  * Get products for Shine carousel with images
  */
-export async function getShineCarouselProducts(): Promise<Array<{ id: string; name: string; location: string; image: string }>> {
+export async function getShineCarouselProducts(): Promise<Array<{ id: string; name: string; location: string; image: string; slug?: string }>> {
   try {
     const supabase = await createServerSupabaseClient()
     const { data: products, error } = await supabase
       .from('products')
-      .select('id, name, category_id')
+      .select('id, name, category_id, slug')
       .eq('in_shine_carousel', true)
       .eq('status', 'published')
       .order('created_at', { ascending: false })
@@ -374,7 +374,8 @@ export async function getShineCarouselProducts(): Promise<Array<{ id: string; na
           id: product.id,
           name: product.name,
           location: category?.name || 'Jewelry Collection',
-          image: imageUrl
+          image: imageUrl,
+          slug: product.slug
         }
       })
     )

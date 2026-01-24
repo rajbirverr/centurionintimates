@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { uploadProductImage, deleteProductImage, type ProductImage } from '@/lib/actions/images'
+import { uploadProductImage, deleteProductImage, uploadProductImageToStorage, type ProductImage } from '@/lib/actions/images'
 import ImageEditor from './ImageEditor'
 
 interface ImageUploadProps {
@@ -38,35 +38,32 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
           // AVIF is allowed
         }
 
-        // Read file and convert to base64 or create object URL
-        const reader = new FileReader()
-        reader.onload = async (event) => {
-          const imageData = event.target?.result as string
-          
-          // In a real implementation, you would upload to Supabase Storage first
-          // For now, we'll create a temporary object URL
-          const imageUrl = URL.createObjectURL(file)
-
-          // Upload to Supabase Storage and save to database
-          const result = await uploadProductImage({
-            product_id: productId,
-            image_url: imageUrl, // This should be the Supabase Storage URL after upload
-            alt_text: file.name,
-            sort_order: images.length,
-            is_primary: images.length === 0
-          })
-
-          if (result.success && result.data) {
-            const newImages = [...images, result.data]
-            setImages(newImages)
-            if (onImagesChange) {
-              onImagesChange(newImages)
-            }
-          } else {
-            setError(result.error || 'Failed to upload image')
-          }
+        // Upload to Supabase Storage first
+        const uploadResult = await uploadProductImageToStorage(file)
+        
+        if (!uploadResult.success || !uploadResult.url) {
+          setError(uploadResult.error || 'Failed to upload image to storage')
+          continue
         }
-        reader.readAsDataURL(file)
+
+        // Save the Supabase Storage URL to database
+        const result = await uploadProductImage({
+          product_id: productId,
+          image_url: uploadResult.url,
+          alt_text: file.name,
+          sort_order: images.length,
+          is_primary: images.length === 0
+        })
+
+        if (result.success && result.data) {
+          const newImages = [...images, result.data]
+          setImages(newImages)
+          if (onImagesChange) {
+            onImagesChange(newImages)
+          }
+        } else {
+          setError(result.error || 'Failed to save image to database')
+        }
       }
     } catch (err: any) {
       console.error('Error uploading images:', err)
