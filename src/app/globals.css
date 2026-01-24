@@ -642,11 +642,11 @@ button.quick-add:active {
 
 /* Compact credits container for better viewport fit */
 .credits-container-compact {
-  height: 120px;
+  height: 130px;
   overflow: hidden;
   position: relative;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
 }
 
 /* Adjust animation speed for compact container */
@@ -654,8 +654,8 @@ button.quick-add:active {
   animation: scrollCredits 10s linear infinite;
   position: absolute;
   width: 100%;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
 .credits-container-compact .brand-logo {

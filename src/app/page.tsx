@@ -35,9 +35,9 @@ export default async function HomePage() {
       <section className="mb-16 px-4 md:px-8 lg:px-12 relative" aria-label="Hero Section">
         <div className="max-w-[1440px] mx-auto">
           {/* Full-width image container - reduced height to fit viewport with scrolling text */}
-          <div className="w-full mb-4 relative" style={{ height: '450px' }}>
+          <div className="w-full relative" style={{ height: '450px' }}>
             {/* Background image */}
-            <div className="absolute inset-0 w-full h-full rounded-lg overflow-hidden">
+            <div className="absolute inset-0 w-full h-full rounded-t-2xl overflow-hidden">
               {heroImageUrl ? (
                 <div className="w-full h-full" style={{
                   backgroundImage: `url('${heroImageUrl}')`,
@@ -48,33 +48,11 @@ export default async function HomePage() {
                 <div className="w-full h-full bg-gray-100 animate-pulse"></div>
               )}
             </div>
-
-            {/* Fixed "Sparkle & Shine" text on image with sparkle effects only */}
-            <div className="absolute top-[8%] left-[5%] z-20">
-              <h3 className="sparkle-text text-[#784D2C] text-base sm:text-lg md:text-xl lg:text-2xl font-normal drop-shadow-md"
-                style={{
-                  fontFamily: "'Rhode', sans-serif",
-                  letterSpacing: '0.01em',
-                  textShadow: '0 0 3px white',
-                  position: 'relative',
-                  display: 'inline-block'
-                }}>
-                Sparkle & Shine
-
-                {/* Sparkle particles */}
-                <span className="sparkle-particle" style={{ top: '20%', left: '10%', animationDelay: '0s' }}></span>
-                <span className="sparkle-particle" style={{ top: '30%', left: '80%', animationDelay: '0.3s' }}></span>
-                <span className="sparkle-particle" style={{ top: '70%', left: '30%', animationDelay: '0.6s' }}></span>
-                <span className="sparkle-particle" style={{ top: '60%', left: '70%', animationDelay: '0.9s' }}></span>
-                <span className="sparkle-particle" style={{ top: '10%', left: '40%', animationDelay: '1.2s' }}></span>
-                <span className="sparkle-particle" style={{ top: '80%', left: '60%', animationDelay: '1.5s' }}></span>
-              </h3>
-            </div>
           </div>
 
-          {/* Scrolling text section below the image */}
-          <div className="w-full mb-6">
-            <h2 className="uppercase text-[#5a4c46] tracking-[0.2em] text-xs font-light mb-1 text-center">
+          {/* Cream Rectangle Container - Text Content */}
+          <div className="w-full mb-6 rounded-b-2xl px-4 py-6 md:py-8" style={{ backgroundColor: '#d4cdc3' }}>
+            <h2 className="uppercase text-[#5a4c46] tracking-[0.2em] text-xs font-light mb-3 text-center">
               WHAT WE&apos;RE ALL ABOUT
             </h2>
 
@@ -89,13 +67,13 @@ export default async function HomePage() {
                   }}>
                   CENTURION
                 </h1>
-                <div className="w-24 h-0.5 bg-[#784D2C] my-1 mx-auto"></div>
+                <div className="w-24 h-0.5 bg-[#784D2C] my-2 mx-auto"></div>
               </div>
 
               {/* Scrolling credits content */}
               <div className="credits-content">
-                <div className="py-4 text-center">
-                  <p className="text-[#5a4c46] text-lg md:text-xl lg:text-2xl font-medium tracking-wide leading-relaxed max-w-[950px] mx-auto">
+                <div className="text-center py-3">
+                  <p className="text-[#5a4c46] text-base md:text-lg lg:text-xl font-normal tracking-wide leading-relaxed max-w-[900px] mx-auto">
                     Centurion makes jewelry that&apos;s playful, pretty, and totally extra — for days when you wanna shine like you mean it (and nights when you really do)
                   </p>
                 </div>
@@ -127,9 +105,6 @@ export default async function HomePage() {
                       className="absolute inset-0 w-full h-full object-cover object-center"
                       style={{ objectPosition: "center 10%" }}
                     />
-                    
-                    {/* Dark gradient overlay at bottom for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"></div>
 
                     {/* Text overlay - bottom left corner */}
                     <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
