@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 
 interface AccountSidebarProps {
-  activeTab: 'overview' | 'orders' | 'addresses'
-  onTabChange: (tab: 'overview' | 'orders' | 'addresses') => void
+  activeTab: 'overview' | 'orders' | 'addresses' | 'wishlist'
+  onTabChange: (tab: 'overview' | 'orders' | 'addresses' | 'wishlist') => void
 }
 
 export default function AccountSidebar({ activeTab, onTabChange }: AccountSidebarProps) {
@@ -51,6 +51,17 @@ export default function AccountSidebar({ activeTab, onTabChange }: AccountSideba
             className="mr-3 w-4 h-4 text-[#4a5568] focus:ring-[#4a5568] focus:ring-2"
           />
           <span className="text-[#5a4c46] text-sm">Addresses</span>
+        </label>
+
+        <label className="flex items-center cursor-pointer py-2">
+          <input
+            type="radio"
+            name="account-nav"
+            checked={activeTab === 'wishlist'}
+            onChange={() => onTabChange('wishlist')}
+            className="mr-3 w-4 h-4 text-[#4a5568] focus:ring-[#4a5568] focus:ring-2"
+          />
+          <span className="text-[#5a4c46] text-sm">Wishlist</span>
         </label>
       </nav>
 

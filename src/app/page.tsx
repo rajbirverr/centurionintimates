@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import SafeImage from '@/components/common/SafeImage';
 import ProductGrid from '@/components/ProductGrid';
 import CategoryCarousel from '@/components/CategoryCarousel';
 import HomepageSetsSection from '@/components/homepage/HomepageSetsSection';
@@ -99,11 +100,14 @@ export default async function HomePage() {
               <div className="aspect-[4/5] relative">
                 {showcaseCardImageUrl ? (
                   <>
-                    <img
+                    <SafeImage
                       src={showcaseCardImageUrl}
-                      alt="Luxury jewelry"
-                      className="absolute inset-0 w-full h-full object-cover object-center"
+                      alt="Luxury jewelry collection"
+                      fill
+                      className="object-cover object-center"
                       style={{ objectPosition: "center 10%" }}
+                      priority
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
 
                     {/* Text overlay - bottom left corner */}

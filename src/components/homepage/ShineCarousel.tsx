@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import SafeImage from '@/components/common/SafeImage'
 
 interface ShineCarouselProduct {
     id: string
@@ -152,10 +153,13 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                 }}
                             >
                                 {/* Full product image as background */}
-                                <img
+                                <SafeImage
                                     src={product.image}
-                                    alt={product.name}
-                                    className="absolute inset-0 w-full h-full object-cover object-center"
+                                    alt={product.name || 'Product image'}
+                                    fill
+                                    className="object-cover object-center"
+                                    priority={index === activeIndex}
+                                    sizes="(max-width: 768px) 100vw, 50vw"
                                 />
 
                                 {/* Text overlay - bottom left corner */}

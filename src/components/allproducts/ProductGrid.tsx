@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ProductCard from './ProductCard';
 import FilterBar, { FilterState, SORT_OPTIONS } from './FilterBar';
+import { supabase } from '@/lib/supabase';
 
 // Define types for our product data
 export type Color = {
@@ -154,6 +155,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   const [showWishlistToast, setShowWishlistToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(productsToUse);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     productType: [],
     color: [],
@@ -163,25 +166,158 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   });
   const toastTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load wishlist from localStorage on component mount
+  // Check if user is logged in and sync wishlist
   useEffect(() => {
-    const savedWishlist = localStorage.getItem('skims-wishlist');
-    if (savedWishlist) {
-      try {
-        const parsed = JSON.parse(savedWishlist);
-        if (Array.isArray(parsed)) {
-          setWishlist(parsed);
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const loggedIn = !!session;
+      setIsLoggedIn(loggedIn);
+
+      if (loggedIn) {
+        // User is logged in - sync localStorage to database and load from database
+        setIsSyncing(true);
+        try {
+          const { getWishlistItems, syncWishlistFromLocalStorage } = await import('@/lib/actions/wishlist');
+          
+          // Get localStorage wishlist
+          const savedWishlist = localStorage.getItem('skims-wishlist');
+          const localWishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
+          
+          // Sync localStorage to database if there are items
+          if (localWishlist.length > 0) {
+            await syncWishlistFromLocalStorage(localWishlist.map((id: any) => String(id)));
+          }
+          
+          // Load from database
+          const result = await getWishlistItems();
+          if (result.success && result.items) {
+            const dbWishlist = result.items.map(item => item.product_id);
+            setWishlist(dbWishlist);
+            // Update localStorage to match database
+            localStorage.setItem('skims-wishlist', JSON.stringify(dbWishlist));
+          }
+        } catch (error) {
+          console.error('Error syncing wishlist:', error);
+          // Fallback to localStorage
+          const savedWishlist = localStorage.getItem('skims-wishlist');
+          if (savedWishlist) {
+            try {
+              const parsed = JSON.parse(savedWishlist);
+              if (Array.isArray(parsed)) {
+                setWishlist(parsed);
+              }
+            } catch (e) {
+              console.error('Error parsing wishlist from localStorage:', e);
+            }
+          }
+        } finally {
+          setIsSyncing(false);
         }
-      } catch (error) {
-        console.error('Error parsing wishlist from localStorage:', error);
+      } else {
+        // User not logged in - use localStorage only
+        const savedWishlist = localStorage.getItem('skims-wishlist');
+        if (savedWishlist) {
+          try {
+            const parsed = JSON.parse(savedWishlist);
+            if (Array.isArray(parsed)) {
+              setWishlist(parsed);
+            }
+          } catch (error) {
+            console.error('Error parsing wishlist from localStorage:', error);
+          }
+        }
       }
-    }
+    };
+
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const loggedIn = !!session;
+      setIsLoggedIn(loggedIn);
+      
+      if (loggedIn && event === 'SIGNED_IN') {
+        // User just logged in - sync wishlist
+        setIsSyncing(true);
+        try {
+          const { getWishlistItems, syncWishlistFromLocalStorage } = await import('@/lib/actions/wishlist');
+          
+          const savedWishlist = localStorage.getItem('skims-wishlist');
+          const localWishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
+          
+          if (localWishlist.length > 0) {
+            await syncWishlistFromLocalStorage(localWishlist.map((id: any) => String(id)));
+          }
+          
+          const result = await getWishlistItems();
+          if (result.success && result.items) {
+            const dbWishlist = result.items.map(item => item.product_id);
+            setWishlist(dbWishlist);
+            localStorage.setItem('skims-wishlist', JSON.stringify(dbWishlist));
+          }
+        } catch (error) {
+          console.error('Error syncing wishlist on login:', error);
+        } finally {
+          setIsSyncing(false);
+        }
+      } else if (!loggedIn && event === 'SIGNED_OUT') {
+        // User logged out - keep localStorage wishlist
+        const savedWishlist = localStorage.getItem('skims-wishlist');
+        if (savedWishlist) {
+          try {
+            const parsed = JSON.parse(savedWishlist);
+            if (Array.isArray(parsed)) {
+              setWishlist(parsed);
+            }
+          } catch (error) {
+            console.error('Error parsing wishlist from localStorage:', error);
+          }
+        }
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Save wishlist to localStorage whenever it changes
+  // Save wishlist to localStorage and database whenever it changes
   useEffect(() => {
     localStorage.setItem('skims-wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+    
+    // If logged in, also save to database
+    if (isLoggedIn && !isSyncing) {
+      const syncToDatabase = async () => {
+        try {
+          const { addToWishlist, removeFromWishlist, getWishlistItems } = await import('@/lib/actions/wishlist');
+          
+          // Get current database wishlist
+          const dbResult = await getWishlistItems();
+          const dbWishlist = dbResult.success && dbResult.items 
+            ? dbResult.items.map(item => item.product_id)
+            : [];
+          
+          // Find items to add and remove
+          const toAdd = wishlist.filter(id => !dbWishlist.includes(String(id)));
+          const toRemove = dbWishlist.filter(id => !wishlist.includes(id));
+          
+          // Add new items
+          for (const productId of toAdd) {
+            await addToWishlist(String(productId));
+          }
+          
+          // Remove items
+          for (const productId of toRemove) {
+            await removeFromWishlist(String(productId));
+          }
+        } catch (error) {
+          console.error('Error syncing wishlist to database:', error);
+        }
+      };
+      
+      syncToDatabase();
+    }
+  }, [wishlist, isLoggedIn, isSyncing]);
 
   // Initialize filtered products when products prop changes
   useEffect(() => {

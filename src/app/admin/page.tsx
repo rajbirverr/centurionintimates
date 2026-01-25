@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { checkAdminStatus } from '@/lib/actions/auth'
 
 export default function AdminLoginPage() {
   const router = useRouter()
@@ -29,23 +30,30 @@ export default function AdminLoginPage() {
       }
 
       if (data.user) {
-        // Check if user is admin
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', data.user.id)
-          .single()
+        // Check if user is admin using server action (bypasses RLS issues)
+        const adminCheck = await checkAdminStatus()
 
-        if (profileError || profile?.role !== 'admin') {
+        if (!adminCheck.success) {
+          await supabase.auth.signOut()
+          setError(adminCheck.error || 'Could not verify admin status. Please try again.')
+          setLoading(false)
+          return
+        }
+
+        if (!adminCheck.isAdmin) {
           await supabase.auth.signOut()
           setError('Access denied. Admin privileges required.')
           setLoading(false)
           return
         }
 
-        // Redirect to dashboard
-        router.push('/admin/dashboard')
-        router.refresh()
+        // Redirect to dashboard - use window.location for full reload to ensure session is available
+        window.location.href = '/admin/dashboard'
+        return
+      } else {
+        // No user data - shouldn't happen but handle it
+        setError('Login failed. No user data returned.')
+        setLoading(false)
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred')

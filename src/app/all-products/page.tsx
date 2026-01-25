@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import ProductGridClient from './ProductGridClient'
 import { RecommendedProducts, WishlistPage, Product } from '@/components/allproducts'
@@ -8,7 +9,18 @@ import SubcategoryGrid from '@/components/allproducts/SubcategoryGrid'
 
 // Force dynamic rendering to ensure searchParams are read correctly
 export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 3600 // Revalidate every hour for better performance
+
+export const metadata: Metadata = {
+  title: 'All Products | Centurion - Premium Jewelry Collection',
+  description: 'Browse our complete collection of premium jewelry including bangles, earrings, necklaces, rings, and more. Discover handcrafted pieces that are playful, pretty, and totally extra.',
+  keywords: 'jewelry, bangles, earrings, necklaces, rings, bracelets, anklets, premium jewelry, centurion',
+  openGraph: {
+    title: 'All Products | Centurion',
+    description: 'Browse our complete collection of premium jewelry.',
+    type: 'website',
+  },
+}
 
 // Keep recommended products for now (can be made dynamic later)
 const recommendedProducts: Product[] = [

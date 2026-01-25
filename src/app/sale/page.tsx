@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import ProductGridClient from '../all-products/ProductGridClient'
 import { RecommendedProducts, Product } from '@/components/allproducts'
@@ -7,7 +8,18 @@ import SaleCategoryFilterBar from '@/components/allproducts/SaleCategoryFilterBa
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 3600 // Revalidate every hour
+
+export const metadata: Metadata = {
+  title: 'Sale | Centurion - Discounted Premium Jewelry',
+  description: 'Shop our sale collection of premium jewelry at discounted prices. Limited time offers on bangles, earrings, necklaces, and more.',
+  keywords: 'jewelry sale, discounted jewelry, jewelry deals, sale jewelry, centurion sale',
+  openGraph: {
+    title: 'Sale | Centurion',
+    description: 'Shop our sale collection of premium jewelry at discounted prices.',
+    type: 'website',
+  },
+}
 
 // Keep recommended products for now (can be made dynamic later)
 const recommendedProducts: Product[] = []

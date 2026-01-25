@@ -1,22 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import AccountSidebar from '@/components/account/AccountSidebar'
 import ProfileSection from '@/components/account/ProfileSection'
 import AddressSection from '@/components/account/AddressSection'
 import OrdersSection from '@/components/account/OrdersSection'
+import WishlistSection from '@/components/account/WishlistSection'
 import { getUserProfile, type UserProfile } from '@/lib/actions/profile'
 
-type Tab = 'overview' | 'addresses' | 'orders'
+type Tab = 'overview' | 'addresses' | 'orders' | 'wishlist'
 
-export default function AccountPage() {
+function AccountPageContent() {
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadProfile()
-  }, [])
+    // Check URL for tab parameter
+    const tab = searchParams.get('tab') as Tab
+    if (tab && ['overview', 'addresses', 'orders', 'wishlist'].includes(tab)) {
+      setActiveTab(tab)
+    }
+  }, [searchParams])
 
   const loadProfile = async () => {
     try {
@@ -43,6 +51,8 @@ export default function AccountPage() {
         return `Your orders${firstName ? `, ${firstName}` : ''}`
       case 'addresses':
         return `Your addresses${firstName ? `, ${firstName}` : ''}`
+      case 'wishlist':
+        return `Your wishlist${firstName ? `, ${firstName}` : ''}`
       default:
         return `Your account${firstName ? `, ${firstName}` : ''}`
     }
@@ -72,11 +82,24 @@ export default function AccountPage() {
               {activeTab === 'overview' && <ProfileSection />}
               {activeTab === 'addresses' && <AddressSection />}
               {activeTab === 'orders' && <OrdersSection />}
+              {activeTab === 'wishlist' && <WishlistSection />}
             </div>
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white auth-page flex items-center justify-center">
+        <div className="text-[#84756f]">Loading...</div>
+      </div>
+    }>
+      <AccountPageContent />
+    </Suspense>
   )
 }
 

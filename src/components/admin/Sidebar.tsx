@@ -26,6 +26,7 @@ export default function Sidebar() {
     { href: '/admin/blogs', label: 'Blogs' },
     { href: '/admin/returns', label: 'Returns' },
     { href: '/admin/homepagesets', label: 'Homepage Sets' },
+    { href: '/admin/newsletter', label: 'Newsletter' },
   ]
 
   return (

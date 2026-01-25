@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { getFooterData } from '@/lib/actions/footer'
+import { addSubscriber } from '@/lib/actions/newsletter'
 import Link from 'next/link'
 
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [footerData, setFooterData] = useState<any>(null)
+  const [subscribing, setSubscribing] = useState(false)
+  const [subscribeMessage, setSubscribeMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
     // Try to load footer data, but don't fail if database isn't set up
@@ -21,10 +24,26 @@ const Footer = () => {
     loadFooter()
   }, [])
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
-    alert('Thank you for subscribing!')
-    setEmail('')
+    setSubscribing(true)
+    setSubscribeMessage(null)
+
+    try {
+      const result = await addSubscriber(email)
+      if (result.success) {
+        setSubscribeMessage({ type: 'success', text: 'Thank you for subscribing! Check your email for a welcome message.' })
+        setEmail('')
+      } else {
+        setSubscribeMessage({ type: 'error', text: result.error || 'Failed to subscribe. Please try again.' })
+      }
+    } catch (error: any) {
+      setSubscribeMessage({ type: 'error', text: 'An error occurred. Please try again.' })
+    } finally {
+      setSubscribing(false)
+      // Clear message after 5 seconds
+      setTimeout(() => setSubscribeMessage(null), 5000)
+    }
   }
 
   // Use database data if available, otherwise use defaults
@@ -132,17 +151,31 @@ const Footer = () => {
                         placeholder="your email"
                         className="flex-grow p-3 border border-[#cccbce] bg-white focus:outline-none text-sm"
                         required
+                        disabled={subscribing}
                       />
                       <button
                         type="submit"
-                        className="bg-[#2d2d2d] text-white p-3 transition-all hover:bg-black"
+                        disabled={subscribing}
+                        className="bg-[#2d2d2d] text-white p-3 transition-all hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Subscribe"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                          <path fillRule="evenodd" d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
-                        </svg>
+                        {subscribing ? (
+                          <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                            <path fillRule="evenodd" d="M16.72 7.72a.75.75 0 0 1 1.06 0l3.75 3.75a.75.75 0 0 1 0 1.06l-3.75 3.75a.75.75 0 1 1-1.06-1.06l2.47-2.47H3a.75.75 0 0 1 0-1.5h16.19l-2.47-2.47a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+                          </svg>
+                        )}
                       </button>
                     </div>
+                    {subscribeMessage && (
+                      <p className={`text-xs text-center mb-2 ${subscribeMessage.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                        {subscribeMessage.text}
+                      </p>
+                    )}
                     <p className="text-xs text-center">
                       By submitting your email you agree to receive recurring automated marketing messages from {brandName}. View <Link href="#" className="underline hover:text-black transition-all">Terms</Link> & <Link href="#" className="underline hover:text-black transition-all">Privacy</Link>.
                     </p>

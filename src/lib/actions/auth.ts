@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { createAdminClient, verifyAdmin } from '@/lib/supabase/admin'
 
 export interface SignUpData {
   email: string
@@ -179,6 +179,27 @@ export async function updatePassword(newPassword: string) {
   } catch (error: any) {
     console.error('Error in updatePassword:', error)
     return { success: false, error: error.message || 'Failed to update password' }
+  }
+}
+
+/**
+ * Check if current user is admin (server action)
+ * Use this after login to verify admin status
+ */
+export async function checkAdminStatus(): Promise<{ success: boolean; isAdmin: boolean; error?: string }> {
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return { success: false, isAdmin: false, error: 'Not authenticated' }
+    }
+
+    const isAdmin = await verifyAdmin(user.id)
+    return { success: true, isAdmin }
+  } catch (error: any) {
+    console.error('Error checking admin status:', error)
+    return { success: false, isAdmin: false, error: error.message || 'Failed to check admin status' }
   }
 }
 

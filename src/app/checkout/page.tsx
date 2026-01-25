@@ -621,22 +621,22 @@ const ShippingStep: React.FC = () => {
             {/* Items */}
             <div className="space-y-4 mb-6">
               {items.map((item) => (
-                <div key={item.id} className="flex justify-between">
-                  <div className="flex items-center">
-                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-[#e8ded0] mr-4">
+                <div key={item.id} className="flex justify-between gap-2">
+                  <div className="flex items-center flex-1 min-w-0">
+                    <div className="h-12 w-12 md:h-16 md:w-16 flex-shrink-0 overflow-hidden rounded-md border border-[#e8ded0] mr-2 md:mr-4">
                       <img
                         src={item.image}
                         alt={item.name}
                         className="h-full w-full object-cover object-center"
                       />
                     </div>
-                    <div>
-                      <h3 className="text-base font-medium text-[#5a4c46]">{item.name}</h3>
-                      <p className="text-sm text-[#8b7d71]">{item.color && `${item.color}`}</p>
-                      <p className="text-sm text-[#8b7d71]">Qty: {item.quantity}</p>
+                    <div className="flex-1 min-w-0 pr-2">
+                      <h3 className="text-xs md:text-sm font-medium text-[#5a4c46] line-clamp-2 leading-tight">{item.name}</h3>
+                      {item.color && <p className="text-xs text-[#8b7d71] mt-0.5">{item.color}</p>}
+                      <p className="text-xs text-[#8b7d71]">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="text-base font-medium text-[#5a4c46]">₹{item.price.toLocaleString()}</p>
+                  <p className="text-xs md:text-sm font-medium text-[#5a4c46] flex-shrink-0">₹{item.price.toLocaleString()}</p>
                 </div>
               ))}
             </div>
@@ -920,17 +920,17 @@ const PaymentStep: React.FC = () => {
 
             <div className="space-y-4 mb-6">
               {items.map((item) => (
-                <div key={item.id} className="flex justify-between">
-                  <div className="flex items-center">
-                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-[#e8ded0] mr-4">
+                <div key={item.id} className="flex justify-between gap-2">
+                  <div className="flex items-center flex-1 min-w-0">
+                    <div className="h-12 w-12 md:h-16 md:w-16 flex-shrink-0 overflow-hidden rounded-md border border-[#e8ded0] mr-2 md:mr-4">
                       <img src={item.image} alt={item.name} className="h-full w-full object-cover object-center" />
                     </div>
-                    <div>
-                      <h3 className="text-base font-medium text-[#5a4c46]">{item.name}</h3>
-                      <p className="text-sm text-[#8b7d71]">Qty: {item.quantity}</p>
+                    <div className="flex-1 min-w-0 pr-2">
+                      <h3 className="text-xs md:text-sm font-medium text-[#5a4c46] line-clamp-2 leading-tight">{item.name}</h3>
+                      <p className="text-xs text-[#8b7d71] mt-0.5">Qty: {item.quantity}</p>
                     </div>
                   </div>
-                  <p className="text-base font-medium text-[#5a4c46]">₹{item.price.toLocaleString()}</p>
+                  <p className="text-xs md:text-sm font-medium text-[#5a4c46] flex-shrink-0">₹{item.price.toLocaleString()}</p>
                 </div>
               ))}
             </div>

@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import SafeImage from '@/components/common/SafeImage'
 import { useCart, type CartItem } from '@/context/CartContext'
 import WatermarkOverlay from '@/components/common/WatermarkOverlay'
 
@@ -212,10 +213,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             {/* Main Image */}
             <div className="aspect-[4/5] bg-[#f9f9f9] overflow-hidden relative">
               {product.images && product.images.length > 0 ? (
-                <img 
+                <SafeImage 
                   src={product.images[activeImage]} 
-                  alt={product.name}
-                  className="w-full h-full object-cover"
+                  alt={product.name || 'Product image'}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -242,10 +246,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                       activeImage === index ? 'border-[#5a4c46]' : 'border-transparent hover:border-gray-300'
                     }`}
                   >
-                    <img 
+                    <SafeImage 
                       src={image} 
-                      alt={`${product.name} view ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      alt={`${product.name || 'Product'} view ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                      loading="lazy"
                     />
                     {/* Watermark Overlay - smaller on thumbnails */}
                     <WatermarkOverlay 

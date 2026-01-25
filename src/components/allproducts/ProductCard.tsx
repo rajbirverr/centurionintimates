@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import SafeImage from '@/components/common/SafeImage';
 import WatermarkOverlay from '@/components/common/WatermarkOverlay';
 
 type Color = {
@@ -55,11 +56,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onToggleWishlist, is
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-      <div className="product-image relative mb-3">
-        <img
+      <div className="product-image relative mb-3 aspect-[1/1.444] md:aspect-[1/1.25] overflow-hidden">
+        <SafeImage
           src={product.image}
-          alt={product.name}
-          className="w-full object-cover aspect-[1/1.444] md:aspect-[1/1.25] transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+          alt={product.name || 'Product image'}
+          fill
+          className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+          loading="lazy"
+          sizes="(max-width: 768px) 50vw, 25vw"
         />
         {/* Watermark Overlay - Show if product.watermark_enabled is true (defaults to true) */}
         <WatermarkOverlay 
