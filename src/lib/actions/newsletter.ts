@@ -38,7 +38,7 @@ export interface NewsletterData {
   estimatedDelivery?: string
   
   // Cart Reminder
-  cartItems?: Array<{ name: string; price: number }>
+  cartItems?: Array<{ name: string; price: number; image?: string }>
   
   // Sale
   salePercentage?: number
@@ -241,7 +241,11 @@ function renderNewsletterTemplate(
   // In a real implementation, you might want to use a proper HTML email template library
   // For now, we'll return a placeholder that can be enhanced
   
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  // Use production URL if available, otherwise use localhost for development
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 
+                  (process.env.NODE_ENV === 'production' 
+                    ? 'https://centurionshoppe.com' 
+                    : 'http://localhost:3000')
   
   // This is a simplified version - in production, you'd want proper HTML email templates
   // that work across all email clients
@@ -263,7 +267,7 @@ function renderNewsletterTemplate(
           
           <!-- Content -->
           <div style="padding: 32px 24px;">
-            ${getTemplateContentHTML(type, data)}
+            ${getTemplateContentHTML(type, data, baseUrl)}
           </div>
           
           <!-- Footer -->
@@ -292,6 +296,12 @@ function getTemplateContentHTML(
   type: 'welcome' | 'sale' | 'festival' | 'blog-post' | 'order-confirmation' | 'cart-reminder' | 'invoice',
   data?: NewsletterData
 ): string {
+  // Use production URL if available, otherwise use localhost for development
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 
+                  (process.env.NODE_ENV === 'production' 
+                    ? 'https://centurionshoppe.com' 
+                    : 'http://localhost:3000')
+  
   switch (type) {
     case 'welcome':
       return `
@@ -310,7 +320,7 @@ function getTemplateContentHTML(
           </p>
         </div>
         <div style="text-align: center; margin-top: 32px;">
-          <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/all-products" 
+          <a href="${baseUrl}/all-products" 
              style="display: inline-block; background-color: #5a4c46; color: white; padding: 12px 32px; text-decoration: none; border-radius: 24px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
             Start Shopping
           </a>
@@ -330,7 +340,7 @@ function getTemplateContentHTML(
           </p>
         </div>
         <div style="text-align: center; margin-top: 32px;">
-          <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/sale" 
+          <a href="${baseUrl}/sale" 
              style="display: inline-block; background-color: #E91E63; color: white; padding: 12px 32px; text-decoration: none; border-radius: 24px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
             Shop Sale
           </a>
@@ -361,7 +371,7 @@ function getTemplateContentHTML(
           </div>
         </div>
         <div style="text-align: center; margin-top: 32px;">
-          <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/account?tab=orders" 
+          <a href="${baseUrl}/account?tab=orders" 
              style="display: inline-block; background-color: #5a4c46; color: white; padding: 12px 32px; text-decoration: none; border-radius: 24px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
             View Order
           </a>
@@ -377,7 +387,9 @@ function getTemplateContentHTML(
         <div style="background-color: #fafafa; border: 1px solid #e8ded0; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
           ${data?.cartItems?.map(item => `
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-              <div style="width: 80px; height: 80px; background-color: #d4cdc3; border-radius: 8px; flex-shrink: 0;"></div>
+              <div style="width: 80px; height: 80px; border-radius: 8px; flex-shrink: 0; overflow: hidden; background-color: #d4cdc3;">
+                ${item.image ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" />` : ''}
+              </div>
               <div style="flex: 1;">
                 <h4 style="font-size: 14px; font-weight: 500; color: #5a4c46; margin: 0 0 4px;">${item.name}</h4>
                 <p style="font-size: 12px; color: #84756f; margin: 0;">₹${item.price.toLocaleString()}</p>
@@ -386,7 +398,7 @@ function getTemplateContentHTML(
           `).join('') || '<p style="color: #84756f;">Your cart items</p>'}
         </div>
         <div style="text-align: center; margin-top: 32px;">
-          <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/cart" 
+          <a href="${baseUrl}/cart" 
              style="display: inline-block; background-color: #5a4c46; color: white; padding: 12px 32px; text-decoration: none; border-radius: 24px; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">
             Complete Purchase
           </a>
@@ -457,6 +469,48 @@ async function sendWelcomeEmailInternal(
 }
 
 /**
+ * Get cart items for a user by email (for cart reminder emails)
+ */
+async function getCartItemsByEmail(email: string): Promise<NewsletterData['cartItems']> {
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const adminSupabase = createAdminClient()
+  
+  // Find user by email using admin client - list all users and find by email
+  const { data: { users }, error: listError } = await adminSupabase.auth.admin.listUsers()
+  if (listError) {
+    throw new Error(`Failed to find user: ${listError.message}`)
+  }
+
+  const user = users.find(u => u.email?.toLowerCase() === email.toLowerCase())
+  if (!user) {
+    throw new Error(`User with email ${email} not found. Make sure the user is registered.`)
+  }
+
+  const userId = user.id
+
+  // Get cart items for this user using admin client (bypasses RLS)
+  const { data: cartItems, error: cartError } = await adminSupabase
+    .from('cart_items')
+    .select('product_name, product_price, quantity, product_image')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+
+  if (cartError) {
+    throw new Error(`Failed to fetch cart items: ${cartError.message}`)
+  }
+
+  if (!cartItems || cartItems.length === 0) {
+    return []
+  }
+
+  return cartItems.map(item => ({
+    name: item.product_name,
+    price: Number(item.product_price) * item.quantity,
+    image: item.product_image || undefined
+  }))
+}
+
+/**
  * Send newsletter email
  */
 export async function sendNewsletter(
@@ -479,16 +533,28 @@ export async function sendNewsletter(
     // Generate subject line if not provided
     const emailSubject = subject || getDefaultSubject(templateType, data)
 
-    // Render HTML template
-    const htmlBody = renderNewsletterTemplate(templateType, data)
-
     // Send emails
     const supabase = await createServerSupabaseClient()
     let sentCount = 0
     let failedCount = 0
+    let lastError: string | undefined
 
     for (const recipient of recipients) {
       try {
+        // For cart-reminder emails, fetch real cart data if not provided
+        let emailData = data
+        if (templateType === 'cart-reminder' && (!data || !data.cartItems)) {
+          try {
+            const cartItems = await getCartItemsByEmail(recipient)
+            emailData = { ...data, cartItems }
+          } catch (cartError: any) {
+            throw new Error(`Failed to get cart data for ${recipient}: ${cartError.message}`)
+          }
+        }
+
+        // Render HTML template with real data
+        const htmlBody = renderNewsletterTemplate(templateType, emailData)
+
         const result = await sendZeptoMail({
           to: recipient,
           subject: emailSubject,
@@ -508,25 +574,33 @@ export async function sendNewsletter(
           sentCount++
         } else {
           failedCount++
+          lastError = result.error || 'Email sending failed'
         }
       } catch (error: any) {
-        console.error(`Error sending to ${recipient}:`, error)
         failedCount++
+        lastError = error.message || String(error)
         
-        await supabase.from('newsletter_sends').insert({
-          template_type: templateType,
-          recipient_email: recipient,
-          subject: emailSubject,
-          status: 'failed',
-          error_message: error.message
-        })
+        try {
+          await supabase.from('newsletter_sends').insert({
+            template_type: templateType,
+            recipient_email: recipient,
+            subject: emailSubject,
+            status: 'failed',
+            error_message: lastError
+          })
+        } catch (logError) {
+          // Ignore logging errors
+        }
       }
     }
+    
+    console.log(`[NEWSLETTER] Send complete. Sent: ${sentCount}, Failed: ${failedCount}`)
 
     return {
       success: sentCount > 0,
       sent: sentCount,
-      failed: failedCount
+      failed: failedCount,
+      error: failedCount > 0 && sentCount === 0 ? (lastError || 'Failed to send newsletter') : undefined
     }
   } catch (error: any) {
     console.error('Error in sendNewsletter:', error)

@@ -1,7 +1,4 @@
-import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
-import { createServerSupabaseClient, getServerUser } from '@/lib/supabase/server'
-import { verifyAdmin } from '@/lib/supabase/admin'
 import Sidebar from '@/components/admin/Sidebar'
 
 export default async function AdminLayout({
@@ -14,22 +11,13 @@ export default async function AdminLayout({
   const pathname = headersList.get('x-pathname') || ''
   
   // Don't protect the /admin login page itself
+  // Middleware already handles authentication redirects, so we don't need to redirect again
   if (pathname === '/admin') {
     return <>{children}</>
   }
   
-  // Protect all other admin routes (e.g., /admin/dashboard, /admin/products)
-  const user = await getServerUser()
-  
-  if (!user) {
-    redirect('/admin')
-  }
-
-  const isAdmin = await verifyAdmin(user.id)
-  if (!isAdmin) {
-    redirect('/admin')
-  }
-
+  // For all other admin routes, middleware has already verified authentication and admin role
+  // No need to check again or redirect - just render the layout
   return (
     <div className="min-h-screen bg-[#fafafa] auth-page" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
       <Sidebar />
@@ -39,4 +27,3 @@ export default async function AdminLayout({
     </div>
   )
 }
-

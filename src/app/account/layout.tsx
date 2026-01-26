@@ -1,6 +1,4 @@
-import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
-import { getServerUser } from '@/lib/supabase/server'
 
 export default async function AccountLayout({
   children,
@@ -16,12 +14,7 @@ export default async function AccountLayout({
     return <>{children}</>
   }
 
-  const user = await getServerUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
+  // For all other account routes, middleware has already verified authentication
+  // No need to check again or redirect - just render the layout
   return <>{children}</>
 }
-
