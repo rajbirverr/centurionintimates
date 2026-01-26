@@ -2,8 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Production optimizations
-  swcMinify: true, // Use SWC for minification (faster than Terser)
-  compress: true, // Enable gzip compression
   poweredByHeader: false, // Remove X-Powered-By header
   
   experimental: {
