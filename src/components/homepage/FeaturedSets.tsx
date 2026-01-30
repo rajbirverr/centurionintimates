@@ -55,7 +55,7 @@ interface FeaturedSetsSectionProps {
         section: typeof defaultSection | null
         filters: HomepageSetsFilter[]
         products: any[]
-    }
+    } | null
 }
 
 // Helper component for the interactive title to keep logic clean and isolated
