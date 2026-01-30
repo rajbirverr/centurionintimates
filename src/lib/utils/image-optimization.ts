@@ -8,12 +8,12 @@
  */
 export function getVersionedImageUrl(baseUrl: string, version?: string): string {
   if (!baseUrl) return baseUrl
-  
+
   // If URL already has version/hash, return as-is
   if (baseUrl.includes('?v=') || baseUrl.includes('&v=')) {
     return baseUrl
   }
-  
+
   // Add version parameter for cache busting when image updates
   const versionParam = version || Date.now().toString(36)
   const separator = baseUrl.includes('?') ? '&' : '?'
@@ -42,3 +42,46 @@ export function getImageSizes(container: 'full' | 'half' | 'third' | 'quarter' |
 export function shouldUsePriority(index: number = 0, isHero: boolean = false): boolean {
   return isHero || index < 4 // First 4 images get priority
 }
+
+/**
+ * Optimize Supabase Storage images by adding transformation parameters
+ * Supabase automatically resizes images when width/quality params are present
+ * @param url - Original Supabase image URL
+ * @param width - Desired width in pixels (default: 800)
+ * @param quality - Image quality 1-100 (default: 80)
+ * @returns Optimized URL with transformation parameters
+ */
+export function getOptimizedSupabaseUrl(
+  url: string,
+  width: number = 800,
+  quality: number = 80
+): string {
+  // Return as-is if not a Supabase URL
+  if (!url || !url.includes('supabase.co/storage')) {
+    return url
+  }
+
+  // Return as-is if already has transformation params
+  if (url.includes('width=') || url.includes('quality=')) {
+    return url
+  }
+
+  // Add transformation parameters
+  const separator = url.includes('?') ? '&' : '?'
+  return `${url}${separator}width=${width}&quality=${quality}`
+}
+
+/**
+ * Get optimal image width based on viewport and container type
+ * Used with getOptimizedSupabaseUrl for responsive optimization
+ */
+export function getOptimalImageWidth(container: 'hero' | 'product' | 'category' | 'thumbnail'): number {
+  const widthMap = {
+    'hero': 1200,      // Full-width hero images
+    'product': 800,    // Product cards and showcase
+    'category': 600,   // Category images 
+    'thumbnail': 400  // Small thumbnails
+  }
+  return widthMap[container] || 800
+}
+
