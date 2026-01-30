@@ -176,8 +176,8 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                 <div className="max-w-[1440px] mx-auto">
                     {/* Section Title and Description */}
                     <div className="text-center mb-2 md:mb-10">
-                        <h2 className="uppercase tracking-[0.2em] text-sm font-light mb-1" style={{ color: '#A47864' }}>EXPLORE</h2>
-                        <h3 className="text-2xl font-normal" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em', color: '#A47864' }}>Drip for Days Under ₹500</h3>
+                        <h2 className="uppercase tracking-[0.2em] text-sm font-light mb-1" style={{ color: '#8B5A3C' }}>EXPLORE</h2>
+                        <h3 className="text-2xl font-normal" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em', color: '#8B5A3C' }}>Drip for Days Under ₹500</h3>
                     </div>
 
                     {/* Mobile View - Split layout with fixed info */}

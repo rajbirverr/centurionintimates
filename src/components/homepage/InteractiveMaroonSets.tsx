@@ -79,7 +79,7 @@ const InteractiveTitle = ({ section }: { section: any }) => {
                 textShadow: '0 2px 4px rgba(0,0,0,0.1)',
                 WebkitTextStroke: '0px'
             } : {
-                backgroundImage: 'url(/sets-background.jpg)',
+                backgroundImage: 'url(/sets-background.webp), url(/sets-background.jpg)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundClip: 'text',
@@ -231,7 +231,7 @@ export default function InteractiveMaroonSets({ initialData }: FeaturedSetsSecti
                 <div className="max-w-[1440px] mx-auto">
                     {/* Cream Rectangle Container - Title and Filters */}
                     <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
-                        backgroundImage: 'url(/sets-background.jpg)',
+                        backgroundImage: 'url(/sets-background.webp), url(/sets-background.jpg)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundColor: '#d4cdc3' // Fallback
