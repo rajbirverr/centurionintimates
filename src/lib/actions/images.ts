@@ -22,10 +22,10 @@ export async function uploadProductImageToStorage(file: File): Promise<{ success
     }
 
     const supabase = createAdminClient()
-    
-    const fileExt = file.name.split('.').pop()
-    const fileName = `products/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
-    
+
+    // Use the filename provided by the client (it's already SEO optimized)
+    const fileName = `products/${file.name}`
+
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
@@ -33,16 +33,16 @@ export async function uploadProductImageToStorage(file: File): Promise<{ success
       .from('images')
       .upload(fileName, buffer, {
         contentType: file.type,
-        upsert: false,
+        upsert: true, // Allow overwriting if user intends (though frontend adds unique suffix)
         cacheControl: '31536000' // 1 year cache - immutable URLs
       })
 
     if (uploadError) {
       console.error('Error uploading to storage:', uploadError)
       if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
-        return { 
-          success: false, 
-          error: 'Storage bucket "images" not found. Please create it in Supabase Storage.' 
+        return {
+          success: false,
+          error: 'Storage bucket "images" not found. Please create it in Supabase Storage.'
         }
       }
       return { success: false, error: uploadError.message || 'Failed to upload image' }
@@ -110,7 +110,7 @@ export async function uploadProductImage(data: {
     }
 
     const supabase = createAdminClient()
-    
+
     // If this is marked as primary, unset other primary images first
     if (data.is_primary) {
       await supabase
@@ -191,7 +191,7 @@ export async function updateProductImageOrder(updates: Array<{ id: string; sort_
     }
 
     const supabase = createAdminClient()
-    
+
     for (const update of updates) {
       const { error } = await supabase
         .from('product_images')
@@ -224,7 +224,7 @@ export async function setPrimaryImage(imageId: string, productId: string) {
     }
 
     const supabase = createAdminClient()
-    
+
     // Unset all primary images first
     await supabase
       .from('product_images')

@@ -1,4 +1,5 @@
 'use client'
+// Recompile force 1
 
 import { useState } from 'react'
 import Image from 'next/image'
@@ -34,23 +35,37 @@ export default function SafeImage({
 }: SafeImageProps) {
   const [useFallback, setUseFallback] = useState(false)
   const [imgError, setImgError] = useState(false)
-  const unoptimized = shouldUnoptimizeImage(src)
+
+  // Force unoptimized to ensure images show up reliably.
+  // Next.js optimization seems to be failing or misconfigured for these domains.
+  const unoptimized = true
 
   // If image failed to load or we should use fallback, use regular img
   if (useFallback || imgError || !src) {
     if (fill) {
       return (
         <img
-          src={src || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkIi8+PC9zdmc+'}
+          src={src || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkiLz48L3N2Zz4='}
           alt={alt}
           className={className}
-          style={style}
+          style={{
+            position: 'absolute',
+            height: '100%',
+            width: '100%',
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+            color: 'transparent',
+            objectFit: 'cover',
+            ...style
+          }}
         />
       )
     }
     return (
       <img
-        src={src || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkIi8+PC9zdmc+'}
+        src={src || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkiLz48L3N2Zz4='}
         alt={alt}
         width={width}
         height={height}
@@ -70,7 +85,17 @@ export default function SafeImage({
         className={className}
         priority={priority}
         sizes={sizes}
-        style={style}
+        style={{
+          position: 'absolute',
+          height: '100%',
+          width: '100%',
+          left: 0,
+          top: 0,
+          right: 0,
+          bottom: 0,
+          objectFit: 'cover',
+          ...style
+        }}
         unoptimized={unoptimized}
         fetchPriority={priority ? 'high' : 'auto'}
         onError={() => {
@@ -98,6 +123,7 @@ export default function SafeImage({
         setUseFallback(true)
         setImgError(true)
       }}
+      suppressHydrationWarning
     />
   )
 }

@@ -4,9 +4,9 @@
  * Only unoptimize data URIs and external URLs not in remotePatterns
  */
 export function shouldUnoptimizeImage(imageUrl: string | undefined | null): boolean {
-  if (!imageUrl) return true
-  // Only unoptimize data URIs - let Next.js optimize Supabase images
-  return imageUrl.startsWith('data:')
+  // Force unoptimization for all images to ensure consistency and prevent hydration mismatches
+  // caused by stale server code optimizing Supabase images while client does not.
+  return true
 }
 
 /**

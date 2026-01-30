@@ -4,7 +4,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import StatsCard from '@/components/admin/StatsCard'
 import HeroImageUpload from '@/components/admin/HeroImageUpload'
 import ShowcaseCardImageUpload from '@/components/admin/ShowcaseCardImageUpload'
-import HomepageCarouselProducts from '@/components/admin/HomepageCarouselProducts'
+
 
 // Note: dynamic is not compatible with cacheComponents
 
@@ -67,10 +67,7 @@ export default async function AdminDashboardPage() {
         <ShowcaseCardImageUpload />
       </div>
 
-      {/* Homepage Carousel Products Section */}
-      <div className="mb-8">
-        <HomepageCarouselProducts />
-      </div>
+
 
       <div className="bg-white border border-gray-200 p-6">
         <h2 className="text-sm font-normal mb-6 text-gray-900 tracking-wide uppercase">Recent Orders</h2>
@@ -112,9 +109,9 @@ export default async function AdminDashboardPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                          order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                              'bg-yellow-100 text-yellow-800'
+                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                          order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                            'bg-yellow-100 text-yellow-800'
                         }`}>
                         {order.status}
                       </span>

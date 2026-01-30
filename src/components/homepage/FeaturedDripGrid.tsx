@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import ProductGrid from '@/components/ProductGrid'
+import ProductGrid from '@/components/homepage/MobileDripCarousel'
 import { getDripCarouselProducts } from '@/lib/actions/homepage-drip'
 
 async function ProductGridContent() {
@@ -25,7 +25,7 @@ function ProductGridSkeleton() {
   )
 }
 
-export default function HomepageProductGrid() {
+export default function FeaturedDripGrid() {
   return (
     <Suspense fallback={<ProductGridSkeleton />}>
       <ProductGridContent />

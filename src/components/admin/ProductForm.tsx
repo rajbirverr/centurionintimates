@@ -347,7 +347,7 @@ export default function ProductForm({ product, initialImages = [] }: ProductForm
                 Enable watermark on product images
               </label>
             </div>
-            
+
             {formData.watermark_enabled !== false && (
               <div className="space-y-4">
                 <div>
@@ -465,7 +465,11 @@ export default function ProductForm({ product, initialImages = [] }: ProductForm
         {product && (
           <div className="md:col-span-2 border-t pt-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h3>
-            <ImageUpload productId={product.id} initialImages={initialImages} />
+            <ImageUpload
+              productId={product.id}
+              initialImages={initialImages}
+              productName={formData.name}
+            />
           </div>
         )}
       </div>

@@ -17,7 +17,7 @@ const newsletterTypes = [
 
 export async function generateMetadata({ params }: { params: Promise<{ type: string }> }): Promise<Metadata> {
   const { type } = await params
-  
+
   const typeNames: Record<string, string> = {
     'welcome': 'Welcome to Centurion',
     'sale': 'Sale Newsletter',

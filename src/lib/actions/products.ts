@@ -78,7 +78,10 @@ export async function getAllProducts(): Promise<Product[]> {
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching products:', error)
+      // Skip logging harmless AbortErrors from cache restarts
+      if (error.message && !error.message.includes('AbortError')) {
+        console.error('Error fetching products:', error)
+      }
       return []
     }
 
@@ -369,7 +372,7 @@ export async function searchProducts(query: string, limit: number = 6): Promise<
 }>> {
   try {
     const supabase = await createServerSupabaseClient()
-    
+
     if (!query || query.trim().length === 0) {
       return []
     }
@@ -404,7 +407,7 @@ export async function searchProducts(query: string, limit: number = 6): Promise<
         .select('product_id, image_url, is_primary')
         .in('product_id', productIds)
         .eq('is_primary', true) : Promise.resolve({ data: [], error: null }),
-      
+
       // Get categories only for the products we found
       categoryIds.length > 0 ? supabase
         .from('categories')
@@ -417,7 +420,7 @@ export async function searchProducts(query: string, limit: number = 6): Promise<
 
     const categoryMap = new Map(categories.map(cat => [cat.id, cat.name]))
     const imageMap = new Map<string, string>()
-    
+
     // Create image map (product_id -> image_url)
     images.forEach(img => {
       if (!imageMap.has(img.product_id)) {
@@ -428,7 +431,7 @@ export async function searchProducts(query: string, limit: number = 6): Promise<
     // Map products with images and categories
     return products.map((product) => {
       const imageUrl = imageMap.get(product.id) || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkIi8+PC9zdmc+'
-      
+
       const priceNumber = product.price ? Number(product.price) : 0
       const formattedPrice = isNaN(priceNumber) || priceNumber <= 0
         ? '₹0'
@@ -530,9 +533,9 @@ export async function getShineCarouselProducts(): Promise<Array<{ id: string; na
 }
 
 /**
- * Get products for Drip for Days carousel with images
+ * Get products for Drip for Days carousel with images (primary and secondary for hover effect)
  */
-export async function getDripCarouselProducts(): Promise<Array<{ id: number | string; name: string; description: string; image: string; price: number }>> {
+export async function getDripCarouselProducts(): Promise<Array<{ id: number | string; name: string; description: string; image: string; secondaryImage: string | null; price: number }>> {
   try {
     const supabase = await createServerSupabaseClient()
     const { data: products, error } = await supabase
@@ -555,33 +558,26 @@ export async function getDripCarouselProducts(): Promise<Array<{ id: number | st
 
     console.log(`Found ${products.length} products for Drip carousel:`, products.map(p => p.name))
 
-    // Get primary images for each product
+    // Get primary and secondary images for each product
     const productsWithImages = await Promise.all(
       products.map(async (product) => {
         let imageUrl = '/placeholder-product.png'
+        let secondaryImageUrl: string | null = null
 
-        // Get primary image (or first image if no primary)
-        const { data: primaryImage } = await supabase
+        // Get all images for this product, ordered by is_primary (primary first), then sort_order
+        const { data: productImages } = await supabase
           .from('product_images')
-          .select('image_url')
+          .select('image_url, is_primary, sort_order')
           .eq('product_id', product.id)
-          .eq('is_primary', true)
-          .limit(1)
-          .maybeSingle()
+          .order('is_primary', { ascending: false })
+          .order('sort_order', { ascending: true })
+          .limit(2)
 
-        if (primaryImage?.image_url) {
-          imageUrl = primaryImage.image_url
-        } else {
-          // If no primary image, get first image
-          const { data: firstImage } = await supabase
-            .from('product_images')
-            .select('image_url')
-            .eq('product_id', product.id)
-            .limit(1)
-            .maybeSingle()
-
-          if (firstImage?.image_url) {
-            imageUrl = firstImage.image_url
+        if (productImages && productImages.length > 0) {
+          imageUrl = productImages[0].image_url
+          // Secondary image is the second one if available
+          if (productImages.length > 1) {
+            secondaryImageUrl = productImages[1].image_url
           }
         }
 
@@ -590,6 +586,7 @@ export async function getDripCarouselProducts(): Promise<Array<{ id: number | st
           name: product.name,
           description: product.short_description || product.description || '',
           image: imageUrl,
+          secondaryImage: secondaryImageUrl,
           price: product.price
         }
       })

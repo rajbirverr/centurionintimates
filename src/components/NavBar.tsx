@@ -29,6 +29,7 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const [categories, setCategories] = useState<CategoryWithSubcategories[]>([]);
   const [activeMobileCategory, setActiveMobileCategory] = useState<string | null>(null);
+  const [logoHover, setLogoHover] = useState(false);
 
   // The isHovering state is causing issues with proper closing
   // Let's use refs to track hover state on individual elements instead
@@ -396,10 +397,48 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
               </button>
             </div>
 
-            {/* Center logo */}
+            {/* Center logo - Animated Swap */}
             <div className="flex-1 md:flex-none flex items-center justify-center md:justify-start">
-              <Link href="/" className="font-normal text-[#784D2C] text-3xl" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>
-                centurion
+              <Link
+                href="/"
+                className="relative block overflow-hidden h-12 w-56 no-underline select-none"
+                onMouseEnter={() => setLogoHover(true)}
+                onMouseLeave={() => setLogoHover(false)}
+                onClick={() => setLogoHover(false)}
+              >
+                <div
+                  className="flex flex-col items-center w-full h-full transition-transform duration-500 ease-in-out will-change-transform"
+                  style={{ transform: logoHover ? 'translateY(-100%)' : 'translateY(0)' }}
+                >
+
+                  {/* Default State: 'intimate' */}
+                  <div className="flex items-center justify-center w-full h-12 flex-shrink-0">
+                    <span
+                      className="text-3xl font-normal whitespace-nowrap"
+                      style={{
+                        fontFamily: "'Rhode', sans-serif",
+                        letterSpacing: '0.01em',
+                        color: '#E3C4BE'
+                      }}
+                    >
+                      intimate
+                    </span>
+                  </div>
+
+                  {/* Hover State: 'by centurionshoppe' */}
+                  <div className="flex items-center justify-center w-full h-12 flex-shrink-0">
+                    <span
+                      className="text-xs font-light uppercase tracking-[0.2em] whitespace-nowrap"
+                      style={{
+                        fontFamily: "'CentraNo1', sans-serif",
+                        color: '#E3C4BE'
+                      }}
+                    >
+                      by centurionshoppe
+                    </span>
+                  </div>
+
+                </div>
               </Link>
             </div>
 
@@ -559,185 +598,184 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
       )}
 
       {/* Mobile Menu - Opens below navbar */}
-      <div 
-        className={`md:hidden fixed left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-40 overflow-hidden ${
-          showMobileMenu ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
-        }`}
-        style={{ 
+      <div
+        className={`md:hidden fixed left-0 right-0 bg-white border-b border-gray-100 shadow-lg z-40 overflow-hidden ${showMobileMenu ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+          }`}
+        style={{
           top: `${mobileMenuTop || (navHeight || 73)}px`,
           maxHeight: showMobileMenu ? `calc(100vh - ${mobileMenuTop || (navHeight || 73)}px)` : '0',
           transition: 'opacity 0.2s ease-out, max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s ease-out'
         }}
       >
         <div className="overflow-y-auto" style={{ maxHeight: `calc(100vh - ${mobileMenuTop || (navHeight || 73)}px)` }}>
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6">
-          {/* Categories Section */}
-          {categories.length > 0 && (
-            <div className="mb-6">
-              {/* Category Tabs */}
-              <div className="overflow-x-auto scrollbar-hide -mx-4 md:-mx-8 px-4 md:px-8 mb-6">
-                <div className="flex space-x-6 min-w-max">
-                  {categories.map((category, index) => {
-                    const isActive = activeMobileCategory === category.slug || (activeMobileCategory === null && index === 0);
-                    return (
-                      <button
-                        key={category.id}
-                        onClick={() => {
-                          setActiveMobileCategory(isActive ? null : category.slug);
-                        }}
-                        className={`uppercase text-xs tracking-[0.15em] font-medium whitespace-nowrap pb-2 transition-all duration-200 ${isActive
-                          ? 'text-[#5a4c46] border-b-2 border-[#5a4c46]'
-                          : 'text-gray-400 border-b-2 border-transparent hover:text-gray-600'
-                          }`}
-                      >
-                        {category.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Subcategories List - Rhode Style Horizontal Row */}
-              {(() => {
-                const activeCategory = activeMobileCategory !== null
-                  ? categories.find(c => c.slug === activeMobileCategory)
-                  : categories[0];
-                const subcategories = activeCategory?.subcategories || [];
-
-                if (subcategories.length > 0) {
-                  return (
-                    <div>
-                      <div className="space-y-5">
-                        {subcategories.map((subcategory) => (
-                          <Link
-                            key={subcategory.id}
-                            href={`/all-products?category=${activeCategory?.slug}&subcategory=${subcategory.slug}`}
-                            onClick={() => setShowMobileMenu(false)}
-                            className="group flex items-center gap-4"
-                          >
-                            <div className="relative flex-shrink-0 w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center overflow-hidden">
-                              {subcategory.image_url ? (
-                                <img
-                                  src={subcategory.image_url}
-                                  alt={subcategory.name}
-                                  className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center">
-                                  <svg
-                                    className="w-10 h-10 text-[#84756f]"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={1.5}
-                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                    />
-                                  </svg>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-[#5a4c46] text-sm font-medium tracking-wide">
-                                {subcategory.name}
-                              </h3>
-                              {subcategory.description && (
-                                <p className="text-gray-400 text-xs mt-0.5 truncate">
-                                  {subcategory.description}
-                                </p>
-                              )}
-                            </div>
-                            <svg className="w-4 h-4 text-gray-300 group-hover:text-[#5a4c46] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </Link>
-                        ))}
-                      </div>
-                      {/* Shop Button */}
-                      <div className="flex justify-center mt-8">
-                        <Link
-                          href={`/all-products?category=${activeCategory?.slug}`}
-                          onClick={() => setShowMobileMenu(false)}
-                          className="border border-[#5a4c46] text-[#5a4c46] px-10 py-3 rounded-full text-xs font-medium tracking-[0.1em] transition-all duration-200 hover:bg-[#5a4c46] hover:text-white"
+          <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6">
+            {/* Categories Section */}
+            {categories.length > 0 && (
+              <div className="mb-6">
+                {/* Category Tabs */}
+                <div className="overflow-x-auto scrollbar-hide -mx-4 md:-mx-8 px-4 md:px-8 mb-6">
+                  <div className="flex space-x-6 min-w-max">
+                    {categories.map((category, index) => {
+                      const isActive = activeMobileCategory === category.slug || (activeMobileCategory === null && index === 0);
+                      return (
+                        <button
+                          key={category.id}
+                          onClick={() => {
+                            setActiveMobileCategory(isActive ? null : category.slug);
+                          }}
+                          className={`uppercase text-xs tracking-[0.15em] font-medium whitespace-nowrap pb-2 transition-all duration-200 ${isActive
+                            ? 'text-[#5a4c46] border-b-2 border-[#5a4c46]'
+                            : 'text-gray-400 border-b-2 border-transparent hover:text-gray-600'
+                            }`}
                         >
-                          Shop {activeCategory?.name}
-                        </Link>
+                          {category.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Subcategories List - Rhode Style Horizontal Row */}
+                {(() => {
+                  const activeCategory = activeMobileCategory !== null
+                    ? categories.find(c => c.slug === activeMobileCategory)
+                    : categories[0];
+                  const subcategories = activeCategory?.subcategories || [];
+
+                  if (subcategories.length > 0) {
+                    return (
+                      <div>
+                        <div className="space-y-5">
+                          {subcategories.map((subcategory) => (
+                            <Link
+                              key={subcategory.id}
+                              href={`/all-products?category=${activeCategory?.slug}&subcategory=${subcategory.slug}`}
+                              onClick={() => setShowMobileMenu(false)}
+                              className="group flex items-center gap-4"
+                            >
+                              <div className="relative flex-shrink-0 w-14 h-14 bg-gray-50 rounded-xl flex items-center justify-center overflow-hidden">
+                                {subcategory.image_url ? (
+                                  <img
+                                    src={subcategory.image_url}
+                                    alt={subcategory.name}
+                                    className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <svg
+                                      className="w-10 h-10 text-[#84756f]"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={1.5}
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                      />
+                                    </svg>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-[#5a4c46] text-sm font-medium tracking-wide">
+                                  {subcategory.name}
+                                </h3>
+                                {subcategory.description && (
+                                  <p className="text-gray-400 text-xs mt-0.5 truncate">
+                                    {subcategory.description}
+                                  </p>
+                                )}
+                              </div>
+                              <svg className="w-4 h-4 text-gray-300 group-hover:text-[#5a4c46] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                              </svg>
+                            </Link>
+                          ))}
+                        </div>
+                        {/* Shop Button */}
+                        <div className="flex justify-center mt-8">
+                          <Link
+                            href={`/all-products?category=${activeCategory?.slug}`}
+                            onClick={() => setShowMobileMenu(false)}
+                            className="border border-[#5a4c46] text-[#5a4c46] px-10 py-3 rounded-full text-xs font-medium tracking-[0.1em] transition-all duration-200 hover:bg-[#5a4c46] hover:text-white"
+                          >
+                            Shop {activeCategory?.name}
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-            </div>
-          )}
-
-          {/* Divider */}
-          <div className="border-t border-gray-100 my-6"></div>
-
-          {/* Navigation links */}
-          <div>
-            <Link href="/all-products" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100" onClick={() => setShowMobileMenu(false)}>
-              <span>Shop</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-            <Link 
-              href="/about"
-              className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              <span>About</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-            <div className="flex items-center justify-between py-4 text-sm font-medium tracking-wide border-b border-gray-100">
-              <div className="flex items-center">
-                <Link
-                  href="/sale"
-                  className="text-red-600 hover:text-red-700"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  SALE
-                </Link>
-                <span className="text-[#5a4c46] mx-1">/</span>
-                <Link
-                  href="/blogs"
-                  className="text-[#5a4c46] hover:text-[#91594c]"
-                  onClick={() => setShowMobileMenu(false)}
-                >
-                  BLOG
-                </Link>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </div>
-            <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
-              <span>Centurion Futures</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-            <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
-              <span>Impact</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-            <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
-              <span>FAQ</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-            <Link href="/account" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100" onClick={() => setShowMobileMenu(false)}>
-              <span>Account</span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </Link>
-          </div>
+            )}
 
-          {/* Country selector */}
-          <div className="mt-8 pb-8">
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Country/region</p>
-            <select className="w-full bg-[#f8f7f6] border-0 rounded-lg py-3 px-4 text-sm text-[#5a4c46] focus:outline-none focus:ring-2 focus:ring-[#5a4c46]/20" aria-label="Select country or region">
-              <option>India (INR ₹)</option>
-              <option>United States (USD $)</option>
-            </select>
+            {/* Divider */}
+            <div className="border-t border-gray-100 my-6"></div>
+
+            {/* Navigation links */}
+            <div>
+              <Link href="/all-products" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100" onClick={() => setShowMobileMenu(false)}>
+                <span>Shop</span>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
+              <Link
+                href="/about"
+                className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                <span>About</span>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
+              <div className="flex items-center justify-between py-4 text-sm font-medium tracking-wide border-b border-gray-100">
+                <div className="flex items-center">
+                  <Link
+                    href="/sale"
+                    className="text-red-600 hover:text-red-700"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    SALE
+                  </Link>
+                  <span className="text-[#5a4c46] mx-1">/</span>
+                  <Link
+                    href="/blogs"
+                    className="text-[#5a4c46] hover:text-[#91594c]"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    BLOG
+                  </Link>
+                </div>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </div>
+              <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
+                <span>Centurion Futures</span>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
+              <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
+                <span>Impact</span>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
+              <Link href="#" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100">
+                <span>FAQ</span>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
+              <Link href="/account" className="flex items-center justify-between py-4 text-[#5a4c46] text-sm font-medium tracking-wide border-b border-gray-100" onClick={() => setShowMobileMenu(false)}>
+                <span>Account</span>
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+              </Link>
+            </div>
+
+            {/* Country selector */}
+            <div className="mt-8 pb-8">
+              <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Country/region</p>
+              <select className="w-full bg-[#f8f7f6] border-0 rounded-lg py-3 px-4 text-sm text-[#5a4c46] focus:outline-none focus:ring-2 focus:ring-[#5a4c46]/20" aria-label="Select country or region">
+                <option>India (INR ₹)</option>
+                <option>United States (USD $)</option>
+              </select>
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </>

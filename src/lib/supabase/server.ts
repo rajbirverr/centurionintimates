@@ -37,15 +37,21 @@ export async function createServerSupabaseClient() {
  */
 export async function getServerSession() {
   const supabase = await createServerSupabaseClient()
-  const { data: { session } } = await supabase.auth.getSession()
-  return session
+  const { data: { user }, error } = await supabase.auth.getUser()
+  // getUser returns user, not session directly, but for our purpose of auth check it's better
+  // If we truly need session tokens, we might still need getSession, but getUser is "secure".
+  // However, getServerUser calls this.
+  // Let's refactor getServerUser instead.
+  if (error || !user) return null
+  return { user }
 }
 
 /**
  * Get current user on server
  */
 export async function getServerUser() {
-  const session = await getServerSession()
-  return session?.user || null
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return user
 }
 

@@ -7,23 +7,34 @@ import { ShineCarouselProduct } from './homepage'
 /**
  * Get showcase card image URL (cached)
  */
-export const getShowcaseCardImageUrl = unstable_cache(
-  async (): Promise<string | null> => {
+/**
+ * Get showcase card settings (cached)
+ */
+export const getShowcaseCardSettings = unstable_cache(
+  async (): Promise<{ url: string | null; altText: string | null; title: string | null; subtitle: string | null }> => {
     try {
       const supabase = createAdminClient()
       const { data } = await supabase
         .from('site_settings')
-        .select('hero_image_url')
-        .eq('setting_key', 'showcase_card_image')
-        .single()
-      
-      return data?.hero_image_url || null
+        .select('setting_key, hero_image_url, alt_text')
+        .in('setting_key', ['showcase_card_image', 'showcase_card_title', 'showcase_card_subtitle'])
+
+      const imageSetting = data?.find(s => s.setting_key === 'showcase_card_image')
+      const titleSetting = data?.find(s => s.setting_key === 'showcase_card_title')
+      const subtitleSetting = data?.find(s => s.setting_key === 'showcase_card_subtitle')
+
+      return {
+        url: imageSetting?.hero_image_url || null,
+        altText: imageSetting?.alt_text || null,
+        title: titleSetting?.hero_image_url || null,
+        subtitle: subtitleSetting?.hero_image_url || null
+      }
     } catch (error) {
       console.error('Error fetching showcase card image:', error)
-      return null
+      return { url: null, altText: null, title: null, subtitle: null }
     }
   },
-  ['showcase-card-image'],
+  ['showcase-card-settings'], // Updated cache key
   {
     revalidate: 300, // 5 minutes cache
     tags: ['homepage', 'site-settings']
@@ -37,7 +48,7 @@ export const getShineCarouselProducts = unstable_cache(
   async (): Promise<ShineCarouselProduct[]> => {
     try {
       const supabase = createAdminClient()
-      
+
       // Get products
       const { data: products } = await supabase
         .from('products')
@@ -67,7 +78,7 @@ export const getShineCarouselProducts = unstable_cache(
       return products.map(product => {
         const productImage = images?.find(img => img.product_id === product.id)
         const category = categories?.find(cat => cat.id === product.category_id)
-        
+
         return {
           id: product.id,
           name: product.name,

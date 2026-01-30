@@ -35,7 +35,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const [activeImage, setActiveImage] = useState(0)
   const [isAdding, setIsAdding] = useState(false)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
-  
+
   // Access cart context - CartProvider is in root layout, so it should be available
   const { addItem, isLoggedIn, isLoading } = useCart()
   const addingRef = useRef(false) // Use ref to prevent multiple simultaneous calls
@@ -52,7 +52,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     if (action === 'add_to_cart' && hasLoggedIn && selectedSize && !autoAddExecutedRef.current) {
       // Mark as executed immediately to prevent duplicate calls
       autoAddExecutedRef.current = true
-      
+
       // Auto-add product to cart after login
       const addToCartAfterLogin = async () => {
         try {
@@ -85,7 +85,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
       addToCartAfterLogin()
     }
-    
+
     // Reset flag when action param is removed or user logs out
     if (!action || action !== 'add_to_cart') {
       autoAddExecutedRef.current = false
@@ -95,19 +95,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    
+
     // CRITICAL: Prevent multiple calls - check ref FIRST before any async operations
     if (addingRef.current) {
       console.warn('[ProductDetailClient] Already adding to cart, ignoring duplicate call')
       return
     }
-    
+
     if (!selectedSize || isAdding) {
       // Size selection is required - button is disabled if no size selected
       // Also prevent double-clicks and multiple simultaneous calls
       return
     }
-    
+
     // Check if user is logged in - if not, redirect to login page
     if (!isLoading && !isLoggedIn) {
       // Build return URL with action param
@@ -115,40 +115,40 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
       router.push(`/login?return_url=${returnUrl}`)
       return
     }
-    
+
     // If still loading, wait
     if (isLoading) {
       return
     }
-    
+
     // Validate inventory - check if quantity exceeds available stock
     if (product.inventory_count > 0 && quantity > product.inventory_count) {
       alert(`Only ${product.inventory_count} items available in stock.`)
       return
     }
-    
+
     // Validate quantity is positive
     if (quantity < 1) {
       alert('Quantity must be at least 1.')
       return
     }
-    
+
     // Validate price is valid
     if (!product.price || product.price <= 0) {
       alert('Invalid product price. Please contact support.')
       return
     }
-    
+
     // Set both state and ref to prevent multiple calls - MUST be set synchronously
     addingRef.current = true
     setIsAdding(true)
-    
+
     // Always add exactly 1 item per click (not the quantity selector value)
     // The quantity selector is for future bulk adds, but for now we add 1 at a time
     const quantityToAdd = 1
-    
+
     console.log('[ProductDetailClient] handleAddToCart called - Product:', product.id, 'Size:', selectedSize, 'Adding quantity:', quantityToAdd)
-    
+
     try {
       // Add product to cart with real product data - always add 1
       console.log('[ProductDetailClient] Calling addItem with quantity:', quantityToAdd)
@@ -206,15 +206,15 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <li className="text-[#84756f]">{product.name}</li>
           </ol>
         </nav>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Product Images */}
           <div className="space-y-4">
             {/* Main Image */}
             <div className="aspect-[4/5] bg-[#f9f9f9] overflow-hidden relative">
               {product.images && product.images.length > 0 ? (
-                <SafeImage 
-                  src={product.images[activeImage]} 
+                <SafeImage
+                  src={product.images[activeImage]}
                   alt={product.name || 'Product image'}
                   fill
                   className="object-cover"
@@ -227,14 +227,14 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </div>
               )}
               {/* Watermark Overlay - Show if product.watermark_enabled is true (defaults to true) */}
-              <WatermarkOverlay 
-                show={product.watermark_enabled !== false} 
+              <WatermarkOverlay
+                show={product.watermark_enabled !== false}
                 color={product.watermark_color}
                 fontSize={product.watermark_font_size}
                 position={product.watermark_position}
               />
             </div>
-            
+
             {/* Thumbnail Images */}
             {product.images && product.images.length > 1 && (
               <div className="flex space-x-2">
@@ -242,12 +242,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   <button
                     key={index}
                     onClick={() => setActiveImage(index)}
-                    className={`w-20 h-24 overflow-hidden border-2 transition-colors relative ${
-                      activeImage === index ? 'border-[#5a4c46]' : 'border-transparent hover:border-gray-300'
-                    }`}
+                    className={`w-20 h-24 overflow-hidden border-2 transition-colors relative ${activeImage === index ? 'border-[#5a4c46]' : 'border-transparent hover:border-gray-300'
+                      }`}
                   >
-                    <SafeImage 
-                      src={image} 
+                    <SafeImage
+                      src={image}
                       alt={`${product.name || 'Product'} view ${index + 1}`}
                       fill
                       className="object-cover"
@@ -255,8 +254,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                       loading="lazy"
                     />
                     {/* Watermark Overlay - smaller on thumbnails */}
-                    <WatermarkOverlay 
-                      className="text-[10px]" 
+                    <WatermarkOverlay
+                      className="text-[10px]"
                       show={product.watermark_enabled ?? true}
                       color={product.watermark_color}
                       fontSize={product.watermark_font_size}
@@ -268,14 +267,14 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               </div>
             )}
           </div>
-          
+
           {/* Product Info */}
           <div className="space-y-6">
             {/* Product Name */}
             <h1 className="text-2xl md:text-3xl text-[#5a4c46] uppercase tracking-wide font-light">
               {product.name}
             </h1>
-            
+
             {/* Price */}
             <div className="flex items-center space-x-3">
               <p className="text-xl text-[#5a4c46]">₹{product.price.toLocaleString()}</p>
@@ -285,19 +284,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </p>
               )}
             </div>
-            
+
             {/* Stock Status */}
             {isSoldOut && (
               <p className="text-sm text-red-600 font-medium">Out of Stock</p>
             )}
-            
+
             {/* Description */}
             {product.description && (
               <div className="text-sm text-[#5a4c46]/80 leading-relaxed">
                 <p>{product.description}</p>
               </div>
             )}
-            
+
             {/* Size Selection */}
             <div>
               <div className="flex justify-between items-center mb-3">
@@ -314,25 +313,24 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     disabled={isSoldOut}
-                    className={`py-2 px-3 text-sm border transition-all ${
-                      selectedSize === size
-                        ? 'border-[#5a4c46] bg-[#5a4c46] text-white'
-                        : 'border-[#ddd] text-[#5a4c46] hover:border-[#5a4c46] disabled:opacity-50 disabled:cursor-not-allowed'
-                    }`}
+                    className={`py-2 px-3 text-sm border transition-all ${selectedSize === size
+                      ? 'border-[#5a4c46] bg-[#5a4c46] text-white'
+                      : 'border-[#ddd] text-[#5a4c46] hover:border-[#5a4c46] disabled:opacity-50 disabled:cursor-not-allowed'
+                      }`}
                   >
                     {size}
                   </button>
                 ))}
               </div>
             </div>
-            
+
             {/* Quantity */}
             <div>
               <p className="text-xs uppercase tracking-wider text-[#5a4c46] mb-3">
                 Quantity
               </p>
               <div className="flex items-center border border-[#ddd] w-fit">
-                <button 
+                <button
                   onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                   disabled={isSoldOut}
                   className="px-4 py-2 text-[#5a4c46] hover:bg-[#f5f5f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -340,7 +338,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   -
                 </button>
                 <span className="px-4 py-2 text-[#5a4c46]">{quantity}</span>
-                <button 
+                <button
                   onClick={() => !isSoldOut && setQuantity(quantity + 1)}
                   disabled={isSoldOut || quantity >= product.inventory_count}
                   className="px-4 py-2 text-[#5a4c46] hover:bg-[#f5f5f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -354,23 +352,23 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </p>
               )}
             </div>
-            
+
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
               disabled={isSoldOut || (!selectedSize && isLoggedIn) || isAdding || isLoading}
               className="w-full py-4 bg-[#5a4c46] text-white uppercase text-sm tracking-widest hover:bg-[#4a3c36] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSoldOut 
-                ? 'Out of Stock' 
-                : isAdding 
-                  ? 'Adding...' 
+              {isSoldOut
+                ? 'Out of Stock'
+                : isAdding
+                  ? 'Adding...'
                   : !isLoggedIn && !isLoading
                     ? 'Login to Add to Cart'
                     : `Add to Bag — ₹${(product.price * quantity).toLocaleString()}`
               }
             </button>
-            
+
             {/* Additional Info */}
             <div className="border-t border-[#eee] pt-6 space-y-4">
               <div className="flex items-center space-x-3 text-sm text-[#5a4c46]">

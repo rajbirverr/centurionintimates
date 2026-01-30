@@ -6,38 +6,40 @@ import { verifyAdmin } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
 
 /**
- * Get hero image URL from database
+ * Get hero image settings from database
  */
-export async function getHeroImage(): Promise<string | null> {
+export async function getHeroImage(): Promise<{ url: string | null; altText: string | null }> {
   try {
     const supabase = createAdminClient()
-    
+
     const { data, error } = await supabase
       .from('site_settings')
-      .select('hero_image_url')
+      .select('hero_image_url, alt_text')
       .eq('setting_key', 'hero_image')
       .single()
 
     if (error) {
-      // If table doesn't exist or no setting found, return null
       if (error.code === 'PGRST116') {
-        return null
+        return { url: null, altText: null }
       }
       console.error('Error fetching hero image:', error)
-      return null
+      return { url: null, altText: null }
     }
 
-    return data?.hero_image_url || null
+    return {
+      url: data?.hero_image_url || null,
+      altText: data?.alt_text || null
+    }
   } catch (error: any) {
     console.error('Error in getHeroImage:', error)
-    return null
+    return { url: null, altText: null }
   }
 }
 
 /**
- * Update hero image URL (admin only)
+ * Update hero image URL and Alt Text (admin only)
  */
-export async function updateHeroImage(imageUrl: string): Promise<{ success: boolean; error?: string }> {
+export async function updateHeroImage(imageUrl: string, altText: string = ''): Promise<{ success: boolean; error?: string }> {
   try {
     const user = await getServerUser()
     if (!user) {
@@ -50,13 +52,14 @@ export async function updateHeroImage(imageUrl: string): Promise<{ success: bool
     }
 
     const supabase = createAdminClient()
-    
+
     // Use upsert to insert or update
     const { error } = await supabase
       .from('site_settings')
       .upsert({
         setting_key: 'hero_image',
         hero_image_url: imageUrl,
+        alt_text: altText,
         updated_at: new Date().toISOString()
       }, {
         onConflict: 'setting_key'
@@ -98,33 +101,32 @@ export async function uploadHeroImageToStorage(file: File): Promise<{ success: b
     }
 
     const supabase = createAdminClient()
-    
-    // Generate unique filename
-    const fileExt = file.name.split('.').pop()
-    const fileName = `hero-image-${Date.now()}.${fileExt}`
+
+    // Use the EXACT filename provided by the frontend for SEO
+    // The frontend constructs this as "centurionshoppe-[keyword]-[branding]-hero-banner.jpg"
+    const fileName = file.name
     const filePath = `hero/${fileName}`
 
     // Convert File to ArrayBuffer
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Upload to Supabase Storage - NEVER use upsert, always create new versioned file
-    // This ensures immutable URLs for aggressive caching
+    // Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('images')
       .upload(filePath, buffer, {
         contentType: file.type,
-        upsert: false, // Never overwrite - creates new versioned file
-        cacheControl: '31536000' // 1 year cache - immutable
+        upsert: true, // Allow overwriting if the name is identical (user intent)
+        cacheControl: '31536000'
       })
 
     if (uploadError) {
       console.error('Error uploading to storage:', uploadError)
       // Provide helpful error message for missing bucket
       if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
-        return { 
-          success: false, 
-          error: 'Storage bucket "images" not found. Please create it in Supabase Storage, or use URL mode instead.' 
+        return {
+          success: false,
+          error: 'Storage bucket "images" not found. Please create it in Supabase Storage, or use URL mode instead.'
         }
       }
       return { success: false, error: uploadError.message || 'Failed to upload image' }
@@ -145,35 +147,49 @@ export async function uploadHeroImageToStorage(file: File): Promise<{ success: b
 /**
  * Get showcase card image URL from database
  */
-export async function getShowcaseCardImage(): Promise<string | null> {
+/**
+ * Get showcase card settings from database
+ */
+export async function getShowcaseCardImage(): Promise<{ url: string | null; altText: string | null; title: string | null; subtitle: string | null }> {
   try {
     const supabase = createAdminClient()
-    
+
+    // Fetch all related settings in parallel
     const { data, error } = await supabase
       .from('site_settings')
-      .select('hero_image_url')
-      .eq('setting_key', 'showcase_card_image')
-      .single()
+      .select('setting_key, hero_image_url, alt_text')
+      .in('setting_key', ['showcase_card_image', 'showcase_card_title', 'showcase_card_subtitle'])
 
     if (error) {
-      if (error.code === 'PGRST116') {
-        return null
-      }
-      console.error('Error fetching showcase card image:', error)
-      return null
+      console.error('Error fetching showcase card settings:', error)
+      return { url: null, altText: null, title: null, subtitle: null }
     }
 
-    return data?.hero_image_url || null
+    const imageSetting = data.find(s => s.setting_key === 'showcase_card_image')
+    const titleSetting = data.find(s => s.setting_key === 'showcase_card_title')
+    const subtitleSetting = data.find(s => s.setting_key === 'showcase_card_subtitle')
+
+    return {
+      url: imageSetting?.hero_image_url || null,
+      altText: imageSetting?.alt_text || null,
+      title: titleSetting?.hero_image_url || null, // Storing text in hero_image_url column
+      subtitle: subtitleSetting?.hero_image_url || null
+    }
   } catch (error: any) {
     console.error('Error in getShowcaseCardImage:', error)
-    return null
+    return { url: null, altText: null, title: null, subtitle: null }
   }
 }
 
 /**
- * Update showcase card image URL (admin only)
+ * Update showcase card settings (admin only)
  */
-export async function updateShowcaseCardImage(imageUrl: string): Promise<{ success: boolean; error?: string }> {
+export async function updateShowcaseCardImage(
+  imageUrl: string,
+  altText: string = '',
+  title: string = '',
+  subtitle: string = ''
+): Promise<{ success: boolean; error?: string }> {
   try {
     const user = await getServerUser()
     if (!user) {
@@ -186,19 +202,36 @@ export async function updateShowcaseCardImage(imageUrl: string): Promise<{ succe
     }
 
     const supabase = createAdminClient()
-    
-    const { error } = await supabase
-      .from('site_settings')
-      .upsert({
+    const updatedAt = new Date().toISOString()
+
+    // Upsert all settings
+    const updates = [
+      {
         setting_key: 'showcase_card_image',
         hero_image_url: imageUrl,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'setting_key'
-      })
+        alt_text: altText,
+        updated_at: updatedAt
+      },
+      {
+        setting_key: 'showcase_card_title',
+        hero_image_url: title, // Storing title in image_url column
+        alt_text: null,
+        updated_at: updatedAt
+      },
+      {
+        setting_key: 'showcase_card_subtitle',
+        hero_image_url: subtitle, // Storing subtitle in image_url column
+        alt_text: null,
+        updated_at: updatedAt
+      }
+    ]
+
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert(updates, { onConflict: 'setting_key' })
 
     if (error) {
-      console.error('Error updating showcase card image:', error)
+      console.error('Error updating showcase card settings:', error)
       return { success: false, error: error.message }
     }
 
@@ -208,7 +241,7 @@ export async function updateShowcaseCardImage(imageUrl: string): Promise<{ succe
     return { success: true }
   } catch (error: any) {
     console.error('Error in updateShowcaseCardImage:', error)
-    return { success: false, error: error.message || 'Failed to update showcase card image' }
+    return { success: false, error: error.message || 'Failed to update showcase card settings' }
   }
 }
 
@@ -232,29 +265,29 @@ export async function uploadShowcaseCardImageToStorage(file: File): Promise<{ su
     }
 
     const supabase = createAdminClient()
-    
-    const fileExt = file.name.split('.').pop()
-    const fileName = `showcase-card-${Date.now()}.${fileExt}`
+
+    // Use the EXACT filename provided by the frontend for SEO
+    const fileName = file.name
     const filePath = `showcase/${fileName}`
 
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Upload to Supabase Storage - NEVER use upsert, always create new versioned file
+    // Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('images')
       .upload(filePath, buffer, {
         contentType: file.type,
-        upsert: false, // Never overwrite - creates new versioned file
-        cacheControl: '31536000' // 1 year cache - immutable
+        upsert: true, // Allow overwriting for SEO filenames
+        cacheControl: '31536000'
       })
 
     if (uploadError) {
       console.error('Error uploading to storage:', uploadError)
       if (uploadError.message?.includes('Bucket not found') || uploadError.message?.includes('not found')) {
-        return { 
-          success: false, 
-          error: 'Storage bucket "images" not found. Please create it in Supabase Storage, or use URL mode instead.' 
+        return {
+          success: false,
+          error: 'Storage bucket "images" not found. Please create it in Supabase Storage, or use URL mode instead.'
         }
       }
       return { success: false, error: uploadError.message || 'Failed to upload image' }
@@ -277,7 +310,7 @@ export async function uploadShowcaseCardImageToStorage(file: File): Promise<{ su
 export async function getHomepageCarouselProducts(): Promise<Array<{ id: number; name: string; location: string; image: string }> | null> {
   try {
     const supabase = createAdminClient()
-    
+
     const { data, error } = await supabase
       .from('site_settings')
       .select('hero_image_url')
@@ -323,7 +356,7 @@ export async function updateHomepageCarouselProducts(products: Array<{ id: numbe
     }
 
     const supabase = createAdminClient()
-    
+
     const { error } = await supabase
       .from('site_settings')
       .upsert({

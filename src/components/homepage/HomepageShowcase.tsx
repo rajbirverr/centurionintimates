@@ -2,15 +2,17 @@ import { Suspense } from 'react'
 import SafeImage from '@/components/common/SafeImage'
 import VisitShopButton from '@/components/homepage/VisitShopButton'
 import ShineCarousel from '@/components/homepage/ShineCarousel'
-import { getShowcaseCardImageUrl, getShineCarouselProducts } from '@/lib/actions/homepage-showcase'
+import { getShowcaseCardSettings, getShineCarouselProducts } from '@/lib/actions/homepage-showcase'
 
 async function ShowcaseContent() {
   // Fetch data in parallel
-  const [showcaseCardImageUrl, shineCarouselProducts] = await Promise.all([
-    getShowcaseCardImageUrl(),
+  const [showcaseSettings, shineCarouselProducts] = await Promise.all([
+    getShowcaseCardSettings(),
     getShineCarouselProducts()
   ])
-  
+
+  const { url: showcaseCardImageUrl, altText, title, subtitle } = showcaseSettings
+
   // Preload showcase image for instant reload
   const preloadLinks = showcaseCardImageUrl ? (
     <link
@@ -24,36 +26,39 @@ async function ShowcaseContent() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* First Jewelry Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-black group cursor-pointer shadow-lg">
+      <div className="relative overflow-hidden rounded-3xl bg-black group cursor-pointer shadow-lg transform transition-transform duration-500 hover:scale-[1.01]">
         <div className="aspect-[4/5] relative">
           {showcaseCardImageUrl ? (
             <>
               <SafeImage
                 src={showcaseCardImageUrl}
-                alt="Luxury jewelry collection"
+                alt={altText || "Luxury intimate collection"}
                 fill
-                className="object-cover object-center"
+                className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
                 style={{ objectPosition: "center 10%" }}
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
-                <h3 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight" style={{
+
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none w-full">
+                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight drop-shadow-md" style={{
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                   fontWeight: '700',
-                  letterSpacing: '-0.02em'
+                  letterSpacing: '-0.02em',
+                  color: '#A47864'
                 }}>
-                  The<br />
-                  <span style={{ fontWeight: '700' }}>Jewelry</span>
+                  {title || "Intimate Attire"}
                 </h3>
-                <p className="text-white text-sm sm:text-base font-normal mb-4" style={{
+                <p className="text-sm sm:text-base font-normal mb-4 text-[#A47864]/90" style={{
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                   fontWeight: '400',
                   letterSpacing: '0.01em'
                 }}>
-                  Collection
+                  {subtitle || "Collection"}
                 </p>
-                <VisitShopButton />
+                <div className="pointer-events-auto">
+                  <VisitShopButton />
+                </div>
               </div>
             </>
           ) : (
@@ -89,8 +94,8 @@ export default function HomepageShowcase() {
     <section className="mb-16 px-4 md:px-8 lg:px-12" aria-label="Featured Collections">
       <div className="max-w-[1440px] mx-auto">
         <div className="text-center mb-10">
-          <h2 className="uppercase text-[#5a4c46] tracking-[0.2em] text-xs font-light mb-2">FEATURED COLLECTIONS</h2>
-          <h3 className="text-[#784D2C] text-xl font-normal" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Our Exclusive Designs</h3>
+          <h2 className="uppercase tracking-[0.2em] text-sm font-light mb-2" style={{ color: '#A47864' }}>FEATURED COLLECTIONS</h2>
+          <h3 className="text-2xl font-normal" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em', color: '#A47864' }}>Our Exclusive Designs</h3>
         </div>
         <Suspense fallback={<ShowcaseSkeleton />}>
           <ShowcaseContent />

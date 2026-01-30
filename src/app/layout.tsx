@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import "./globals.css";
-import NavBar from "@/components/NavBar";
+import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { SessionRefresher } from "@/components/SessionRefresher";
 import PreloadImages from "@/components/homepage/PreloadImages";
 
 export const metadata: Metadata = {
-  title: "Centurion - Premium Jewelry & Accessories",
-  description: "Discover our handcrafted jewelry collection. Centurion makes jewelry that's playful, pretty, and totally extra — for days when you wanna shine like you mean it.",
-  keywords: "jewelry, accessories, bangles, earrings, bracelets, necklace, rings, anklets, fashion, centurion",
+  title: "Intimate - Premium Intimate Apparel",
+  description: "Discover our handcrafted intimate apparel collection. Intimate makes pieces that are playful, pretty, and totally extra — for days when you wanna shine like you mean it.",
+  keywords: "lingerie, bras, panties, sleepwear, shapewear, intimate apparel, fashion, intimate",
   openGraph: {
-    title: "Centurion - Premium Jewelry & Accessories",
-    description: "Discover our handcrafted jewelry collection.",
+    title: "Intimate - Premium Intimate Apparel",
+    description: "Discover our handcrafted intimate apparel collection.",
     type: "website",
     locale: "en_IN",
-    siteName: "Centurion",
+    siteName: "Intimate",
   },
 };
 
@@ -58,7 +58,7 @@ export default function RootLayout({
           <SessionRefresher />
         </Suspense>
         <CartProvider>
-          <NavBar />
+          <SiteHeader />
           {children}
           <Footer />
         </CartProvider>

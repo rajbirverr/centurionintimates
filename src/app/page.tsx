@@ -2,25 +2,27 @@ import { Suspense } from 'react'
 import { Metadata } from 'next'
 import HomepageHero from '@/components/homepage/HomepageHero'
 import HomepageShowcase from '@/components/homepage/HomepageShowcase'
-import HomepageProductGrid from '@/components/homepage/HomepageProductGrid'
-import HomepageSetsSection from '@/components/homepage/HomepageSetsSection'
+import FeaturedDripGrid from '@/components/homepage/FeaturedDripGrid'
+import FeaturedSets from "@/components/homepage/FeaturedSets";
 import HomepageCategoryCarousel from '@/components/homepage/HomepageCategoryCarousel'
 import { getHomepageSetsData } from '@/lib/actions/homepage-sets'
-import { getHeroImageUrl } from '@/lib/actions/homepage-hero'
-import { getShowcaseCardImageUrl } from '@/lib/actions/homepage-showcase'
 
 export const metadata: Metadata = {
-  title: 'CENTURION - Luxury Jewelry & Shine',
-  description: 'Centurion makes jewelry that\'s playful, pretty, and totally extra — for days when you wanna shine like you mean it.',
+  title: 'INTIMATE - Premium Intimate Apparel',
+  description: 'Intimate makes apparel that\'s playful, pretty, and totally extra — for days when you wanna shine like you mean it.',
 };
 
 // Note: revalidate is not compatible with cacheComponents
 // Caching is handled automatically by cacheComponents
 
+// Force page rebuild to fix hydration
 export default async function HomePage() {
   // Start fetching homepageSetsData but don't await - let it stream in
   // This allows the page to start rendering immediately
-  const homepageSetsDataPromise = getHomepageSetsData()
+  const homepageSetsDataPromise = getHomepageSetsData().catch(err => {
+    console.error('Failed to fetch sets data:', err)
+    return { section: null, filters: [], products: [] }
+  })
 
   return (
     <main className="App">
@@ -31,7 +33,7 @@ export default async function HomePage() {
       <HomepageShowcase />
 
       {/* Product Grid - streams in with Suspense */}
-      <HomepageProductGrid />
+      <FeaturedDripGrid />
 
       {/* Homepage Sets Section - streams in with Suspense */}
       <Suspense fallback={<div className="mb-16 h-96 bg-gray-100 animate-pulse"></div>}>
@@ -46,6 +48,11 @@ export default async function HomePage() {
 
 // Wrapper component to handle the promise
 async function HomepageSetsSectionWrapper({ dataPromise }: { dataPromise: Promise<any> }) {
-  const homepageSetsData = await dataPromise
-  return <HomepageSetsSection initialData={homepageSetsData} />
+  try {
+    const homepageSetsData = await dataPromise
+    return <FeaturedSets initialData={homepageSetsData} />
+  } catch (error) {
+    console.error('Error in HomepageSetsSectionWrapper:', error)
+    return <FeaturedSets initialData={null} />
+  }
 }

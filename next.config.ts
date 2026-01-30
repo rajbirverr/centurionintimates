@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Production optimizations
   poweredByHeader: false, // Remove X-Powered-By header
-  
+
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb', // Increase limit for image uploads
@@ -12,12 +12,12 @@ const nextConfig: NextConfig = {
   },
   // Enable Partial Prerendering via cacheComponents
   cacheComponents: true,
-  
+
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'zzmhjllcfwbjgzvfypbv.supabase.co',
+        hostname: 'pptjeuqyxdsslosvwege.supabase.co',
       },
       {
         protocol: 'https',
@@ -39,14 +39,14 @@ const nextConfig: NextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  
+
   // Compiler optimizations
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn'], // Keep error and warn logs
     } : false,
   },
-  
+
   async headers() {
     return [
       {

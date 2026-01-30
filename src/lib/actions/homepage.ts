@@ -17,6 +17,7 @@ export interface DripCarouselProduct {
     name: string
     description: string
     image: string
+    secondaryImage?: string | null
     price: number
 }
 

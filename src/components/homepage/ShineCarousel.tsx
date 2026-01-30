@@ -169,7 +169,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                                         fontWeight: '700',
                                         letterSpacing: '-0.02em',
-                                        color: '#d4cdc3'
+                                        color: '#B0E2FF'
                                     }}>
                                         {product.name}
                                     </h3>
@@ -178,7 +178,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                                         fontWeight: '400',
                                         letterSpacing: '0.01em',
-                                        color: '#d4cdc3'
+                                        color: '#B0E2FF'
                                     }}>
                                         {product.location}
                                     </p>
@@ -190,12 +190,12 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                             e.stopPropagation()
                                         }}
                                     >
-                                        <button className="px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 hover:bg-[#d4cdc3]/10" style={{
+                                        <button className="px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 hover:bg-[#B0E2FF]/10" style={{
                                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                                             fontWeight: '500',
                                             letterSpacing: '0.05em',
-                                            color: '#d4cdc3',
-                                            borderColor: '#d4cdc3'
+                                            color: '#B0E2FF',
+                                            borderColor: '#B0E2FF'
                                         }}>
                                             VIEW PRODUCT
                                         </button>

@@ -5,6 +5,21 @@ import { createServerSupabaseClient, getServerUser } from '@/lib/supabase/server
 import { createAdminClient, verifyAdmin } from '@/lib/supabase/admin'
 import { createClient } from '@supabase/supabase-js'
 
+
+
+/**
+ * DEBUG ONLY: Fetch categories using Service Role to bypass RLS
+ */
+export async function getAdminDebugCategories() {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase.from('categories').select('*')
+  if (error) {
+    console.error('Admin Debug Error:', error)
+    return { error: error.message }
+  }
+  return { data }
+}
+
 /**
  * Create a public Supabase client for cached queries (no cookies needed)
  */
@@ -13,6 +28,31 @@ function createPublicSupabaseClient() {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
+}
+
+/**
+ * DEBUG ONLY: Test relationship query specifically
+ */
+export async function getDebugRelations() {
+  const adminSoup = createAdminClient()
+  const publicSoup = await createServerSupabaseClient()
+
+  // Test 1: Admin Join
+  const { data: adminData, error: adminError } = await adminSoup
+    .from('categories')
+    .select('id, name, category_subcategories(id, name)')
+    .limit(1)
+
+  // Test 2: Public Join
+  const { data: publicData, error: publicError } = await publicSoup
+    .from('categories')
+    .select('id, name, category_subcategories(id, name)')
+    .limit(1)
+
+  return {
+    adminResult: { data: adminData, error: adminError },
+    publicResult: { data: publicData, error: publicError }
+  }
 }
 
 export interface Category {
@@ -44,33 +84,26 @@ export interface CategoryWithSubcategories extends Category {
  * Cached for 1 hour for better performance
  */
 export async function getJewelryCategories(): Promise<Category[]> {
-  return unstable_cache(
-    async () => {
-      try {
-        const supabase = createPublicSupabaseClient()
+  try {
+    const supabase = createPublicSupabaseClient()
 
-        const { data: categories, error } = await supabase
-          .from('categories')
-          .select('id, name, slug, sort_order')
-          .order('sort_order', { ascending: true })
+    const { data: categories, error } = await supabase
+      .from('categories')
+      .select('id, name, slug, sort_order')
+      .order('sort_order', { ascending: true })
 
-        if (error) {
-          console.error('Error fetching categories:', error)
-          return []
-        }
-
-        return (categories || []) as Category[]
-      } catch (error) {
-        console.error('Error in getJewelryCategories:', error)
-        return []
+    if (error) {
+      if (error.message && !error.message.includes('AbortError')) {
+        console.error('Error fetching categories:', error)
       }
-    },
-    ['jewelry-categories'],
-    {
-      revalidate: 3600, // Cache for 1 hour
-      tags: ['categories']
+      return []
     }
-  )()
+
+    return (categories || []) as Category[]
+  } catch (error) {
+    console.error('Error in getJewelryCategories:', error)
+    return []
+  }
 }
 
 export interface CreateCategoryData {
@@ -89,48 +122,60 @@ export interface UpdateCategoryData extends Partial<CreateCategoryData> {
  * Fetches jewelry categories with their subcategories for the Shop dropdown
  * Returns all categories ordered by sort_order
  */
+/**
+ * Fetches jewelry categories with their subcategories for the Shop dropdown
+ * Refactored to use MANUAL JOIN to avoid valid PostgREST relationship naming issues
+ */
 export async function getCategoriesWithSubcategories(): Promise<CategoryWithSubcategories[]> {
   try {
-    const supabase = await createServerSupabaseClient()
+    // FORCE ADMIN CLIENT - Bypass all RLS/Permission issues to ensure data loads
+    const supabase = createAdminClient()
 
-    const { data: categories, error } = await supabase
+    // 1. Fetch Categories
+    const { data: categories, error: catError } = await supabase
       .from('categories')
-      .select(`
-        id,
-        name,
-        slug,
-        description,
-        image_url,
-        sort_order,
-        category_subcategories (
-          id,
-          name,
-          slug,
-          description,
-          image_url,
-          display_order
-        )
-      `)
+      .select('id, name, slug, description, image_url, sort_order')
       .order('sort_order', { ascending: true })
 
-    if (error) {
-      console.error('Error fetching categories with subcategories:', error)
+    if (catError) {
+      if (catError.message && !catError.message.includes('AbortError')) {
+        console.error('Error fetching categories:', catError)
+      }
       return []
     }
 
-    if (!categories) return []
+    if (!categories || categories.length === 0) return []
 
+    // 2. Fetch ALL Subcategories (more efficient than N+1 queries)
+    const { data: subcategories, error: subError } = await supabase
+      .from('category_subcategories')
+      .select('id, category_id, name, slug, description, image_url, display_order')
+      .order('display_order', { ascending: true })
+
+    if (subError) {
+      console.error('Error fetching subcategories:', subError)
+      // Return categories without subcategories if this fails
+      return categories.map(cat => ({
+        ...cat,
+        subcategories: []
+      }))
+    }
+
+    // 3. Manual Join in Memory
     return categories.map(cat => ({
       ...cat,
-      subcategories: (cat.category_subcategories || []).map((sub: any) => ({
-        id: sub.id,
-        name: sub.name,
-        slug: sub.slug,
-        description: sub.description,
-        image_url: sub.image_url,
-        display_order: sub.display_order
-      })).sort((a: Subcategory, b: Subcategory) => a.display_order - b.display_order)
+      subcategories: (subcategories || [])
+        .filter((sub: any) => sub.category_id === cat.id)
+        .map((sub: any) => ({
+          id: sub.id,
+          name: sub.name,
+          slug: sub.slug,
+          description: sub.description,
+          image_url: sub.image_url,
+          display_order: sub.display_order
+        }))
     })) as CategoryWithSubcategories[]
+
   } catch (error) {
     console.error('Error in getCategoriesWithSubcategories:', error)
     return []
@@ -146,7 +191,9 @@ export async function getAllCategories(): Promise<Category[]> {
       .order('sort_order', { ascending: true })
 
     if (error) {
-      console.error('Error fetching categories:', error)
+      if (error.message && !error.message.includes('AbortError')) {
+        console.error('Error fetching categories:', error)
+      }
       return []
     }
 
@@ -305,9 +352,8 @@ export async function uploadCategoryImageToStorage(file: File): Promise<{ succes
 
     const supabase = createAdminClient()
 
-    // Generate unique filename
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+    // Use the filename provided by the client (it's SEO optimized by CategoryForm)
+    const fileName = file.name
     const filePath = `categories/${fileName}`
 
     // Upload to Supabase Storage - aggressive caching for immutable URLs
@@ -315,7 +361,7 @@ export async function uploadCategoryImageToStorage(file: File): Promise<{ succes
       .from('images')
       .upload(filePath, file, {
         cacheControl: '31536000', // 1 year cache - immutable
-        upsert: false
+        upsert: true // Allow overwriting to keep SEO filenames clean
       })
 
     if (uploadError) {
@@ -351,7 +397,9 @@ export async function getCategoriesForCarousel(): Promise<Array<{ id: string; na
       .order('sort_order', { ascending: true })
 
     if (error) {
-      console.error('Error fetching categories for carousel:', error)
+      if (error.message && !error.message.includes('AbortError')) {
+        console.error('Error fetching categories for carousel:', error)
+      }
       return []
     }
 

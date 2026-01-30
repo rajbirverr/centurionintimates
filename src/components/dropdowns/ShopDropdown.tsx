@@ -20,12 +20,33 @@ const ShopDropdown: React.FC<ShopDropdownProps> = ({
   onMouseLeave,
   categories
 }) => {
+  const setsCategory: CategoryWithSubcategories = {
+    id: 'sets-static',
+    name: 'Sets',
+    slug: 'sets',
+    description: 'Curated matching sets for every mood',
+    // Use the same image as the homepage section for consistency
+    image_url: '/sets-background.jpg',
+    subcategories: [
+      { id: 'sets-all', name: 'Shop All Sets', slug: 'sets', description: 'View all matching sets', category_id: 'sets-static', display_order: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+    ]
+  };
+
+  const displayCategories = [...categories];
+  // Ensure Sets is present, if not, add it
+  if (!displayCategories.find(c => c.slug === 'sets')) {
+    displayCategories.push(setsCategory);
+  }
+
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(
-    categories.length > 0 ? categories[0].slug : null
+    displayCategories.length > 0 ? displayCategories[0].slug : null
   )
 
-  const activeCategory = categories.find(cat => cat.slug === hoveredCategory) || categories[0]
+  const activeCategory = displayCategories.find(cat => cat.slug === hoveredCategory) || displayCategories[0]
   const activeSubcategories = activeCategory?.subcategories || []
+
+  // Update effect to reset hover if categories change
+  // Not needed strictly as we initialize state 
 
   return (
     <BaseDropdown
@@ -35,19 +56,18 @@ const ShopDropdown: React.FC<ShopDropdownProps> = ({
       onMouseLeave={onMouseLeave}
     >
       {/* Categories tabs */}
-      {categories.length > 0 && (
+      {displayCategories.length > 0 && (
         <div className="flex justify-center border-b border-[#e5e2e0]">
-          {categories.map((category, index) => {
+          {displayCategories.map((category, index) => {
             const isActive = category.slug === hoveredCategory || (index === 0 && !hoveredCategory)
             return (
               <button
                 key={category.id}
                 onMouseEnter={() => setHoveredCategory(category.slug)}
-                className={`px-6 py-4 text-sm uppercase tracking-[0.1em] transition-colors ${
-                  isActive
-                    ? 'border-b-2 border-[#5a4c46] text-[#5a4c46]'
-                    : 'text-[#84756f] hover:text-[#5a4c46]'
-                }`}
+                className={`px-6 py-4 text-sm uppercase tracking-[0.1em] transition-colors ${isActive
+                  ? 'border-b-2 border-[#5a4c46] text-[#5a4c46]'
+                  : 'text-[#84756f] hover:text-[#5a4c46]'
+                  }`}
               >
                 {category.name}
               </button>
@@ -57,7 +77,7 @@ const ShopDropdown: React.FC<ShopDropdownProps> = ({
       )}
 
       {/* Subcategories list with category image - always show same layout */}
-      {categories.length > 0 && (
+      {displayCategories.length > 0 && (
         <div className="bg-white py-8">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex" style={{ gap: '192px' }}>

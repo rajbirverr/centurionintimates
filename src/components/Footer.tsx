@@ -50,7 +50,7 @@ const Footer = () => {
   }
 
   // Use database data if available, otherwise use defaults
-  const brandName = footerData?.settings?.brand_name || 'Centurion'
+  const brandName = footerData?.settings?.brand_name || 'Intimate'
   const newsletterDescription = footerData?.settings?.newsletter_description || `Be the first to discover new drops, special offers, and all things ${brandName}`
   // Handle SMS enabled - could be boolean or string "true"/"false"
   const smsEnabledRaw = footerData?.settings?.sms_enabled
@@ -83,7 +83,7 @@ const Footer = () => {
     { label: 'store finder', url: '#' },
     { label: 'environmental and social partnerships', url: '#' },
     { label: 'careers', url: '#' },
-    { label: 'centurion tv', url: '#' },
+    { label: 'intimate tv', url: '#' },
     { label: 'blog', url: '#' }
   ]
 

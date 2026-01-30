@@ -11,7 +11,7 @@ export const getDripCarouselProducts = unstable_cache(
   async (): Promise<DripCarouselProduct[]> => {
     try {
       const supabase = createAdminClient()
-      
+
       // Get products
       const { data: products } = await supabase
         .from('products')
@@ -27,18 +27,34 @@ export const getDripCarouselProducts = unstable_cache(
       const productIds = products.map(p => p.id)
       const { data: images } = await supabase
         .from('product_images')
-        .select('product_id, image_url, is_primary')
+        .select('product_id, image_url, is_primary, sort_order')
         .in('product_id', productIds)
-        .eq('is_primary', true)
+        .order('is_primary', { ascending: false })
+        .order('sort_order', { ascending: true })
 
       return products.map(product => {
-        const productImage = images?.find(img => img.product_id === product.id)
-        
+        // Filter images for this product
+        const productImages = images?.filter(img => img.product_id === product.id) || []
+
+        let imageUrl = ''
+        let secondaryImageUrl: string | null = null
+
+        if (productImages.length > 0) {
+          // First image is primary (because of sorting)
+          imageUrl = productImages[0].image_url
+
+          // Second image is secondary if available
+          if (productImages.length > 1) {
+            secondaryImageUrl = productImages[1].image_url
+          }
+        }
+
         return {
           id: product.id,
           name: product.name,
           description: product.short_description || product.description || '',
-          image: productImage?.image_url || '',
+          image: imageUrl,
+          secondaryImage: secondaryImageUrl,
           price: Number(product.price) || 0
         }
       })

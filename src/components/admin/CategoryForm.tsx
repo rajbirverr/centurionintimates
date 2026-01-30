@@ -2,15 +2,15 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
-  createCategory, 
-  updateCategory, 
+import {
+  createCategory,
+  updateCategory,
   uploadCategoryImageToStorage,
   createSubcategory,
   updateSubcategory,
   deleteSubcategory,
-  type Category, 
-  type CreateCategoryData, 
+  type Category,
+  type CreateCategoryData,
   type UpdateCategoryData,
   type Subcategory,
   type CreateSubcategoryData,
@@ -93,9 +93,20 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
     }
     reader.readAsDataURL(file)
 
+    // Auto-SEO: Rename file
+    const brand = 'centurionintimate'
+    // Use current slug or generate from name
+    const slug = formData.slug.trim() || formData.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    const fileExt = file.name.split('.').pop() || 'jpg'
+    const seoFilename = `${brand}-${slug}.${fileExt}`
+
+    // Create new file with SEO name
+    const seoFile = new File([file], seoFilename, { type: file.type })
+
     // Upload file
     setUploading(true)
-    const result = await uploadCategoryImageToStorage(file)
+    // Pass the renamed file
+    const result = await uploadCategoryImageToStorage(seoFile)
     setUploading(false)
 
     if (result.success && result.url) {
@@ -287,9 +298,18 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
     }
     reader.readAsDataURL(file)
 
+    // Auto-SEO: Rename subcategory file
+    const brand = 'centurionintimate'
+    // Use subcategory slug/name. If empty, fallback to timestamp
+    const slug = subcategoryForm.slug.trim() || subcategoryForm.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `subcat-${Date.now()}`
+    const fileExt = file.name.split('.').pop() || 'jpg'
+    const seoFilename = `${brand}-${slug}.${fileExt}`
+
+    const seoFile = new File([file], seoFilename, { type: file.type })
+
     // Upload file
     setSubcategoryUploading(true)
-    const result = await uploadCategoryImageToStorage(file)
+    const result = await uploadCategoryImageToStorage(seoFile)
     setSubcategoryUploading(false)
 
     if (result.success && result.url) {
@@ -380,28 +400,26 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Category Image
           </label>
-          
+
           {/* Mode Toggle */}
           <div className="flex gap-2 mb-3">
             <button
               type="button"
               onClick={() => setInputMode('upload')}
-              className={`px-4 py-2 text-sm rounded-md transition-colors ${
-                inputMode === 'upload'
+              className={`px-4 py-2 text-sm rounded-md transition-colors ${inputMode === 'upload'
                   ? 'bg-[#5a4c46] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+                }`}
             >
               Upload Image
             </button>
             <button
               type="button"
               onClick={() => setInputMode('url')}
-              className={`px-4 py-2 text-sm rounded-md transition-colors ${
-                inputMode === 'url'
+              className={`px-4 py-2 text-sm rounded-md transition-colors ${inputMode === 'url'
                   ? 'bg-[#5a4c46] text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+                }`}
             >
               Enter URL
             </button>
@@ -484,7 +502,7 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
               <h3 className="text-lg font-medium text-[#5a4c46] mb-4">
                 {editingSubcategoryId ? 'Edit Subcategory' : 'Add New Subcategory'}
               </h3>
-              <div 
+              <div
                 className="grid grid-cols-1 md:grid-cols-2 gap-4"
                 onClick={(e) => e.stopPropagation()}
                 onKeyDown={(e) => {
@@ -564,7 +582,7 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Subcategory Image (Optional)
                   </label>
-                  
+
                   {/* Mode Toggle */}
                   <div className="flex gap-2 mb-3">
                     <button
@@ -574,11 +592,10 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
                         e.stopPropagation()
                         setSubcategoryInputMode('upload')
                       }}
-                      className={`px-4 py-2 text-sm rounded-md transition-colors ${
-                        subcategoryInputMode === 'upload'
+                      className={`px-4 py-2 text-sm rounded-md transition-colors ${subcategoryInputMode === 'upload'
                           ? 'bg-[#5a4c46] text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
+                        }`}
                     >
                       Upload Image
                     </button>
@@ -589,11 +606,10 @@ export default function CategoryForm({ category, initialSubcategories = [] }: Ca
                         e.stopPropagation()
                         setSubcategoryInputMode('url')
                       }}
-                      className={`px-4 py-2 text-sm rounded-md transition-colors ${
-                        subcategoryInputMode === 'url'
+                      className={`px-4 py-2 text-sm rounded-md transition-colors ${subcategoryInputMode === 'url'
                           ? 'bg-[#5a4c46] text-white'
                           : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                      }`}
+                        }`}
                     >
                       Enter URL
                     </button>

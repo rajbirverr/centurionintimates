@@ -1,5 +1,5 @@
-import { getHeroImageUrl } from '@/lib/actions/homepage-hero'
-import { getShowcaseCardImageUrl } from '@/lib/actions/homepage-showcase'
+import { getHeroImageSettings } from '@/lib/actions/homepage-hero'
+import { getShowcaseCardSettings } from '@/lib/actions/homepage-showcase'
 
 /**
  * Server component that preloads critical images
@@ -7,10 +7,13 @@ import { getShowcaseCardImageUrl } from '@/lib/actions/homepage-showcase'
  */
 export default async function PreloadImages() {
   // Fetch images in parallel (non-blocking)
-  const [heroImageUrl, showcaseImageUrl] = await Promise.all([
-    getHeroImageUrl().catch(() => null),
-    getShowcaseCardImageUrl().catch(() => null)
+  const [heroSettings, showcaseSettings] = await Promise.all([
+    getHeroImageSettings().catch(() => ({ url: null })),
+    getShowcaseCardSettings().catch(() => ({ url: null }))
   ])
+
+  const heroImageUrl = heroSettings?.url
+  const showcaseImageUrl = showcaseSettings?.url
 
   return (
     <>

@@ -1,8 +1,8 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'About Us - centurionshoppe',
-  description: 'Learn about centurionshoppe\'s journey and mission to empower women through beautiful jewelry.',
+  title: 'About Us - Intimate',
+  description: 'Learn about Intimate\'s journey and mission to empower women through beautiful intimate apparel.',
 };
 
 export default function AboutPage() {
@@ -24,13 +24,13 @@ export default function AboutPage() {
                 Our Journey
               </h2>
               <p className="text-base md:text-lg text-[#84756f] leading-relaxed max-w-3xl mx-auto">
-                centurionshoppe was born in 1999 in the vibrant city of Visakhapatnam, founded by our visionary leader, <span className="font-medium text-[#5a4c46]">Gurvinder Verma</span>. What began as a dream to create beautiful jewelry has evolved into a movement dedicated to empowering women.
+                Intimate was born in 1999 in the vibrant city of Visakhapatnam, founded by our visionary leader, <span className="font-medium text-[#5a4c46]">Gurvinder Verma</span>. What began as a dream to create beautiful intimate apparel has evolved into a movement dedicated to empowering women.
               </p>
             </div>
 
             <div className="mb-8">
               <p className="text-base md:text-lg text-[#84756f] leading-relaxed max-w-3xl mx-auto">
-                For over two decades, Gurvinder Verma has been at the helm, shaping centurionshoppe with a singular vision: to empower women through our work, our culture, and our craft. Our mission is brought to life through a powerful chain of working women who travel across regions, carefully selecting and curating each piece with passion and expertise.
+                For over two decades, Gurvinder Verma has been at the helm, shaping Intimate with a singular vision: to empower women through our work, our culture, and our craft. Our mission is brought to life through a powerful chain of working women who travel across regions, carefully selecting and curating each piece with passion and expertise.
               </p>
             </div>
 

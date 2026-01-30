@@ -8,9 +8,10 @@ interface ImageUploadProps {
   productId: string
   initialImages?: ProductImage[]
   onImagesChange?: (images: ProductImage[]) => void
+  productName?: string // Added for SEO automation
 }
 
-export default function ImageUpload({ productId, initialImages = [], onImagesChange }: ImageUploadProps) {
+export default function ImageUpload({ productId, initialImages = [], onImagesChange, productName = '' }: ImageUploadProps) {
   const [images, setImages] = useState<ProductImage[]>(initialImages)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -26,7 +27,11 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
     setError(null)
 
     try {
-      for (const file of Array.from(files)) {
+      const fileArray = Array.from(files)
+
+      for (let i = 0; i < fileArray.length; i++) {
+        let file = fileArray[i]
+
         // Validate file type
         if (!file.type.startsWith('image/')) {
           setError('Only image files are allowed')
@@ -38,9 +43,29 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
           // AVIF is allowed
         }
 
+        // SEO Automation: Rename file and generate Alt Text
+        let seoAltText = file.name
+
+        if (productName) {
+          // 1. Generate Strict SEO Filename: centurionshoppe-[product-slug]-[index].ext
+          const brand = 'centurionintimate'
+          const slug = productName.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+          const extension = file.name.split('.').pop() || 'jpg'
+          // Add timestamp/random to ensure uniqueness in batch
+          const uniqueId = `${Date.now().toString().slice(-4)}${i}`
+          const seoFilename = `${brand}-${slug}-${uniqueId}.${extension}`
+
+          // Rename file object
+          file = new File([file], seoFilename, { type: file.type })
+
+          // 2. Generate Intelligent Alt Text: "Luxury [Product Name] by CenturionShoppe"
+          // Keep it under 4-6 words as requested
+          seoAltText = `Luxury ${productName} by CenturionIntimate`
+        }
+
         // Upload to Supabase Storage first
         const uploadResult = await uploadProductImageToStorage(file)
-        
+
         if (!uploadResult.success || !uploadResult.url) {
           setError(uploadResult.error || 'Failed to upload image to storage')
           continue
@@ -50,17 +75,17 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
         const result = await uploadProductImage({
           product_id: productId,
           image_url: uploadResult.url,
-          alt_text: file.name,
-          sort_order: images.length,
-          is_primary: images.length === 0
+          alt_text: seoAltText, // Use generated SEO Alt Text
+          sort_order: images.length + i,
+          is_primary: images.length === 0 && i === 0
         })
 
         if (result.success && result.data) {
-          const newImages = [...images, result.data]
-          setImages(newImages)
-          if (onImagesChange) {
-            onImagesChange(newImages)
-          }
+          setImages(prev => {
+            const newImages = [...prev, result.data!]
+            if (onImagesChange) onImagesChange(newImages)
+            return newImages
+          })
         } else {
           setError(result.error || 'Failed to save image to database')
         }
@@ -209,14 +234,14 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
           imageUrl={editingImage.url}
           onSave={async (editedImageUrl) => {
             if (!editingImage.id) return
-            
+
             try {
               setSavingEditedImage(true)
               setError(null)
 
               // editedImageUrl is already base64 from ImageEditor
               const currentImage = images.find(img => img.id === editingImage.id)
-              
+
               if (!currentImage) {
                 setError('Could not find original image data')
                 return
@@ -231,7 +256,7 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
               // Upload the edited image as a new image entry
               // IMPORTANT: Preserve is_primary status from the original image
               const wasPrimary = currentImage.is_primary || false
-              
+
               const result = await uploadProductImage({
                 product_id: productId,
                 image_url: editedImageUrl,
@@ -245,7 +270,7 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
                 console.error('Upload failed:', result.error)
                 return
               }
-              
+
               // CRITICAL: Ensure the new image is set as primary if the old one was primary
               // This must happen BEFORE deleting the old image
               if (wasPrimary && result.data.id) {
@@ -257,25 +282,25 @@ export default function ImageUpload({ productId, initialImages = [], onImagesCha
                   return
                 }
               }
-              
+
               // Delete the old image entry AFTER ensuring the new one is primary
               const deleteResult = await deleteProductImage(editingImage.id, productId)
               if (!deleteResult.success) {
                 console.warn('Failed to delete old image:', deleteResult.error)
                 // Don't fail the whole operation, but log the warning
               }
-              
+
               // Update local state - replace old image with new one
-              const updatedImages = images.map(img => 
+              const updatedImages = images.map(img =>
                 img.id === editingImage.id ? result.data : img
               )
               setImages(updatedImages)
               if (onImagesChange) {
                 onImagesChange(updatedImages)
               }
-              
+
               setEditingImage(null)
-              
+
               // Refresh the page to show the updated image
               window.location.reload()
             } catch (err: any) {
