@@ -19,7 +19,7 @@ export default function HomepageHero() {
         {/* Cream Rectangle Container - Text Content */}
         <div className="w-full mb-6 rounded-b-2xl px-4 py-6 md:py-8" style={{
           backgroundColor: '#d4cdc3',
-          backgroundImage: 'url(/intimate-bg-lace.webp), url(/intimate-bg-lace.jpg)',
+          backgroundImage: 'url(/intimate-bg-lace.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}>

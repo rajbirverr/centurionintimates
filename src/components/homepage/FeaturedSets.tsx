@@ -82,7 +82,7 @@ const InteractiveTitle = ({ section }: { section: any }) => {
                 backgroundClip: 'border-box',
                 WebkitBackgroundClip: 'border-box'
             } : {
-                backgroundImage: 'url(/sets-background.webp), url(/sets-background.jpg)',
+                backgroundImage: 'url(/sets-background.webp)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundClip: 'text',
@@ -234,7 +234,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                 <div className="max-w-[1440px] mx-auto">
                     {/* Cream Rectangle Container - Title and Filters */}
                     <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
-                        backgroundImage: 'url(/sets-background.webp), url(/sets-background.jpg)',
+                        backgroundImage: 'url(/sets-background.webp)',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundColor: '#d4cdc3' // Fallback
