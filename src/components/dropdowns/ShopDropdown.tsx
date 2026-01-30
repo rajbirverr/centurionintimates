@@ -25,10 +25,11 @@ const ShopDropdown: React.FC<ShopDropdownProps> = ({
     name: 'Sets',
     slug: 'sets',
     description: 'Curated matching sets for every mood',
+    sort_order: 0,
     // Use the same image as the homepage section for consistency
     image_url: '/sets-background.jpg',
     subcategories: [
-      { id: 'sets-all', name: 'Shop All Sets', slug: 'sets', description: 'View all matching sets', category_id: 'sets-static', display_order: 1, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }
+      { id: 'sets-all', name: 'Shop All Sets', slug: 'sets', description: 'View all matching sets', category_id: 'sets-static', display_order: 1 }
     ]
   };
 
