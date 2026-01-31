@@ -15,25 +15,6 @@ export default function HomepageHero() {
           <Suspense fallback={<div className="absolute inset-0 w-full h-full rounded-t-2xl overflow-hidden bg-gray-100 animate-pulse"></div>}>
             <HomepageHeroImage />
           </Suspense>
-
-          {/* Text overlay on hero image */}
-          <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="text-center px-4">
-              <p className="text-white text-2xl md:text-3xl lg:text-4xl font-bold drop-shadow-lg" style={{
-                fontFamily: "'Rhode', sans-serif",
-                textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
-              }}>
-                The best jewelry pieces are on CenturionShoppe -{' '}
-                <a
-                  href="/all-products"
-                  className="hover:underline transition-all duration-300"
-                  style={{ color: '#4ade80', fontWeight: 'bold' }}
-                >
-                  shop now
-                </a>
-              </p>
-            </div>
-          </div>
         </div>
         {/* Cream Rectangle Container - Text Content */}
         <div className="w-full mb-6 rounded-b-2xl px-4 py-6 md:py-8" style={{
