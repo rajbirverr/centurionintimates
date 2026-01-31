@@ -16,13 +16,20 @@ export default function HomepageHero() {
             <HomepageHeroImage />
           </Suspense>
 
+
           {/* Shop Your Style text overlay - left corner */}
           <div className="absolute top-8 left-8 z-10">
             <h2
-              className="text-white text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide drop-shadow-lg"
+              className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide"
               style={{
                 fontFamily: "'Rhode', sans-serif",
-                textShadow: '2px 2px 8px rgba(0,0,0,0.5)'
+                backgroundImage: 'url(/silver-liquid-texture.jpg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                color: 'transparent',
+                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
               }}
             >
               Shop Your Style
