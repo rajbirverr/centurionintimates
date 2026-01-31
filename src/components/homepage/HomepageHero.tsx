@@ -15,6 +15,19 @@ export default function HomepageHero() {
           <Suspense fallback={<div className="absolute inset-0 w-full h-full rounded-t-2xl overflow-hidden bg-gray-100 animate-pulse"></div>}>
             <HomepageHeroImage />
           </Suspense>
+
+          {/* Shop Your Style text overlay - left corner */}
+          <div className="absolute top-8 left-8 z-10">
+            <h2
+              className="text-white text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide drop-shadow-lg"
+              style={{
+                fontFamily: "'Rhode', sans-serif",
+                textShadow: '2px 2px 8px rgba(0,0,0,0.5)'
+              }}
+            >
+              Shop Your Style
+            </h2>
+          </div>
         </div>
         {/* Cream Rectangle Container - Text Content */}
         <div className="w-full mb-6 rounded-b-2xl px-4 py-6 md:py-8" style={{
