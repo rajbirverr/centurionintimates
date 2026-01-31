@@ -16,24 +16,47 @@ export default function HomepageHero() {
             <HomepageHeroImage />
           </Suspense>
 
-
-          {/* Shop Your Style text overlay - left corner */}
-          <div className="absolute top-8 left-8 z-10">
-            <h2
-              className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide"
-              style={{
-                fontFamily: "'Rhode', sans-serif",
-                backgroundImage: 'url(/silver-liquid-texture.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                color: 'transparent',
-                filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
-              }}
+          {/* Shop Now Button with Liquid Glass Effect */}
+          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10">
+            <a
+              href="/shop"
+              className="group relative inline-block"
             >
-              Shop Your Style
-            </h2>
+              {/* Liquid glass button */}
+              <div className="relative overflow-hidden rounded-full px-8 py-4 sm:px-10 sm:py-5 transition-all duration-500 hover:scale-105"
+                style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  boxShadow: `
+                    0 8px 32px rgba(31, 38, 135, 0.37),
+                    inset 0 2px 8px rgba(255, 255, 255, 0.4),
+                    inset 0 -2px 8px rgba(0, 0, 0, 0.1)
+                  `,
+                }}
+              >
+                {/* Shine/glossy effect overlay */}
+                <div
+                  className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, transparent 50%, rgba(255, 255, 255, 0.3) 100%)',
+                    animation: 'liquidShimmer 3s ease-in-out infinite'
+                  }}
+                />
+
+                {/* Button text */}
+                <span
+                  className="relative text-white text-xl sm:text-2xl md:text-3xl font-semibold tracking-wide uppercase drop-shadow-lg"
+                  style={{
+                    fontFamily: "'Rhode', sans-serif",
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
+                  }}
+                >
+                  Shop Now
+                </span>
+              </div>
+            </a>
           </div>
         </div>
         {/* Cream Rectangle Container - Text Content */}

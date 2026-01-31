@@ -82,13 +82,14 @@ const InteractiveTitle = ({ section }: { section: any }) => {
                 backgroundClip: 'border-box',
                 WebkitBackgroundClip: 'border-box'
             } : {
-                backgroundImage: 'url(/silver-liquid-texture.jpg)',
+                backgroundImage: 'url(/sets-background.webp)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 color: 'transparent',
-                WebkitTextStroke: '0px'
+                // Add chalky pink text border
+                WebkitTextStroke: '1px #E3C4BE'
             }}
         >
             {section.title}
