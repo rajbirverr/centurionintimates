@@ -8,7 +8,7 @@ import HeroReviewSection from './HeroReviewSection'
  */
 export default function HomepageHero() {
   return (
-    <section className="mb-16 mt-4 px-4 md:px-8 lg:px-12 relative" aria-label="Hero Section">
+    <section className="mb-6 mt-4 px-4 md:px-8 lg:px-12 relative" aria-label="Hero Section">
       <div className="max-w-[1440px] mx-auto">
         {/* Full-width image container */}
         <div className="w-full relative">

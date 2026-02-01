@@ -216,7 +216,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                     <div className="bg-[#FAF9F7] rounded-2xl overflow-hidden">
 
                         {/* Filters Section */}
-                        <div className="px-4 md:px-6 lg:px-8 pt-4 pb-6 md:pt-6 md:pb-8">
+                        <div className="px-4 md:px-8 pt-4 pb-6 md:pt-6 md:pb-8">
 
                             {/* Filter Buttons Container - EXACT Honeylove styling with flex-row */}
                             <div className="flex justify-center">
@@ -242,11 +242,11 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                         </div>
 
                         {/* Products Section */}
-                        <div className="px-4 md:px-6 py-6 md:py-8 border-t border-black/5">
+                        <div className="px-4 md:px-8 py-6 md:py-8 border-t border-black/5">
 
                             {/* Products Grid - EXACT Honeylove layout */}
                             {products.length > 0 ? (
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-4 md:mb-6">
                                     {products.map((product) => (
                                         <div
                                             key={product.id}
@@ -259,7 +259,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                             <div className="flex flex-col justify-between items-start w-full grow">
                                                 <div className="flex flex-col justify-start items-start w-full">
                                                     {/* Product Image - EXACT aspect ratio */}
-                                                    <div className="relative box-border aspect-[100/127] w-full mb-4 overflow-hidden bg-white rounded-lg">
+                                                    <div className="relative box-border aspect-[3/4] w-full mb-4 overflow-hidden bg-white rounded-2xl">
                                                         {(() => {
                                                             const imageUrl = getAbsoluteImageUrl(product.image_url)
                                                             return imageUrl ? (
@@ -267,7 +267,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                                     key={imageUrl}
                                                                     src={imageUrl}
                                                                     alt={product.name}
-                                                                    className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                                                                    className="absolute inset-0 w-full h-full object-cover rounded-2xl"
                                                                     loading="lazy"
                                                                     onError={(e) => {
                                                                         console.error('Image failed to load:', imageUrl);

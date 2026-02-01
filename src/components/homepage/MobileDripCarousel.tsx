@@ -31,17 +31,28 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
     // Detect mobile device
     useEffect(() => {
         const checkMobile = () => {
-            setIsMobile(window.matchMedia('(hover: none)').matches);
+            setIsMobile(window.matchMedia('(hover: none), (pointer: coarse)').matches);
         };
         checkMobile();
+
+        // Robust fallback: if any touch event happens, we are on a device supporting touch
+        const onTouch = () => setIsMobile(true);
+        window.addEventListener('touchstart', onTouch, { once: true });
+
         window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+            window.removeEventListener('touchstart', onTouch);
+        };
     }, []);
 
     const hasSecondaryImage = product.secondaryImage && product.secondaryImage !== product.image;
 
     // Mobile: tap to toggle, Desktop: hover
-    const handleInteraction = useCallback(() => {
+    const handleInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+        // Prevent event from bubbling to parent components (like Carousel)
+        if (e && e.stopPropagation) e.stopPropagation();
+
         if (isMobile && hasSecondaryImage) {
             setShowSecondary(prev => !prev);
         }
@@ -50,27 +61,25 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
     return (
         <div className="flex flex-col items-center text-center h-full">
             <div
-                className="mb-5 h-96 w-full overflow-hidden relative rounded-2xl cursor-pointer"
+                className="mb-5 w-full aspect-[3/4] overflow-hidden relative rounded-2xl cursor-pointer bg-white"
                 onClick={handleInteraction}
                 onMouseEnter={() => !isMobile && hasSecondaryImage && setShowSecondary(true)}
                 onMouseLeave={() => !isMobile && setShowSecondary(false)}
             >
                 {/* Primary Image */}
                 <div
-                    className="absolute inset-0 will-change-transform"
+                    className="absolute inset-0"
                     style={{
                         opacity: showSecondary ? 0 : 1,
-                        transform: showSecondary ? 'scale(1.02)' : 'scale(1)',
-                        transition: 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1)',
-                        backfaceVisibility: 'hidden',
-                        WebkitBackfaceVisibility: 'hidden'
+                        transition: 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                 >
                     <SafeImage
                         src={product.image}
                         alt={product.name}
                         fill
-                        className="object-cover"
+                        className="rounded-t-2xl"
+                        style={{ objectFit: 'cover' }}
                         priority={index < 3}
                         loading={index < 3 ? 'eager' : 'lazy'}
                         sizes="(max-width: 1024px) 33vw, 20vw"
@@ -80,20 +89,18 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
                 {/* Secondary Image (only render if exists) */}
                 {hasSecondaryImage && (
                     <div
-                        className="absolute inset-0 will-change-transform"
+                        className="absolute inset-0"
                         style={{
                             opacity: showSecondary ? 1 : 0,
-                            transform: showSecondary ? 'scale(1)' : 'scale(0.98)',
-                            transition: 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1)',
-                            backfaceVisibility: 'hidden',
-                            WebkitBackfaceVisibility: 'hidden'
+                            transition: 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1)',
                         }}
                     >
                         <SafeImage
                             src={product.secondaryImage!}
                             alt={`${product.name} - alternate view`}
                             fill
-                            className="object-cover"
+                            className="rounded-t-2xl"
+                            style={{ objectFit: 'cover' }}
                             loading="lazy"
                             sizes="(max-width: 1024px) 33vw, 20vw"
                         />
@@ -147,27 +154,6 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
 
 const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
     const [api, setApi] = useState<CarouselApi | null>(null);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    // Handle carousel API events
-    useEffect(() => {
-        if (!api) {
-            return;
-        }
-
-        // Update current slide when the carousel changes
-        const onSelect = () => {
-            setCurrentIndex(api.selectedScrollSnap());
-        };
-
-        api.on("select", onSelect);
-        // Set initial index
-        setCurrentIndex(api.selectedScrollSnap());
-
-        return () => {
-            api.off("select", onSelect);
-        };
-    }, [api]);
 
     return (
         <div className="mb-16 px-4 md:px-8 lg:px-12">
@@ -180,97 +166,47 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                         <h3 className="text-2xl md:text-3xl font-light text-[#5C4D3C]" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Drip for Days Under ₹500</h3>
                     </div>
 
-                    {/* Mobile View - Split layout with fixed info */}
+                    {/* Mobile View - Standard Carousel with 2 columns */}
                     <div className="md:hidden">
-                        {/* Image Carousel */}
                         <Carousel
                             setApi={setApi}
                             className="w-full"
                             opts={{
-                                align: "center",
+                                align: "start",
                                 loop: true,
                             }}
                         >
-                            <CarouselContent className="-ml-0">
+                            <CarouselContent>
                                 {products.length > 0 ? (
-                                    products.map((product) => (
-                                        <CarouselItem key={product.id} className="basis-full pl-0">
-                                            <div className="p-0">
-                                                <div className="h-[600px] md:h-72 w-full overflow-hidden relative rounded-t-2xl bg-gray-100">
-                                                    <SafeImage
-                                                        src={product.image}
-                                                        alt={product.name}
-                                                        fill
-                                                        className="rounded-t-2xl"
-                                                        style={{ objectFit: 'cover', objectPosition: 'top center' }}
-                                                        priority={true}
-                                                        sizes="100vw"
-                                                    />
-                                                </div>
-                                            </div>
+                                    products.map((product, index) => (
+                                        <CarouselItem key={product.id} className="basis-[50%] px-[10px] h-full">
+                                            <ProductCard product={product} index={index} />
                                         </CarouselItem>
                                     ))
                                 ) : (
-                                    <CarouselItem className="basis-full pl-0">
+                                    <CarouselItem className="basis-full px-[10px]">
                                         <div className="p-1 flex justify-center items-center h-56 text-gray-500">
                                             <p>No products available. Add products from the admin panel.</p>
                                         </div>
                                     </CarouselItem>
                                 )}
                             </CarouselContent>
-                            {/* White Rectangle Container - Arrows Section */}
-                            <div className="pt-4 pb-1" style={{ backgroundColor: '#d4cdc3' }}>
+                            {/* Navigation Arrows */}
+                            <div className="pt-4 pb-1" style={{ backgroundColor: '#FAF9F7' }}>
                                 <div className="flex justify-center items-center">
                                     <CarouselPrevious className="relative static transform-none mx-2 h-8 w-8 bg-transparent border-none text-[#5a4c46]" />
                                     <CarouselNext className="relative static transform-none mx-2 h-8 w-8 bg-transparent border-none text-[#5a4c46]" />
                                 </div>
                             </div>
                         </Carousel>
-
-                        {/* White Rectangle Container - Product Info Section */}
-                        <div className="pb-4 rounded-b-2xl" style={{ backgroundColor: '#d4cdc3' }}>
-                            {/* Fixed Product Info */}
-                            <div className="text-center pt-1">
-                                <h4 className="text-sm font-light text-[#5a4c46] mb-2 tracking-wide">
-                                    {products[currentIndex]?.name}
-                                </h4>
-                                <div className="text-xs text-[#5a4c46]/80 mb-3 px-4 leading-relaxed max-w-[300px] mx-auto">
-                                    <p className="line-clamp-2 mb-1">
-                                        {products[currentIndex]?.description}
-                                    </p>
-                                    <button
-                                        className="text-[#784D2C] text-xs underline hover:no-underline"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            if (products[currentIndex]?.id) {
-                                                window.location.href = `/product/${products[currentIndex].id}`;
-                                            }
-                                        }}
-                                    >
-                                        for more information click
-                                    </button>
-                                </div>
-                                <button
-                                    className="w-full max-w-[180px] py-2 px-4 bg-white text-[#5a4c46] text-[11px] uppercase tracking-[0.2em] font-light border border-[#ddd] shadow-sm hover:bg-transparent hover:border-[#5a4c46] hover:text-[#5a4c46] transition-all duration-200 mx-auto block"
-                                >
-                                    ADD TO BAG
-                                    <span className="ml-2">₹{products[currentIndex]?.price}</span>
-                                </button>
-
-                                {/* Carousel indicator */}
-                                <div className="mt-3 text-xs text-[#5a4c46]">
-                                    {currentIndex + 1} / {products.length}
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Desktop Grid View */}
                     {products.length > 0 ? (
                         <div className="hidden md:block">
-                            <div className="grid grid-cols-3 lg:grid-cols-5 gap-[9px]">
+                            <div className="grid grid-cols-3 lg:grid-cols-5 gap-5">
                                 {products.map((product, index) => (
-                                    <div key={product.id}>
+                                    <div key={product.id} className="w-full">
                                         <ProductCard product={product} index={index} />
                                     </div>
                                 ))}

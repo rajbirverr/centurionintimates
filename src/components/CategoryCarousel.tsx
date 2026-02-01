@@ -55,8 +55,8 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
                 {displayItems.length > 0 ? (
                   displayItems.map((category) => (
                     <CarouselItem key={category.id} className="basis-1/5">
-                      <div className="pr-[5px] cursor-pointer group">
-                        <div className="aspect-[3/4] overflow-hidden mb-3 bg-[#f5f5f5] relative">
+                      <div className="pr-5 cursor-pointer group">
+                        <div className="aspect-[3/4] overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl">
                           <SafeImage
                             src={category.image}
                             alt={`Luxury ${category.name} by CenturionIntimate`}
@@ -98,9 +98,9 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
               <CarouselContent>
                 {displayItems.length > 0 ? (
                   displayItems.map((category) => (
-                    <CarouselItem key={category.id} className="basis-3/4 sm:basis-1/2">
+                    <CarouselItem key={category.id} className="basis-1/2">
                       <div className="pr-[5px] cursor-pointer">
-                        <div className="aspect-[3/4] overflow-hidden mb-3 bg-[#f5f5f5] relative">
+                        <div className="aspect-[3/4] overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl">
                           <SafeImage
                             src={category.image}
                             alt={`Luxury ${category.name} by CenturionIntimate`}
