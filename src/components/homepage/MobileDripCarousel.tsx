@@ -170,14 +170,14 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
     }, [api]);
 
     return (
-        <div className="mb-16">
-            {/* Combined section with white background */}
-            <div className="pt-6 pb-6 md:pt-12 md:pb-12 px-4 md:px-8 lg:px-12 shadow-sm border-y border-gray-100 overflow-visible bg-white">
-                <div className="max-w-[1440px] mx-auto">
+        <div className="mb-16 px-4 md:px-8 lg:px-12">
+            {/* Rhode-style Cream Container */}
+            <div className="max-w-[1440px] mx-auto">
+                <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 px-4 md:px-8 overflow-visible">
                     {/* Section Title and Description */}
-                    <div className="text-center mb-2 md:mb-10">
-                        <h2 className="uppercase tracking-[0.2em] text-sm font-light mb-1" style={{ color: '#8B5A3C' }}>EXPLORE</h2>
-                        <h3 className="text-2xl font-normal" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em', color: '#8B5A3C' }}>Drip for Days Under ₹500</h3>
+                    <div className="text-center mb-4 md:mb-10">
+                        <h2 className="uppercase tracking-[0.2em] text-[11px] font-medium mb-2 text-[#8B7355]">EXPLORE</h2>
+                        <h3 className="text-2xl md:text-3xl font-light text-[#5C4D3C]" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Drip for Days Under ₹500</h3>
                     </div>
 
                     {/* Mobile View - Split layout with fixed info */}

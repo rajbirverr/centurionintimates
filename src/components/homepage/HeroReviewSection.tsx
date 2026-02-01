@@ -37,8 +37,8 @@ export default function HeroReviewSection() {
     }, []);
 
     return (
-        <section className="relative w-full bg-white -mt-4">
-            <div className="max-w-4xl mx-auto px-6 py-10 md:py-12">
+        <section className="relative w-full bg-white -mt-4 px-4 md:px-8 lg:px-12">
+            <div className="max-w-[1440px] mx-auto py-10 md:py-12">
 
                 {/* Rhode-Style Clean Card */}
                 <div className="bg-[#FAF9F7] rounded-2xl p-8 md:p-10">
