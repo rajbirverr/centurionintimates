@@ -4,20 +4,16 @@ export default async function HomepageHeroImage() {
   const { url: heroImageUrl, altText } = await getHeroImageSettings()
 
   return (
-    <div className="absolute inset-0 w-full h-full rounded-t-2xl overflow-hidden">
+    <div className="w-full rounded-t-2xl overflow-hidden">
       {heroImageUrl ? (
-        <div
-          className="w-full h-full"
-          role="img"
-          aria-label={altText || "Hero Image"}
-          style={{
-            backgroundImage: `url('${heroImageUrl}')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center 2%'
-          }}
-        ></div>
+        <img
+          src={heroImageUrl}
+          alt={altText || "Hero Image"}
+          className="w-full h-auto object-contain"
+          style={{ display: 'block' }}
+        />
       ) : (
-        <div className="w-full h-full bg-gray-100 animate-pulse"></div>
+        <div className="w-full h-[450px] bg-gray-100 animate-pulse"></div>
       )}
     </div>
   )
