@@ -26,7 +26,7 @@ async function ShowcaseContent() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* First Jewelry Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-black group cursor-pointer shadow-lg transform transition-transform duration-500 hover:scale-[1.01]">
+      <div className="relative overflow-hidden rounded-2xl bg-[#FAF9F7] group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.06)] transform transition-transform duration-500 hover:scale-[1.01]">
         <div className="aspect-[4/5] relative">
           {showcaseCardImageUrl ? (
             <>
@@ -45,11 +45,11 @@ async function ShowcaseContent() {
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                   fontWeight: '700',
                   letterSpacing: '-0.02em',
-                  color: '#8B5A3C'
+                  color: '#5C4D3C'
                 }}>
                   {title || "Intimate Attire"}
                 </h3>
-                <p className="text-sm sm:text-base font-normal mb-4 text-[#8B5A3C]/90" style={{
+                <p className="text-sm sm:text-base font-normal mb-4 text-[#8B7355]" style={{
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                   fontWeight: '400',
                   letterSpacing: '0.01em'
@@ -68,7 +68,7 @@ async function ShowcaseContent() {
       </div>
 
       {/* Second Jewelry Card with Shine Carousel */}
-      <div className="relative overflow-hidden rounded-3xl bg-black group shadow-lg">
+      <div className="relative overflow-hidden rounded-2xl bg-[#FAF9F7] group shadow-[0_4px_20px_rgba(0,0,0,0.06)]">
         <div className="aspect-[4/5] relative">
           <ShineCarousel products={shineCarouselProducts} />
         </div>
@@ -81,7 +81,7 @@ function ShowcaseSkeleton() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {[1, 2].map((i) => (
-        <div key={i} className="relative overflow-hidden rounded-3xl bg-gray-200 animate-pulse">
+        <div key={i} className="relative overflow-hidden rounded-2xl bg-[#FAF9F7] animate-pulse">
           <div className="aspect-[4/5]"></div>
         </div>
       ))}
@@ -91,11 +91,12 @@ function ShowcaseSkeleton() {
 
 export default function HomepageShowcase() {
   return (
-    <section className="mb-16 px-4 md:px-8 lg:px-12" aria-label="Featured Collections">
+    <section className="bg-white pt-4 pb-12 md:pt-6 md:pb-16 px-4 md:px-8 lg:px-12" aria-label="Featured Collections">
       <div className="max-w-[1440px] mx-auto">
+        {/* Rhode-Style Header */}
         <div className="text-center mb-10">
-          <h2 className="uppercase tracking-[0.2em] text-sm font-light mb-2" style={{ color: '#8B5A3C' }}>FEATURED COLLECTIONS</h2>
-          <h3 className="text-2xl font-normal" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em', color: '#8B5A3C' }}>Our Exclusive Designs</h3>
+          <span className="text-[#8B7355] text-[11px] uppercase tracking-[0.2em] font-medium">Featured Collections</span>
+          <h2 className="text-[#3D3229] text-2xl md:text-3xl font-light mt-2" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Our Exclusive Designs</h2>
         </div>
         <Suspense fallback={<ShowcaseSkeleton />}>
           <ShowcaseContent />

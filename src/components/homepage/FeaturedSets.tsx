@@ -58,38 +58,13 @@ interface FeaturedSetsSectionProps {
     } | null
 }
 
-// Helper component for the interactive title to keep logic clean and isolated
+// Simple Rhode-style title - no animation, solid light brown text
 const InteractiveTitle = ({ section }: { section: any }) => {
-    const [isHovered, setIsHovered] = useState(false)
-    const [isFocused, setIsFocused] = useState(false)
-    const isActive = isHovered || isFocused
-
     return (
         <h2
-            className="font-medium text-[36px] leading-[100%] md:text-[56px] mx-auto max-w-[300px] md:max-w-[800px] mb-12 md:mb-16 text-center cursor-pointer outline-none transition-all duration-300"
-            // Add interaction handlers
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            // Make focusable for mobile click/tap
-            tabIndex={0}
-            style={isActive ? {
-                color: '#F5F5DC', // Cream
-                textShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                WebkitTextStroke: '0px',
-                backgroundImage: 'none',
-                backgroundClip: 'border-box',
-                WebkitBackgroundClip: 'border-box'
-            } : {
-                backgroundImage: 'url(/sets-background.webp)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                color: 'transparent',
-                // Add chalky pink text border
-                WebkitTextStroke: '1px #E3C4BE'
+            className="font-medium text-[36px] leading-[100%] md:text-[56px] mx-auto max-w-[300px] md:max-w-[800px] text-center"
+            style={{
+                color: '#7AAFC9' // Solid light blue text
             }}
         >
             {section.title}
@@ -232,15 +207,13 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
         >
             <div className="px-4 md:px-8 lg:px-12">
                 <div className="max-w-[1440px] mx-auto">
-                    {/* Cream Rectangle Container - Title and Filters */}
-                    <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
-                        backgroundImage: 'url(/sets-background.webp)',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundColor: '#d4cdc3' // Fallback
-                    }}>
-                        {/* Title - EXACT Honeylove styling */}
+                    {/* Title - Above the background */}
+                    <div className="text-center mb-2">
                         <InteractiveTitle section={section} />
+                    </div>
+
+                    {/* Filter Container */}
+                    <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 pt-4 pb-6 md:pt-6 md:pb-8 mb-6 bg-[#FAF9F7]">
 
                         {/* Filter Buttons Container - EXACT Honeylove styling with flex-row */}
                         <div className="flex justify-center">
@@ -255,7 +228,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                 ? 'shadow-sm'
                                                 : 'bg-transparent hover:bg-black/5'
                                                 }`}
-                                            style={isActive ? { backgroundColor: '#d4cdc3' } : {}}
+                                            style={isActive ? { backgroundColor: '#E8E4DE' } : {}}
                                         >
                                             {filter.label}
                                         </button>
@@ -270,7 +243,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
 
                         {/* Products Grid - EXACT Honeylove layout */}
                         {products.length > 0 ? (
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10 md:mb-14">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-4 md:mb-6">
                                 {products.map((product) => (
                                     <div
                                         key={product.id}

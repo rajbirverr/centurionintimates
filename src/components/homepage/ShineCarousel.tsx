@@ -109,8 +109,8 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
 
     if (products.length === 0) {
         return (
-            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-gray-100">
-                <p className="text-gray-400 text-sm font-light">No products in carousel</p>
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-[#FAF9F7]">
+                <p className="text-[#8B7355] text-sm font-light">No products in carousel</p>
             </div>
         )
     }
@@ -118,7 +118,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
     return (
         <div className="absolute inset-0 z-10">
             {/* Carousel Container */}
-            <div className="absolute inset-0 w-full h-full overflow-hidden rounded-3xl">
+            <div className="absolute inset-0 w-full h-full overflow-hidden rounded-2xl">
                 {/* Carousel items */}
                 <div
                     className="relative w-full h-full"
@@ -140,7 +140,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                         return (
                             <div
                                 key={product.id}
-                                className="absolute inset-0 transition-all duration-500 ease-in-out overflow-hidden rounded-3xl"
+                                className="absolute inset-0 transition-all duration-500 ease-in-out overflow-hidden rounded-2xl"
                                 style={{
                                     opacity,
                                     zIndex,
@@ -169,7 +169,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                                         fontWeight: '700',
                                         letterSpacing: '-0.02em',
-                                        color: '#B0E2FF'
+                                        color: '#5C4D3C'
                                     }}>
                                         {product.name}
                                     </h3>
@@ -178,7 +178,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                                         fontWeight: '400',
                                         letterSpacing: '0.01em',
-                                        color: '#B0E2FF'
+                                        color: '#8B7355'
                                     }}>
                                         {product.location}
                                     </p>
@@ -190,12 +190,12 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                             e.stopPropagation()
                                         }}
                                     >
-                                        <button className="px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 hover:bg-[#B0E2FF]/10" style={{
+                                        <button className="px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 hover:bg-[#5C4D3C]/10" style={{
                                             fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
                                             fontWeight: '500',
                                             letterSpacing: '0.05em',
-                                            color: '#B0E2FF',
-                                            borderColor: '#B0E2FF'
+                                            color: '#5C4D3C',
+                                            borderColor: '#5C4D3C'
                                         }}>
                                             VIEW PRODUCT
                                         </button>
@@ -223,9 +223,9 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                             >
                                 <div className="relative flex items-center justify-center">
                                     {isActive ? (
-                                        <div className="w-2 h-2 bg-white rounded-full"></div>
+                                        <div className="w-2 h-2 bg-[#5C4D3C] rounded-full"></div>
                                     ) : (
-                                        <div className="w-1.5 h-1.5 bg-white/50 rounded-full hover:bg-white/70 transition-all duration-300"></div>
+                                        <div className="w-1.5 h-1.5 bg-[#5C4D3C]/30 rounded-full hover:bg-[#5C4D3C]/50 transition-all duration-300"></div>
                                     )}
                                 </div>
                             </button>

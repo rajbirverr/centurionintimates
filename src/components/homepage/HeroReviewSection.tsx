@@ -1,26 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { PinkButton } from '@/components/ui/PinkButton';
 
 export default function HeroReviewSection() {
-    // Force refresh
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [currentReview, setCurrentReview] = useState(0);
     const [fade, setFade] = useState(true);
 
     const reviews = [
         {
-            text: "Bravo I've just washed and blow dried my hair. I am totally blown away by the quality of the products.",
-            author: "ALEXANDRA MIRO"
-        },
-        {
-            text: "The fit is absolutely divine. I've never felt more confident and comfortable in lingerie before.",
-            author: "SOPHIE L."
-        },
-        {
             text: "Finally found a brand that understands luxury and comfort. The aesthetics are unmatched.",
-            author: "JESSICA K."
+            author: "Jessica K.",
+            verified: true
+        },
+        {
+            text: "The fit is absolutely divine. I've never felt more confident and comfortable.",
+            author: "Sophie L.",
+            verified: true
+        },
+        {
+            text: "Bravo! I am totally blown away by the quality of the products.",
+            author: "Alexandra M.",
+            verified: true
         }
     ];
 
@@ -30,110 +31,130 @@ export default function HeroReviewSection() {
             setTimeout(() => {
                 setCurrentReview((prev) => (prev + 1) % reviews.length);
                 setFade(true);
-            }, 500); // Wait for fade out
-        }, 5000); // Change every 5 seconds
-
+            }, 300);
+        }, 5000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="w-full bg-[#E3C4BE] rounded-b-2xl border-t border-black/10 -mt-2 relative z-10 shadow-sm transition-all duration-300 overflow-hidden">
-            {/* High Fashion "Ticker" Grid Layout */}
-            <div className="flex flex-col md:flex-row items-stretch min-h-[80px] md:h-[90px]">
+        <section className="relative w-full bg-white -mt-4">
+            <div className="max-w-4xl mx-auto px-6 py-10 md:py-12">
 
-                {/* Left: The Review (Editorial Voice) */}
-                <div className="flex-1 px-6 md:px-10 flex flex-col justify-center border-b md:border-b-0 md:border-r border-black/10 py-6 md:py-0 relative group cursor-default">
-                    <div className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${fade ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-                        <div className="flex items-baseline gap-3 mb-1">
-                            <span className="font-['Rhode'] text-[10px] uppercase tracking-[0.2em] text-black/40 pt-1">Review</span>
-                            <p className="font-serif italic text-xl md:text-2xl text-black leading-none">
-                                "{reviews[currentReview].text}"
-                            </p>
+                {/* Rhode-Style Clean Card */}
+                <div className="bg-[#FAF9F7] rounded-2xl p-8 md:p-10">
+
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">
+                        <span className="text-[#5C4D3C] text-[12px] md:text-[14px] uppercase tracking-[0.15em] font-medium">
+                            What Customers Say About Our Offline Store
+                        </span>
+                        <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <svg key={star} className="w-3.5 h-3.5 text-[#5C4D3C]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            ))}
                         </div>
-                        <p className="font-sans text-[10px] font-bold tracking-[0.2em] text-black/60 uppercase pl-[60px]">
-                            — {reviews[currentReview].author}
+                    </div>
+
+                    {/* Quote */}
+                    <div className={`transition-all duration-400 ${fade ? 'opacity-100' : 'opacity-0'}`}>
+                        <p className="text-[#3D3229] text-lg md:text-xl leading-relaxed mb-4 font-light">
+                            "{reviews[currentReview].text}"
                         </p>
-                    </div>
-                    {/* Subtle Progress Bar */}
-                    <div className="absolute bottom-0 left-0 h-[2px] bg-black/5 w-full">
-                        <div
-                            key={currentReview}
-                            className="h-full bg-black/20 w-full origin-left animate-[shimmer_5s_linear]"
-                        />
-                    </div>
-                </div>
 
-                {/* Right: The Interaction (Technical Action) */}
-                <div className="w-full md:w-[280px] flex items-center justify-center p-4 bg-[#E3C4BE] md:bg-black/5 hover:bg-white/20 transition-colors duration-300">
-                    <button
-                        onClick={() => setIsFormOpen(!isFormOpen)}
-                        className="group relative w-full h-full min-h-[50px] flex items-center justify-between px-6 border border-black/10 rounded-xl hover:border-black transition-all duration-300"
-                    >
-                        <div className="flex flex-col items-start text-left">
-                            <span className="font-['Rhode'] text-[14px] text-black tracking-wide leading-none mb-1 group-hover:translate-x-1 transition-transform duration-300">
-                                {isFormOpen ? 'CLOSE' : 'SHARE YOURS'}
+                        <div className="flex items-center gap-2">
+                            <span className="text-[#5C4D3C] text-sm font-medium">
+                                {reviews[currentReview].author}
                             </span>
-                            <span className="font-sans text-[9px] text-black/50 uppercase tracking-widest group-hover:text-black/70 transition-colors">
-                                Join the list
-                            </span>
+                            {reviews[currentReview].verified && (
+                                <span className="text-[#8B7355] text-[10px] uppercase tracking-wider">
+                                    Verified
+                                </span>
+                            )}
                         </div>
-                        <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center group-hover:bg-black group-hover:text-[#E3C4BE] transition-all duration-300">
-                            {/* "Plus" or "Close" Icon */}
+                    </div>
+
+                    {/* Navigation Dots */}
+                    <div className="flex items-center gap-2 mt-6">
+                        {reviews.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentReview(index)}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${currentReview === index
+                                    ? 'bg-[#5C4D3C]'
+                                    : 'bg-[#D4CFC8] hover:bg-[#B8B0A5]'
+                                    }`}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Divider */}
+                    <div className="h-[1px] bg-[#E8E4DE] my-6" />
+
+                    {/* Share Section */}
+                    <div className="flex items-center justify-between">
+                        <span className="text-[#8B7355] text-[11px] uppercase tracking-[0.15em]">
+                            Share your experience
+                        </span>
+                        <button
+                            onClick={() => setIsFormOpen(!isFormOpen)}
+                            className="text-[#5C4D3C] text-[11px] uppercase tracking-[0.15em] font-medium hover:text-[#3D3229] transition-colors flex items-center gap-2"
+                        >
+                            {isFormOpen ? 'Close' : 'Write a review'}
                             <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className={`w-4 h-4 transition-transform duration-500 ${isFormOpen ? 'rotate-45' : 'rotate-0'}`}
-                                viewBox="0 0 24 24"
+                                className={`w-3 h-3 transition-transform duration-300 ${isFormOpen ? 'rotate-180' : ''}`}
                                 fill="none"
+                                viewBox="0 0 24 24"
                                 stroke="currentColor"
-                                strokeWidth="1.5"
+                                strokeWidth="2"
                             >
-                                <path d="M12 5V19M5 12H19" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
-                        </div>
-                    </button>
+                        </button>
+                    </div>
+
+                    {/* Form Expansion */}
+                    <div className={`transition-all duration-500 overflow-hidden ${isFormOpen ? 'max-h-[400px] opacity-100 mt-6' : 'max-h-0 opacity-0'}`}>
+                        <form className="space-y-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2">Name</label>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-white border border-[#E8E4DE] rounded-lg px-4 py-2.5 text-sm text-[#3D3229] placeholder-[#B8B0A5] focus:outline-none focus:border-[#5C4D3C] transition-colors"
+                                        placeholder="Your name"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2">Email</label>
+                                    <input
+                                        type="email"
+                                        className="w-full bg-white border border-[#E8E4DE] rounded-lg px-4 py-2.5 text-sm text-[#3D3229] placeholder-[#B8B0A5] focus:outline-none focus:border-[#5C4D3C] transition-colors"
+                                        placeholder="your@email.com"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2">Review</label>
+                                <textarea
+                                    rows={3}
+                                    className="w-full bg-white border border-[#E8E4DE] rounded-lg px-4 py-2.5 text-sm text-[#3D3229] placeholder-[#B8B0A5] focus:outline-none focus:border-[#5C4D3C] transition-colors resize-none"
+                                    placeholder="Share your experience..."
+                                ></textarea>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-[#5C4D3C] text-white rounded-lg py-3 text-[11px] uppercase tracking-[0.15em] font-medium hover:bg-[#4A3E30] transition-colors"
+                            >
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            {/* Elegant Reveal Dropdown */}
-            <div className={`overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${isFormOpen ? 'max-h-[800px] border-t border-black/10' : 'max-h-0 border-t-0'}`}>
-                <div className="bg-[#E3C4BE]/50 p-8 md:p-12">
-                    <form className="max-w-xl mx-auto space-y-8">
-                        {/* Title */}
-                        <div className="text-center space-y-2">
-                            <h3 className="font-['Rhode'] text-2xl text-black">Make your mark</h3>
-                            <p className="font-serif italic text-black/60">Tell us how it feels.</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="group relative">
-                                <input type="text" placeholder=" " className="peer w-full bg-transparent border-b border-black/20 py-2 text-black focus:outline-none focus:border-black transition-colors" />
-                                <label className="absolute left-0 top-2 text-[10px] font-['Rhode'] uppercase tracking-widest text-black/50 pointer-events-none transition-all duration-300 peer-focus:-top-4 peer-focus:text-black peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-black">
-                                    Name
-                                </label>
-                            </div>
-                            <div className="group relative">
-                                <input type="email" placeholder=" " className="peer w-full bg-transparent border-b border-black/20 py-2 text-black focus:outline-none focus:border-black transition-colors" />
-                                <label className="absolute left-0 top-2 text-[10px] font-['Rhode'] uppercase tracking-widest text-black/50 pointer-events-none transition-all duration-300 peer-focus:-top-4 peer-focus:text-black peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-black">
-                                    Email
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="group relative">
-                            <textarea rows={2} placeholder=" " className="peer w-full bg-transparent border-b border-black/20 py-2 text-black focus:outline-none focus:border-black resize-none transition-colors"></textarea>
-                            <label className="absolute left-0 top-2 text-[10px] font-['Rhode'] uppercase tracking-widest text-black/50 pointer-events-none transition-all duration-300 peer-focus:-top-4 peer-focus:text-black peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-black">
-                                Your Experience
-                            </label>
-                        </div>
-
-                        <div className="pt-4 flex justify-center">
-                            <PinkButton type="submit" className="w-full md:w-auto px-12 py-4 bg-black text-[#E3C4BE] hover:bg-black/80 hover:scale-100">
-                                <span className="font-['Rhode'] tracking-widest text-sm">Submit Review</span>
-                            </PinkButton>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        </section>
     );
 }

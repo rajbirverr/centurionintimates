@@ -194,25 +194,11 @@ export default function HomepageSets({ initialData }: HomepageSetsSectionProps) 
       <div className="px-4 md:px-8 lg:px-12">
         <div className="max-w-[1440px] mx-auto">
           {/* Cream Rectangle Container - Title and Filters */}
-          <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
-            backgroundImage: 'url(/sets-background.webp)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundColor: '#d4cdc3' // Fallback
-          }}>
-            {/* Title - EXACT Honeylove styling */}
+          <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6 bg-[#FAF9F7]">
+            {/* Title - Rhode Style Mocha */}
             <h2
-              className="font-normal text-[36px] leading-[100%] md:text-[56px] mx-auto max-w-[300px] md:max-w-[800px] mb-12 md:mb-16 text-center"
-              style={{
-                backgroundImage: 'url(/sets-background.webp)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                color: 'transparent',
-                // Add chalky pink text border
-                WebkitTextStroke: '1px #E3C4BE'
-              }}
+              className="font-normal text-[36px] leading-[100%] md:text-[56px] mx-auto max-w-[300px] md:max-w-[800px] mb-12 md:mb-16 text-center text-[#5C4D3C]"
+              style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}
             >
               {section.title}
             </h2>
@@ -230,7 +216,7 @@ export default function HomepageSets({ initialData }: HomepageSetsSectionProps) 
                         ? 'shadow-sm'
                         : 'bg-transparent hover:bg-black/5'
                         }`}
-                      style={isActive ? { backgroundColor: '#d4cdc3' } : {}}
+                      style={isActive ? { backgroundColor: '#E8E4DE' } : {}}
                     >
                       {filter.label}
                     </button>
