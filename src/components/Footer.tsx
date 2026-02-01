@@ -121,7 +121,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#f6f6f4] pt-16 pb-8 text-[#403b38] font-light">
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-10 mb-16">
           {/* HELP column */}
           <div className="md:col-span-3 md:col-start-1 flex flex-col">
