@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { PinkButton } from '@/components/ui/PinkButton';
 
 export default function HeroReviewSection() {
+    // Force refresh
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [currentReview, setCurrentReview] = useState(0);
     const [fade, setFade] = useState(true);
@@ -36,96 +37,102 @@ export default function HeroReviewSection() {
     }, []);
 
     return (
-        <div className="w-full bg-[#E3C4BE] rounded-b-2xl px-6 py-8 md:py-10 -mt-1 relative z-10 shadow-sm transition-all duration-300">
-            <div className="max-w-4xl mx-auto text-center space-y-6">
+        <div className="w-full bg-[#E3C4BE] rounded-b-2xl border-t border-black/10 -mt-2 relative z-10 shadow-sm transition-all duration-300 overflow-hidden">
+            {/* High Fashion "Ticker" Grid Layout */}
+            <div className="flex flex-col md:flex-row items-stretch min-h-[80px] md:h-[90px]">
 
-                {/* Review Quote Carousel */}
-                <div className={`space-y-4 transition-opacity duration-500 ${fade ? 'opacity-100' : 'opacity-0'}`}>
-                    <p className="text-[#4A3728] text-lg md:text-xl font-serif italic leading-relaxed">
-                        "{reviews[currentReview].text}"
-                    </p>
-                    <p className="text-[#6D4C41] text-sm font-bold tracking-widest uppercase">
-                        {reviews[currentReview].author}
-                    </p>
-                </div>
-
-                {/* Modern Interaction Trigger */}
-                <div className="pt-8 pb-2">
-                    <button
-                        onClick={() => setIsFormOpen(!isFormOpen)}
-                        className="group flex items-center justify-center mx-auto space-x-2 text-[#4A3728] hover:text-[#2C1810] transition-colors duration-300 focus:outline-none"
-                    >
-                        <span className="text-xs font-bold tracking-[0.2em] uppercase border-b border-transparent group-hover:border-[#4A3728] transition-all duration-300 pb-0.5">
-                            {isFormOpen ? 'Close Review Form' : 'Share Your Experience'}
-                        </span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className={`h-4 w-4 transition-transform duration-500 ease-in-out ${isFormOpen ? 'rotate-180' : 'rotate-0'}`}
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    {/* Elegant Reveal Dropdown */}
-                    <div className={`overflow-hidden transition-all duration-700 ease-in-out ${isFormOpen ? 'max-h-[800px] opacity-100 mt-8' : 'max-h-0 opacity-0 mt-0'}`}>
-                        <form className="max-w-xl mx-auto bg-white/40 backdrop-blur-md p-8 rounded-2xl shadow-sm border border-white/50 space-y-6">
-                            <div className="text-center mb-2">
-                                <h3 className="text-[#5a4c46] font-serif text-lg italic">Tell us your story</h3>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2 text-left">
-                                    <label className="text-[10px] font-bold text-[#8B5A3C] uppercase tracking-widest">Name</label>
-                                    <input
-                                        type="text"
-                                        className="w-full px-0 py-2 bg-transparent border-b border-[#8B5A3C]/30 focus:border-[#8B5A3C] focus:outline-none text-[#5a4c46] placeholder-[#5a4c46]/40 transition-colors"
-                                        placeholder="Your name"
-                                    />
-                                </div>
-                                <div className="space-y-2 text-left">
-                                    <label className="text-[10px] font-bold text-[#8B5A3C] uppercase tracking-widest">Email (Private)</label>
-                                    <input
-                                        type="email"
-                                        className="w-full px-0 py-2 bg-transparent border-b border-[#8B5A3C]/30 focus:border-[#8B5A3C] focus:outline-none text-[#5a4c46] placeholder-[#5a4c46]/40 transition-colors"
-                                        placeholder="your@email.com"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-2 text-left">
-                                <label className="text-[10px] font-bold text-[#8B5A3C] uppercase tracking-widest">Your Review</label>
-                                <textarea
-                                    rows={3}
-                                    className="w-full px-4 py-3 rounded-lg bg-white/50 border border-transparent focus:bg-white focus:shadow-sm focus:outline-none text-[#5a4c46] placeholder-[#5a4c46]/40 resize-none transition-all duration-300"
-                                    placeholder="How did the products make you feel?"
-                                />
-                            </div>
-
-                            <div className="space-y-2 text-left">
-                                <label className="text-[10px] font-bold text-[#8B5A3C] uppercase tracking-widest">Photo (Optional)</label>
-                                <div className="relative group cursor-pointer">
-                                    <div className="flex items-center justify-center border border-dashed border-[#8B5A3C]/30 rounded-lg p-6 hover:bg-white/40 transition-all duration-300 group-hover:border-[#8B5A3C]/60">
-                                        <div className="text-center space-y-2">
-                                            <svg className="w-6 h-6 mx-auto text-[#8B5A3C]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                            <span className="text-xs text-[#8B5A3C]/70 block">Drop image here or click to upload</span>
-                                        </div>
-                                    </div>
-                                    <input type="file" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*" />
-                                </div>
-                            </div>
-
-                            <div className="pt-4">
-                                <PinkButton type="submit" className="w-full md:w-auto min-w-[200px]">
-                                    SUBMIT REVIEW
-                                </PinkButton>
-                            </div>
-                        </form>
+                {/* Left: The Review (Editorial Voice) */}
+                <div className="flex-1 px-6 md:px-10 flex flex-col justify-center border-b md:border-b-0 md:border-r border-black/10 py-6 md:py-0 relative group cursor-default">
+                    <div className={`transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${fade ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                        <div className="flex items-baseline gap-3 mb-1">
+                            <span className="font-['Rhode'] text-[10px] uppercase tracking-[0.2em] text-black/40 pt-1">Review</span>
+                            <p className="font-serif italic text-xl md:text-2xl text-black leading-none">
+                                "{reviews[currentReview].text}"
+                            </p>
+                        </div>
+                        <p className="font-sans text-[10px] font-bold tracking-[0.2em] text-black/60 uppercase pl-[60px]">
+                            — {reviews[currentReview].author}
+                        </p>
+                    </div>
+                    {/* Subtle Progress Bar */}
+                    <div className="absolute bottom-0 left-0 h-[2px] bg-black/5 w-full">
+                        <div
+                            key={currentReview}
+                            className="h-full bg-black/20 w-full origin-left animate-[shimmer_5s_linear]"
+                        />
                     </div>
                 </div>
 
+                {/* Right: The Interaction (Technical Action) */}
+                <div className="w-full md:w-[280px] flex items-center justify-center p-4 bg-[#E3C4BE] md:bg-black/5 hover:bg-white/20 transition-colors duration-300">
+                    <button
+                        onClick={() => setIsFormOpen(!isFormOpen)}
+                        className="group relative w-full h-full min-h-[50px] flex items-center justify-between px-6 border border-black/10 rounded-xl hover:border-black transition-all duration-300"
+                    >
+                        <div className="flex flex-col items-start text-left">
+                            <span className="font-['Rhode'] text-[14px] text-black tracking-wide leading-none mb-1 group-hover:translate-x-1 transition-transform duration-300">
+                                {isFormOpen ? 'CLOSE' : 'SHARE YOURS'}
+                            </span>
+                            <span className="font-sans text-[9px] text-black/50 uppercase tracking-widest group-hover:text-black/70 transition-colors">
+                                Join the list
+                            </span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center group-hover:bg-black group-hover:text-[#E3C4BE] transition-all duration-300">
+                            {/* "Plus" or "Close" Icon */}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className={`w-4 h-4 transition-transform duration-500 ${isFormOpen ? 'rotate-45' : 'rotate-0'}`}
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                            >
+                                <path d="M12 5V19M5 12H19" />
+                            </svg>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            {/* Elegant Reveal Dropdown */}
+            <div className={`overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${isFormOpen ? 'max-h-[800px] border-t border-black/10' : 'max-h-0 border-t-0'}`}>
+                <div className="bg-[#E3C4BE]/50 p-8 md:p-12">
+                    <form className="max-w-xl mx-auto space-y-8">
+                        {/* Title */}
+                        <div className="text-center space-y-2">
+                            <h3 className="font-['Rhode'] text-2xl text-black">Make your mark</h3>
+                            <p className="font-serif italic text-black/60">Tell us how it feels.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="group relative">
+                                <input type="text" placeholder=" " className="peer w-full bg-transparent border-b border-black/20 py-2 text-black focus:outline-none focus:border-black transition-colors" />
+                                <label className="absolute left-0 top-2 text-[10px] font-['Rhode'] uppercase tracking-widest text-black/50 pointer-events-none transition-all duration-300 peer-focus:-top-4 peer-focus:text-black peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-black">
+                                    Name
+                                </label>
+                            </div>
+                            <div className="group relative">
+                                <input type="email" placeholder=" " className="peer w-full bg-transparent border-b border-black/20 py-2 text-black focus:outline-none focus:border-black transition-colors" />
+                                <label className="absolute left-0 top-2 text-[10px] font-['Rhode'] uppercase tracking-widest text-black/50 pointer-events-none transition-all duration-300 peer-focus:-top-4 peer-focus:text-black peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-black">
+                                    Email
+                                </label>
+                            </div>
+                        </div>
+
+                        <div className="group relative">
+                            <textarea rows={2} placeholder=" " className="peer w-full bg-transparent border-b border-black/20 py-2 text-black focus:outline-none focus:border-black resize-none transition-colors"></textarea>
+                            <label className="absolute left-0 top-2 text-[10px] font-['Rhode'] uppercase tracking-widest text-black/50 pointer-events-none transition-all duration-300 peer-focus:-top-4 peer-focus:text-black peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-black">
+                                Your Experience
+                            </label>
+                        </div>
+
+                        <div className="pt-4 flex justify-center">
+                            <PinkButton type="submit" className="w-full md:w-auto px-12 py-4 bg-black text-[#E3C4BE] hover:bg-black/80 hover:scale-100">
+                                <span className="font-['Rhode'] tracking-widest text-sm">Submit Review</span>
+                            </PinkButton>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
