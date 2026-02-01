@@ -120,8 +120,8 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
                     </div>
                 )}
             </div>
-            <h4 className="text-sm font-light text-[#5a4c46] mb-1 tracking-wide">{product.name}</h4>
-            <div className="text-xs text-[#5a4c46]/80 mb-5 px-4 leading-relaxed max-w-[200px]">
+            <h4 className="text-sm font-light text-[#5C4D3C] mb-1 tracking-wide">{product.name}</h4>
+            <div className="text-xs text-[#8B7355] mb-5 px-4 leading-relaxed max-w-[200px]">
                 <p className="line-clamp-2">
                     {product.description}
                 </p>
@@ -136,7 +136,7 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
                 </button>
             </div>
             <button
-                className="mt-auto w-full max-w-[180px] py-2 px-4 bg-white text-[#5a4c46] text-[11px] uppercase tracking-[0.2em] font-light border border-[#ddd] shadow-sm hover:bg-transparent hover:border-[#5a4c46] hover:text-[#5a4c46] transition-all duration-200"
+                className="mt-auto w-full max-w-[180px] py-2 px-4 bg-white text-[#5C4D3C] text-[11px] uppercase tracking-[0.2em] font-light border border-[#5C4D3C] hover:bg-[#5C4D3C] hover:text-white transition-all duration-200"
             >
                 ADD TO BAG
                 <span className="ml-2">₹{product.price}</span>

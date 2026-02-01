@@ -238,8 +238,8 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                         </div>
                     </div>
 
-                    {/* White Background Container - Products and Button */}
-                    <div className="bg-white">
+                    {/* Cream Background Container - Products and Button */}
+                    <div className="bg-[#FAF9F7] rounded-b-2xl px-4 md:px-6 py-6 md:py-8">
 
                         {/* Products Grid - EXACT Honeylove layout */}
                         {products.length > 0 ? (
@@ -285,14 +285,14 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                 <div className="text-left w-full">
                                                     {/* Category Name - ABOVE product name */}
                                                     {product.category && (
-                                                        <p className="text-xs md:text-sm text-[#5a4c46]/70 uppercase tracking-[0.15em] mb-1 font-light">
+                                                        <p className="text-xs md:text-sm text-[#8B7355] uppercase tracking-[0.15em] mb-1 font-light">
                                                             {product.category.name}
                                                         </p>
                                                     )}
 
                                                     {/* Product Name */}
                                                     <div className="mb-2">
-                                                        <h4 className="text-sm font-light text-[#403b38] tracking-wide">
+                                                        <h4 className="text-sm font-light text-[#5C4D3C] tracking-wide">
                                                             {expandedProductId === product.id ? (
                                                                 <Link
                                                                     href={`/product/${product.slug}`}
