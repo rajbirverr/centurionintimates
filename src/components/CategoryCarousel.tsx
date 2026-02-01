@@ -11,6 +11,8 @@ import {
   type CarouselApi
 } from "./ui/carousel";
 
+import ViewToggle from '@/components/common/ViewToggle';
+
 interface CategoryItem {
   id: string;
   name: string;
@@ -20,24 +22,28 @@ interface CategoryItem {
 interface CategoryCarouselProps {
   categories?: CategoryItem[];
 }
-
 const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) => {
-  // Using setApi to store carousel reference for controls
   const [, setApi] = useState<CarouselApi | null>(null);
+  const [isSingleView, setIsSingleView] = useState(false);
 
-  // Use empty array if no categories
   const displayItems = categories;
 
   return (
     <div className="mb-16 px-4 md:px-8 lg:px-12">
       <div className="max-w-[1440px] mx-auto">
         {/* Rhode-style Cream Container */}
-        <div className="bg-[#FAF9F7] rounded-2xl px-4 md:px-8 py-8 md:py-12">
-          {/* Heading */}
-          <div className="text-center mb-8">
+        <div className="bg-[#FAF9F7] rounded-2xl px-4 md:px-8 py-8 md:py-12 relative">
+
+          {/* Heading + Toggle */}
+          <div className="text-center mb-8 relative">
             <h2 className="uppercase text-[#8B7355] tracking-[0.2em] text-[11px] font-medium mb-2">SHOP BY CATEGORY</h2>
             <h3 className="text-[#5C4D3C] text-2xl md:text-3xl font-light" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Intimate Collection</h3>
             <p className="text-[#8B7355] text-sm mt-3 max-w-[500px] mx-auto">Explore our handcrafted accessories for every occasion</p>
+
+            {/* Mobile Toggle Button */}
+            <div className="md:hidden mt-4 flex justify-center relative z-10">
+              <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
+            </div>
           </div>
 
           {/* Desktop View */}
@@ -98,19 +104,19 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
               <CarouselContent>
                 {displayItems.length > 0 ? (
                   displayItems.map((category) => (
-                    <CarouselItem key={category.id} className="basis-1/2">
-                      <div className="pr-[5px] cursor-pointer">
-                        <div className="aspect-[3/4] overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl">
+                    <CarouselItem key={category.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[10px]'} transition-all duration-300`}>
+                      <div className="cursor-pointer group">
+                        <div className={`overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}>
                           <SafeImage
                             src={category.image}
                             alt={`Luxury ${category.name} by CenturionIntimate`}
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy"
-                            sizes="(max-width: 640px) 75vw, 50vw"
+                            sizes={isSingleView ? "(max-width: 768px) 90vw, 50vw" : "(max-width: 640px) 50vw, 33vw"}
                           />
                         </div>
-                        <h3 className="text-[#5a4c46] text-center font-light text-sm tracking-wide">{category.name}</h3>
+                        <h3 className={`text-[#5a4c46] text-center font-light tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`}>{category.name}</h3>
                       </div>
                     </CarouselItem>
                   ))

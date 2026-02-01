@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import SafeImage from '@/components/common/SafeImage';
+import ViewToggle from '@/components/common/ViewToggle';
 import {
     Carousel,
     CarouselContent,
@@ -24,7 +25,7 @@ interface ProductGridProps {
     products?: DripProduct[];
 }
 
-const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ product, index }) => {
+const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView: boolean }> = ({ product, index, isSingleView }) => {
     const [showSecondary, setShowSecondary] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -35,7 +36,6 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
         };
         checkMobile();
 
-        // Robust fallback: if any touch event happens, we are on a device supporting touch
         const onTouch = () => setIsMobile(true);
         window.addEventListener('touchstart', onTouch, { once: true });
 
@@ -48,11 +48,8 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
 
     const hasSecondaryImage = product.secondaryImage && product.secondaryImage !== product.image;
 
-    // Mobile: tap to toggle, Desktop: hover
     const handleInteraction = useCallback((e: React.MouseEvent | React.TouchEvent) => {
-        // Prevent event from bubbling to parent components (like Carousel)
         if (e && e.stopPropagation) e.stopPropagation();
-
         if (isMobile && hasSecondaryImage) {
             setShowSecondary(prev => !prev);
         }
@@ -61,7 +58,7 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
     return (
         <div className="flex flex-col items-center text-center h-full">
             <div
-                className="mb-5 w-full aspect-[3/4] overflow-hidden relative rounded-2xl cursor-pointer bg-white"
+                className={`mb-5 w-full overflow-hidden relative rounded-2xl cursor-pointer bg-white transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}
                 onClick={handleInteraction}
                 onMouseEnter={() => !isMobile && hasSecondaryImage && setShowSecondary(true)}
                 onMouseLeave={() => !isMobile && setShowSecondary(false)}
@@ -82,11 +79,11 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
                         style={{ objectFit: 'cover' }}
                         priority={index < 3}
                         loading={index < 3 ? 'eager' : 'lazy'}
-                        sizes="(max-width: 1024px) 33vw, 20vw"
+                        sizes={isSingleView ? "(max-width: 768px) 90vw, 50vw" : "(max-width: 1024px) 33vw, 20vw"}
                     />
                 </div>
 
-                {/* Secondary Image (only render if exists) */}
+                {/* Secondary Image */}
                 {hasSecondaryImage && (
                     <div
                         className="absolute inset-0"
@@ -102,33 +99,14 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
                             className="rounded-t-2xl"
                             style={{ objectFit: 'cover' }}
                             loading="lazy"
-                            sizes="(max-width: 1024px) 33vw, 20vw"
-                        />
-                    </div>
-                )}
-
-                {/* Subtle indicator for mobile when secondary image exists */}
-                {isMobile && hasSecondaryImage && (
-                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-                        <div
-                            className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                            style={{
-                                backgroundColor: !showSecondary ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                            }}
-                        />
-                        <div
-                            className="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                            style={{
-                                backgroundColor: showSecondary ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
-                            }}
+                            sizes={isSingleView ? "(max-width: 768px) 90vw, 50vw" : "(max-width: 1024px) 33vw, 20vw"}
                         />
                     </div>
                 )}
             </div>
-            <h4 className="text-sm font-light text-[#5C4D3C] mb-1 tracking-wide">{product.name}</h4>
-            <div className="text-xs text-[#8B7355] mb-5 px-4 leading-relaxed max-w-[200px]">
+            {/* Optimized text for single view */}
+            <h4 className={`font-light text-[#5C4D3C] mb-1 tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`}>{product.name}</h4>
+            <div className={`text-[#8B7355] mb-5 px-4 leading-relaxed ${isSingleView ? 'max-w-[280px] text-sm' : 'max-w-[200px] text-xs'}`}>
                 <p className="line-clamp-2">
                     {product.description}
                 </p>
@@ -154,19 +132,28 @@ const ProductCard: React.FC<{ product: DripProduct; index: number }> = ({ produc
 
 const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
     const [api, setApi] = useState<CarouselApi | null>(null);
+    const [isSingleView, setIsSingleView] = useState(false);
 
     return (
         <div className="mb-16 px-4 md:px-8 lg:px-12">
             {/* Rhode-style Cream Container */}
             <div className="max-w-[1440px] mx-auto">
-                <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 px-4 md:px-8 overflow-visible">
-                    {/* Section Title and Description */}
-                    <div className="text-center mb-4 md:mb-10">
-                        <h2 className="uppercase tracking-[0.2em] text-[11px] font-medium mb-2 text-[#8B7355]">EXPLORE</h2>
-                        <h3 className="text-2xl md:text-3xl font-light text-[#5C4D3C]" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Drip for Days Under ₹500</h3>
+                <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 px-4 md:px-8 overflow-visible relative">
+
+                    {/* Header + Toggle */}
+                    <div className="flex flex-col items-center mb-4 md:mb-10 relative">
+                        <div className="text-center">
+                            <h2 className="uppercase tracking-[0.2em] text-[11px] font-medium mb-2 text-[#8B7355]">EXPLORE</h2>
+                            <h3 className="text-2xl md:text-3xl font-light text-[#5C4D3C]" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Drip for Days Under ₹500</h3>
+                        </div>
+
+                        {/* Mobile Toggle Button - Absolute positioned or flex depending on design preference */}
+                        <div className="md:hidden mt-4">
+                            <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
+                        </div>
                     </div>
 
-                    {/* Mobile View - Standard Carousel with 2 columns */}
+                    {/* Mobile View - Layout changes based on state */}
                     <div className="md:hidden">
                         <Carousel
                             setApi={setApi}
@@ -179,8 +166,8 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                             <CarouselContent>
                                 {products.length > 0 ? (
                                     products.map((product, index) => (
-                                        <CarouselItem key={product.id} className="basis-[50%] px-[10px] h-full">
-                                            <ProductCard product={product} index={index} />
+                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[10px]'} h-full transition-all duration-300`}>
+                                            <ProductCard product={product} index={index} isSingleView={isSingleView} />
                                         </CarouselItem>
                                     ))
                                 ) : (
@@ -207,7 +194,7 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                             <div className="grid grid-cols-3 lg:grid-cols-5 gap-5">
                                 {products.map((product, index) => (
                                     <div key={product.id} className="w-full">
-                                        <ProductCard product={product} index={index} />
+                                        <ProductCard product={product} index={index} isSingleView={false} />
                                     </div>
                                 ))}
                             </div>

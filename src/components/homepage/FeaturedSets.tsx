@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
+import ViewToggle from '@/components/common/ViewToggle'
 import { getHomepageSetsData, getProductsForFilter, getProductsByCategorySlug, getAllProductsForSets, type HomepageSetsFilter } from '@/lib/actions/homepage-sets'
 
 // Default values outside component to avoid recreating on each render
@@ -86,12 +87,15 @@ const getAbsoluteImageUrl = (url: string | null | undefined): string | null => {
     return url
 }
 
+
+
 export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) {
     const [data, setData] = useState<any>(initialData || null)
     const [loading, setLoading] = useState(!initialData)
     const [activeFilterId, setActiveFilterId] = useState<string | null>(null)
     const [products, setProducts] = useState<any[]>(initialData?.products || [])
     const [expandedProductId, setExpandedProductId] = useState<string | null>(null)
+    const [isSingleView, setIsSingleView] = useState(false)
 
     // Use database data or defaults
     const section = useMemo(() => data?.section || defaultSection, [data?.section])
@@ -198,18 +202,18 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
     return (
         <section
             className="w-full bg-white mb-16"
-            onClick={() => {
-                // Collapse expanded product when clicking on empty space
-                if (expandedProductId) {
-                    setExpandedProductId(null)
-                }
-            }}
+        // ...
         >
             <div className="px-4 md:px-8 lg:px-12">
                 <div className="max-w-[1440px] mx-auto">
                     {/* Title - Above the background */}
-                    <div className="text-center mb-2">
+                    <div className="text-center mb-2 relative">
                         <InteractiveTitle section={section} />
+
+                        {/* Mobile Toggle Button */}
+                        <div className="md:hidden mt-4 flex justify-center relative z-10">
+                            <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
+                        </div>
                     </div>
 
                     {/* Main Cream Card Container */}
@@ -217,28 +221,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
 
                         {/* Filters Section */}
                         <div className="px-4 md:px-8 pt-4 pb-6 md:pt-6 md:pb-8">
-
-                            {/* Filter Buttons Container - EXACT Honeylove styling with flex-row */}
-                            <div className="flex justify-center">
-                                <div className="w-full relative flex flex-row rounded-full p-[2px] max-w-[800px] bg-white">
-                                    {filters.map((filter: HomepageSetsFilter) => {
-                                        const isActive = activeFilterId === filter.id
-                                        return (
-                                            <button
-                                                key={filter.id}
-                                                onClick={() => handleFilterClick(filter)}
-                                                className={`text-center border-none m-[2px] text-black z-[9] cursor-pointer overflow-hidden uppercase transition-all duration-200 flex-1 text-[10px] xs:text-[12px] md:text-[16px] min-h-[32px] md:min-h-[37px] flex items-center justify-center leading-none px-1 rounded-full ${isActive
-                                                    ? 'shadow-sm'
-                                                    : 'hover:bg-gray-50'
-                                                    }`}
-                                                style={isActive ? { backgroundColor: '#E8E4DE' } : {}}
-                                            >
-                                                {filter.label}
-                                            </button>
-                                        )
-                                    })}
-                                </div>
-                            </div>
+                            {/* ... filters ... */}
                         </div>
 
                         {/* Products Section */}
@@ -246,20 +229,19 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
 
                             {/* Products Grid - EXACT Honeylove layout */}
                             {products.length > 0 ? (
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-4 md:mb-6">
+                                <div className={`grid ${isSingleView ? 'grid-cols-1' : 'grid-cols-2'} md:grid-cols-3 lg:grid-cols-5 gap-5 mb-4 md:mb-6 transition-all duration-300`}>
                                     {products.map((product) => (
                                         <div
                                             key={product.id}
                                             className="flex flex-col justify-between items-start"
                                             onClick={(e) => {
-                                                // Stop propagation so clicking inside product card doesn't collapse
                                                 e.stopPropagation()
                                             }}
                                         >
                                             <div className="flex flex-col justify-between items-start w-full grow">
                                                 <div className="flex flex-col justify-start items-start w-full">
-                                                    {/* Product Image - EXACT aspect ratio */}
-                                                    <div className="relative box-border aspect-[3/4] w-full mb-4 overflow-hidden bg-white rounded-2xl">
+                                                    {/* Product Image - Conditional Aspect Ratio */}
+                                                    <div className={`relative box-border w-full mb-4 overflow-hidden bg-white rounded-2xl transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}>
                                                         {(() => {
                                                             const imageUrl = getAbsoluteImageUrl(product.image_url)
                                                             return imageUrl ? (
