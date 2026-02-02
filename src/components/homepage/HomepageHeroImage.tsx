@@ -33,7 +33,7 @@ export default async function HomepageHeroImage() {
         style={{ aspectRatio: formatRatio(desktopAspectRatio) }}
       >
         <img
-          src={desktopUrl || mobileUrl}
+          src={desktopUrl || mobileUrl || ''}
           alt={altText}
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -45,7 +45,7 @@ export default async function HomepageHeroImage() {
         style={{ aspectRatio: formatRatio(mobileAspectRatio) }}
       >
         <img
-          src={mobileUrl || desktopUrl}
+          src={mobileUrl || desktopUrl || ''}
           alt={altText}
           className="absolute inset-0 w-full h-full object-cover"
         />
