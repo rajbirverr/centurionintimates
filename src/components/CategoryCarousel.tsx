@@ -40,8 +40,8 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
             <h3 className="text-[#5C4D3C] text-2xl md:text-3xl font-light" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Intimate Collection</h3>
             <p className="text-[#8B7355] text-sm mt-3 max-w-[500px] mx-auto">Explore our handcrafted accessories for every occasion</p>
 
-            {/* Mobile Toggle Button */}
-            <div className="md:hidden mt-4 flex justify-center relative z-10">
+            {/* Toggle Button - Visible on all screens */}
+            <div className="mt-4 flex justify-center relative z-10">
               <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
             </div>
           </div>
@@ -54,25 +54,25 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
               opts={{
                 align: "start",
                 loop: true,
-                slidesToScroll: 5,
+                slidesToScroll: isSingleView ? 1 : 5,
               }}
             >
-              <CarouselContent>
+              <CarouselContent className={isSingleView ? '' : ''}>
                 {displayItems.length > 0 ? (
                   displayItems.map((category) => (
-                    <CarouselItem key={category.id} className="basis-1/5">
+                    <CarouselItem key={category.id} className={`${isSingleView ? 'basis-1/3' : 'basis-1/5'} transition-all duration-300`}>
                       <div className="pr-5 cursor-pointer group">
-                        <div className="aspect-[3/4] overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl">
+                        <div className={`overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}>
                           <SafeImage
                             src={category.image}
                             alt={`Luxury ${category.name} by CenturionIntimate`}
                             fill
                             className="object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy"
-                            sizes="(max-width: 1024px) 20vw, 20vw"
+                            sizes={isSingleView ? "400px" : "(max-width: 1024px) 20vw, 20vw"}
                           />
                         </div>
-                        <h3 className="text-[#5a4c46] text-center font-light text-sm tracking-wide">{category.name}</h3>
+                        <h3 className={`text-[#5a4c46] text-center font-light tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`}>{category.name}</h3>
                       </div>
                     </CarouselItem>
                   ))

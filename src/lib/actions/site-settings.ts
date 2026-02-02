@@ -81,6 +81,138 @@ export async function updateHeroImage(imageUrl: string, altText: string = ''): P
 }
 
 /**
+ * Get mobile hero image settings from database
+ */
+export async function getHeroImageMobile(): Promise<{
+  url: string | null;
+  altText: string | null;
+  aspectRatio: string | null;
+}> {
+  try {
+    const supabase = createAdminClient()
+
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('hero_image_url, alt_text, setting_value')
+      .eq('setting_key', 'hero_image_mobile')
+      .single()
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return { url: null, altText: null, aspectRatio: null }
+      }
+      console.error('Error fetching mobile hero image:', error)
+      return { url: null, altText: null, aspectRatio: null }
+    }
+
+    return {
+      url: data?.hero_image_url || null,
+      altText: data?.alt_text || null,
+      aspectRatio: data?.setting_value || null
+    }
+  } catch (error: any) {
+    console.error('Error in getHeroImageMobile:', error)
+    return { url: null, altText: null, aspectRatio: null }
+  }
+}
+
+/**
+ * Update mobile hero image URL, Alt Text and Aspect Ratio (admin only)
+ */
+export async function updateHeroImageMobile(
+  imageUrl: string,
+  altText: string = '',
+  aspectRatio: string = '4:5'
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const user = await getServerUser()
+    if (!user) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    const isAdmin = await verifyAdmin(user.id)
+    if (!isAdmin) {
+      return { success: false, error: 'Unauthorized' }
+    }
+
+    const supabase = createAdminClient()
+
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert({
+        setting_key: 'hero_image_mobile',
+        hero_image_url: imageUrl,
+        alt_text: altText,
+        setting_value: aspectRatio,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'setting_key'
+      })
+
+    if (error) {
+      console.error('Error updating mobile hero image:', error)
+      return { success: false, error: error.message }
+    }
+
+    revalidatePath('/')
+    revalidatePath('/admin/dashboard')
+
+    return { success: true }
+  } catch (error: any) {
+    console.error('Error in updateHeroImageMobile:', error)
+    return { success: false, error: error.message || 'Failed to update mobile hero image' }
+  }
+}
+
+/**
+ * Update desktop hero image with aspect ratio (admin only)
+ */
+export async function updateHeroImageDesktop(
+  imageUrl: string,
+  altText: string = '',
+  aspectRatio: string = '16:9'
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const user = await getServerUser()
+    if (!user) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    const isAdmin = await verifyAdmin(user.id)
+    if (!isAdmin) {
+      return { success: false, error: 'Unauthorized' }
+    }
+
+    const supabase = createAdminClient()
+
+    const { error } = await supabase
+      .from('site_settings')
+      .upsert({
+        setting_key: 'hero_image',
+        hero_image_url: imageUrl,
+        alt_text: altText,
+        setting_value: aspectRatio,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'setting_key'
+      })
+
+    if (error) {
+      console.error('Error updating desktop hero image:', error)
+      return { success: false, error: error.message }
+    }
+
+    revalidatePath('/')
+    revalidatePath('/admin/dashboard')
+
+    return { success: true }
+  } catch (error: any) {
+    console.error('Error in updateHeroImageDesktop:', error)
+    return { success: false, error: error.message || 'Failed to update desktop hero image' }
+  }
+}
+
+/**
  * Upload image file to Supabase Storage and return public URL
  */
 export async function uploadHeroImageToStorage(file: File): Promise<{ success: boolean; url?: string; error?: string }> {

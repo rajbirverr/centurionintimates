@@ -147,8 +147,8 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                             <h3 className="text-2xl md:text-3xl font-light text-[#5C4D3C]" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Drip for Days Under ₹500</h3>
                         </div>
 
-                        {/* Mobile Toggle Button - Absolute positioned or flex depending on design preference */}
-                        <div className="md:hidden mt-4">
+                        {/* Toggle Button - Visible on all screens */}
+                        <div className="mt-4">
                             <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
                         </div>
                     </div>
@@ -191,10 +191,10 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                     {/* Desktop Grid View */}
                     {products.length > 0 ? (
                         <div className="hidden md:block">
-                            <div className="grid grid-cols-3 lg:grid-cols-5 gap-5">
+                            <div className={`grid ${isSingleView ? 'grid-cols-3' : 'grid-cols-3 lg:grid-cols-5'} gap-5 transition-all duration-300`}>
                                 {products.map((product, index) => (
                                     <div key={product.id} className="w-full">
-                                        <ProductCard product={product} index={index} isSingleView={false} />
+                                        <ProductCard product={product} index={index} isSingleView={isSingleView} />
                                     </div>
                                 ))}
                             </div>
