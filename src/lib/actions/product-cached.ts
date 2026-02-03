@@ -20,12 +20,22 @@ export async function getProductBySlug(slug: string) {
   return unstable_cache(
     async () => {
       const supabase = createPublicSupabaseClient()
-      const { data, error } = await supabase
+
+      // Check if the string is a valid UUID
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug)
+
+      let query = supabase
         .from('products')
         .select('*')
-        .eq('slug', slug)
         .eq('status', 'published')
-        .single()
+
+      if (isUuid) {
+        query = query.eq('id', slug)
+      } else {
+        query = query.eq('slug', slug)
+      }
+
+      const { data, error } = await query.single()
 
       if (error || !data) {
         return null

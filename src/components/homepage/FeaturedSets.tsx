@@ -71,13 +71,13 @@ const InteractiveTitle = ({ section }: { section: any }) => {
         <div className="flex flex-col items-center">
             <StylizedTitle
                 text={mainTitle}
-                className="text-[#583432] text-3xl md:text-5xl font-black italic mb-2 uppercase tracking-wider"
+                className="text-[#583432] text-2xl md:text-4xl font-black italic mb-2 tracking-wider"
                 style={{ fontFamily: 'var(--font-montserrat)' }}
             />
             {subTitle && (
                 <p
-                    className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide mb-6"
-                    style={{ fontFamily: 'var(--font-manrope)' }}
+                    className="text-[#8B7355] text-lg md:text-xl tracking-wide mb-6"
+                    style={{ fontFamily: 'var(--font-audiowide)' }}
                 >
                     {subTitle}
                 </p>
@@ -302,14 +302,14 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                     <div className="text-left w-full">
                                                         {/* Category Name - ABOVE product name */}
                                                         {product.category && (
-                                                            <p className="text-xs md:text-sm text-[#8B7355] uppercase tracking-[0.15em] mb-1 font-light">
+                                                            <p className="text-xs md:text-sm text-[#8B7355] uppercase tracking-[0.15em] mb-1 font-light" style={{ fontFamily: 'var(--font-manrope)' }}>
                                                                 {product.category.name}
                                                             </p>
                                                         )}
 
                                                         {/* Product Name */}
                                                         <div className="mb-2">
-                                                            <h4 className="text-sm font-light text-[#5C4D3C] tracking-wide">
+                                                            <h4 className="text-sm font-light text-[#5C4D3C] tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
                                                                 {expandedProductId === product.id ? (
                                                                     <Link
                                                                         href={`/product/${product.slug}`}
@@ -335,6 +335,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                                                     setExpandedProductId(product.id)
                                                                                 }}
                                                                                 className="block text-xs text-[#5a4c46]/50 hover:text-[#5a4c46] mt-0.5 font-light"
+                                                                                style={{ fontFamily: 'var(--font-manrope)' }}
                                                                             >
                                                                                 more
                                                                             </button>
@@ -345,7 +346,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                         </div>
 
                                                         {/* Price */}
-                                                        <p className="text-base text-[#403b38] font-light mb-3">
+                                                        <p className="text-base text-[#403b38] font-light mb-3" style={{ fontFamily: 'var(--font-manrope)' }}>
                                                             ₹{product.price.toLocaleString('en-IN')}
                                                         </p>
 
@@ -372,6 +373,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                                         <Link
                                                             href={`/product/${product.slug}`}
                                                             className="inline-block text-base font-normal text-[#403b38] hover:underline"
+                                                            style={{ fontFamily: 'var(--font-manrope)' }}
                                                         >
                                                             Shop
                                                         </Link>
@@ -392,6 +394,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                 <Link
                                     href={section?.button_link || '/all-products'}
                                     className="w-full max-w-[180px] py-2 px-4 bg-white text-[#5a4c46] text-[11px] uppercase tracking-[0.2em] font-light border border-[#ddd] shadow-sm hover:bg-transparent hover:border-[#5a4c46] hover:text-[#5a4c46] transition-all duration-200 mx-auto block text-center"
+                                    style={{ fontFamily: 'var(--font-manrope)' }}
                                 >
                                     SHOP BEST SETS
                                 </Link>

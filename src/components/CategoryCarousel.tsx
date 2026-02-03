@@ -38,13 +38,13 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
           {/* Heading + Toggle */}
           <div className="text-center mb-6 relative">
             <StylizedTitle
-              text="Shop By Category"
-              className="text-[#583432] text-3xl md:text-5xl font-black italic mb-3 uppercase tracking-wider"
+              text="Shop by category"
+              className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
               style={{ fontFamily: 'var(--font-montserrat)' }}
             />
             <h3
-              className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide"
-              style={{ fontFamily: 'var(--font-manrope)' }}
+              className="text-[#8B7355] text-lg md:text-xl tracking-wide"
+              style={{ fontFamily: 'var(--font-audiowide)' }}
             >
               Intimate Collection
             </h3>
@@ -66,13 +66,13 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
               opts={{
                 align: "start",
                 loop: true,
-                slidesToScroll: isSingleView ? 1 : 5,
+                slidesToScroll: 1,
               }}
             >
               <CarouselContent className={isSingleView ? '' : ''}>
                 {displayItems.length > 0 ? (
                   displayItems.map((category) => (
-                    <CarouselItem key={category.id} className={`${isSingleView ? 'basis-1/3' : 'basis-1/5'} transition-all duration-300`}>
+                    <CarouselItem key={category.id} className={`${isSingleView ? 'basis-1/3' : 'basis-1/5'} transition-[flex-basis] duration-300`}>
                       <div className="pr-5 cursor-pointer group">
                         <div className={`overflow-hidden mb-3 bg-[#f5f5f5] relative rounded-2xl transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}>
                           <SafeImage
@@ -84,7 +84,7 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
                             sizes={isSingleView ? "400px" : "(max-width: 1024px) 20vw, 20vw"}
                           />
                         </div>
-                        <h3 className={`text-[#5a4c46] text-center font-light tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`}>{category.name}</h3>
+                        <h3 className={`text-[#5a4c46] text-center font-light tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`} style={{ fontFamily: 'var(--font-manrope)' }}>{category.name}</h3>
                       </div>
                     </CarouselItem>
                   ))
@@ -128,7 +128,7 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
                             sizes={isSingleView ? "(max-width: 768px) 90vw, 50vw" : "(max-width: 640px) 50vw, 33vw"}
                           />
                         </div>
-                        <h3 className={`text-[#5a4c46] text-center font-light tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`}>{category.name}</h3>
+                        <h3 className={`text-[#5a4c46] text-center font-light tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`} style={{ fontFamily: 'var(--font-manrope)' }}>{category.name}</h3>
                       </div>
                     </CarouselItem>
                   ))

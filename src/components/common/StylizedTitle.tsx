@@ -24,9 +24,9 @@ const StylizedTitle: React.FC<StylizedTitleProps> = ({ text, className, style })
     // The parent className should define the base color (D7E8BC)
     return (
         <h2 className={className} style={style}>
-            <span className="text-[#A47864]">{first}</span>
-            {mid}
-            <span className="text-[#A47864]">{last}</span>
+            <span className="text-[#F4A492]">{first}</span>
+            <span className="text-[#F4A492]">{mid}</span>
+            <span className="text-[#F4A492]">{last}</span>
         </h2>
     );
 };

@@ -106,8 +106,8 @@ const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView:
                 )}
             </div>
             {/* Optimized text for single view */}
-            <h4 className={`font-light text-[#5C4D3C] mb-1 tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`}>{product.name}</h4>
-            <div className={`text-[#8B7355] mb-5 px-4 leading-relaxed ${isSingleView ? 'max-w-[280px] text-sm' : 'max-w-[200px] text-xs'}`}>
+            <h4 className={`font-light text-[#5C4D3C] mb-1 tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`} style={{ fontFamily: 'var(--font-manrope)' }}>{product.name}</h4>
+            <div className={`text-[#8B7355] mb-5 px-4 leading-relaxed ${isSingleView ? 'max-w-[280px] text-sm' : 'max-w-[200px] text-xs'}`} style={{ fontFamily: 'var(--font-manrope)' }}>
                 <p className="line-clamp-2">
                     {product.description}
                 </p>
@@ -123,9 +123,9 @@ const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView:
             </div>
             <button
                 className="mt-auto w-full max-w-[180px] py-2 px-4 bg-white text-[#5C4D3C] text-[11px] uppercase tracking-[0.2em] font-light border border-[#5C4D3C] hover:bg-[#5C4D3C] hover:text-white transition-all duration-200"
+                style={{ fontFamily: 'var(--font-manrope)' }}
             >
-                ADD TO BAG
-                <span className="ml-2">₹{product.price}</span>
+                SELECT A SIZE
             </button>
         </div>
     );
@@ -146,10 +146,10 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                         <div className="text-center">
                             <StylizedTitle
                                 text="Explore"
-                                className="text-[#583432] text-3xl md:text-5xl font-black italic mb-3 uppercase tracking-wider"
+                                className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
                                 style={{ fontFamily: 'var(--font-montserrat)' }}
                             />
-                            <p className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
+                            <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
                                 Drip for Days Under ₹500
                             </p>
                         </div>
@@ -168,12 +168,13 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                             opts={{
                                 align: "start",
                                 loop: true,
+                                slidesToScroll: 1,
                             }}
                         >
                             <CarouselContent>
                                 {products.length > 0 ? (
                                     products.map((product, index) => (
-                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[10px]'} h-full transition-all duration-300`}>
+                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[10px]'} h-full transition-[flex-basis] duration-300`}>
                                             <ProductCard product={product} index={index} isSingleView={isSingleView} />
                                         </CarouselItem>
                                     ))

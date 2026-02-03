@@ -48,8 +48,8 @@ export default function HeroReviewSection() {
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">
                         <div className="text-left">
                             <StylizedTitle
-                                text="What Customers Say"
-                                className="text-[#583432] text-xl md:text-3xl font-black italic uppercase tracking-wider mb-1"
+                                text="What customers say"
+                                className="text-[#583432] text-xl md:text-3xl font-black italic tracking-wider mb-1"
                                 style={{ fontFamily: 'var(--font-montserrat)' }}
                             />
                             <p
@@ -70,16 +70,16 @@ export default function HeroReviewSection() {
 
                     {/* Quote */}
                     <div className={`transition-all duration-400 ${fade ? 'opacity-100' : 'opacity-0'}`}>
-                        <p className="text-[#3D3229] text-lg md:text-xl leading-relaxed mb-4 font-light">
+                        <p className="text-[#3D3229] text-lg md:text-xl leading-relaxed mb-4 font-light" style={{ fontFamily: 'var(--font-manrope)' }}>
                             "{reviews[currentReview].text}"
                         </p>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-[#5C4D3C] text-sm font-medium">
+                            <span className="text-[#5C4D3C] text-sm font-medium" style={{ fontFamily: 'var(--font-manrope)' }}>
                                 {reviews[currentReview].author}
                             </span>
                             {reviews[currentReview].verified && (
-                                <span className="text-[#8B7355] text-[10px] uppercase tracking-wider">
+                                <span className="text-[#8B7355] text-[10px] uppercase tracking-wider" style={{ fontFamily: 'var(--font-manrope)' }}>
                                     Verified
                                 </span>
                             )}
@@ -105,12 +105,13 @@ export default function HeroReviewSection() {
 
                     {/* Share Section */}
                     <div className="flex items-center justify-between">
-                        <span className="text-[#8B7355] text-[11px] uppercase tracking-[0.15em]">
+                        <span className="text-[#8B7355] text-[11px] uppercase tracking-[0.15em]" style={{ fontFamily: 'var(--font-manrope)' }}>
                             Share your experience
                         </span>
                         <button
                             onClick={() => setIsFormOpen(!isFormOpen)}
                             className="text-[#5C4D3C] text-[11px] uppercase tracking-[0.15em] font-medium hover:text-[#3D3229] transition-colors flex items-center gap-2"
+                            style={{ fontFamily: 'var(--font-manrope)' }}
                         >
                             {isFormOpen ? 'Close' : 'Write a review'}
                             <svg
@@ -130,35 +131,39 @@ export default function HeroReviewSection() {
                         <form className="space-y-5">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2">Name</label>
+                                    <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2" style={{ fontFamily: 'var(--font-manrope)' }}>Name</label>
                                     <input
                                         type="text"
                                         className="w-full bg-white border border-[#E8E4DE] rounded-lg px-4 py-2.5 text-sm text-[#3D3229] placeholder-[#B8B0A5] focus:outline-none focus:border-[#5C4D3C] transition-colors"
                                         placeholder="Your name"
+                                        style={{ fontFamily: 'var(--font-manrope)' }}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2">Email</label>
+                                    <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2" style={{ fontFamily: 'var(--font-manrope)' }}>Email</label>
                                     <input
                                         type="email"
                                         className="w-full bg-white border border-[#E8E4DE] rounded-lg px-4 py-2.5 text-sm text-[#3D3229] placeholder-[#B8B0A5] focus:outline-none focus:border-[#5C4D3C] transition-colors"
                                         placeholder="your@email.com"
+                                        style={{ fontFamily: 'var(--font-manrope)' }}
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2">Review</label>
+                                <label className="block text-[#8B7355] text-[10px] uppercase tracking-[0.15em] mb-2" style={{ fontFamily: 'var(--font-manrope)' }}>Review</label>
                                 <textarea
                                     rows={3}
                                     className="w-full bg-white border border-[#E8E4DE] rounded-lg px-4 py-2.5 text-sm text-[#3D3229] placeholder-[#B8B0A5] focus:outline-none focus:border-[#5C4D3C] transition-colors resize-none"
                                     placeholder="Share your experience..."
+                                    style={{ fontFamily: 'var(--font-manrope)' }}
                                 ></textarea>
                             </div>
 
                             <button
                                 type="submit"
-                                className="w-full bg-[#5C4D3C] text-white rounded-lg py-3 text-[11px] uppercase tracking-[0.15em] font-medium hover:bg-[#4A3E30] transition-colors"
+                                className="w-full rounded-full py-3 text-[11px] uppercase tracking-[0.15em] font-medium transition-all duration-300 border-2 border-[#8B7355] text-[#8B7355] bg-white/10 backdrop-blur-sm hover:bg-[#8B7355] hover:text-white"
+                                style={{ fontFamily: 'var(--font-manrope)' }}
                             >
                                 Submit Review
                             </button>

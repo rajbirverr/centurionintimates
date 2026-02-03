@@ -43,15 +43,15 @@ async function ShowcaseContent() {
 
               <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none w-full">
                 <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight drop-shadow-md" style={{
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                  fontFamily: 'var(--font-manrope)',
                   fontWeight: '700',
                   letterSpacing: '-0.02em',
-                  color: '#5C4D3C'
+                  color: '#8B7355'
                 }}>
                   {title || "Intimate Attire"}
                 </h3>
                 <p className="text-sm sm:text-base font-normal mb-4 text-[#8B7355]" style={{
-                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                  fontFamily: 'var(--font-manrope)',
                   fontWeight: '400',
                   letterSpacing: '0.01em'
                 }}>
@@ -97,11 +97,11 @@ export default function HomepageShowcase() {
         {/* Rhode-Style Header */}
         <div className="text-center mb-10">
           <StylizedTitle
-            text="Featured Collections"
-            className="text-[#583432] text-3xl md:text-5xl font-black italic mb-3 uppercase tracking-wider"
+            text="Featured"
+            className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
             style={{ fontFamily: 'var(--font-montserrat)' }}
           />
-          <p className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
+          <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
             Our Exclusive Designs
           </p>
         </div>

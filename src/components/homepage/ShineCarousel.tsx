@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import SafeImage from '@/components/common/SafeImage'
 
 interface ShineCarouselProduct {
@@ -166,16 +167,16 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                 <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
                                     {/* Large bold product name */}
                                     <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight" style={{
-                                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                                        fontFamily: 'var(--font-manrope)',
                                         fontWeight: '700',
                                         letterSpacing: '-0.02em',
-                                        color: '#5C4D3C'
+                                        color: '#8B7355'
                                     }}>
                                         {product.name}
                                     </h3>
                                     {/* Smaller subtitle */}
                                     <p className="text-sm sm:text-base font-normal mb-4" style={{
-                                        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                                        fontFamily: 'var(--font-manrope)',
                                         fontWeight: '400',
                                         letterSpacing: '0.01em',
                                         color: '#8B7355'
@@ -183,23 +184,21 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                         {product.location}
                                     </p>
                                     {/* Button with white border */}
-                                    <a
+                                    <Link
                                         href={product.slug ? `/product/${product.slug}` : `/product/${product.id}`}
-                                        className="inline-block pointer-events-auto"
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                        }}
-                                    >
-                                        <button className="px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 hover:bg-[#5C4D3C]/10" style={{
-                                            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                                        className="inline-flex items-center space-x-2 pointer-events-auto px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 text-[#8B7355] hover:bg-[#8B7355] hover:text-white bg-white/10 backdrop-blur-sm group relative z-30"
+                                        style={{
+                                            fontFamily: 'var(--font-manrope)',
                                             fontWeight: '500',
                                             letterSpacing: '0.05em',
-                                            color: '#5C4D3C',
-                                            borderColor: '#5C4D3C'
-                                        }}>
-                                            VIEW PRODUCT
-                                        </button>
-                                    </a>
+                                            borderColor: '#8B7355'
+                                        }}
+                                    >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="group-hover:text-white transition-colors animate-pulse">
+                                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8B7355] group-hover:text-white" />
+                                        </svg>
+                                        <span>VIEW PRODUCT</span>
+                                    </Link>
                                 </div>
                             </div>
                         )
@@ -207,14 +206,14 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                 </div>
 
                 {/* Navigation Controls - minimal dots at bottom center */}
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-2 z-20">
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-2 z-20 pointer-events-none">
                     {products.map((_, index) => {
                         const isActive = activeIndex === index
                         return (
                             <button
                                 key={index}
                                 aria-label={`Go to slide ${index + 1}`}
-                                className="relative transition-all duration-300 ease-out flex-shrink-0 focus:outline-none"
+                                className="relative transition-all duration-300 ease-out flex-shrink-0 focus:outline-none pointer-events-auto"
                                 onClick={() => {
                                     pauseAutoRotation()
                                     handleDotClick(index)
@@ -223,9 +222,13 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                             >
                                 <div className="relative flex items-center justify-center">
                                     {isActive ? (
-                                        <div className="w-2 h-2 bg-[#5C4D3C] rounded-full"></div>
+                                        <div className="w-8 h-8 flex items-center justify-center">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-[#8B7355] shadow-sm transform scale-110" />
+                                        </div>
                                     ) : (
-                                        <div className="w-1.5 h-1.5 bg-[#5C4D3C]/30 rounded-full hover:bg-[#5C4D3C]/50 transition-all duration-300"></div>
+                                        <div className="w-6 h-6 flex items-center justify-center group">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-[#8B7355]/40 group-hover:bg-[#8B7355]/60 transition-colors duration-200" />
+                                        </div>
                                     )}
                                 </div>
                             </button>

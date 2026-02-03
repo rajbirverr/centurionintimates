@@ -399,6 +399,7 @@ export default function InteractiveMaroonSets({ initialData }: FeaturedSetsSecti
                             <Link
                                 href={section?.button_link || '/all-products'}
                                 className="w-full max-w-[180px] py-2 px-4 bg-white text-[#5a4c46] text-[11px] uppercase tracking-[0.2em] font-light border border-[#ddd] shadow-sm hover:bg-transparent hover:border-[#5a4c46] hover:text-[#5a4c46] transition-all duration-200 mx-auto block text-center"
+                                style={{ fontFamily: 'var(--font-manrope)' }}
                             >
                                 SHOP BEST SETS
                             </Link>
