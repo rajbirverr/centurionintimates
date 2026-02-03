@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import SafeImage from '@/components/common/SafeImage'
 import VisitShopButton from '@/components/homepage/VisitShopButton'
 import ShineCarousel from '@/components/homepage/ShineCarousel'
+import StylizedTitle from '@/components/common/StylizedTitle';
 import { getShowcaseCardSettings, getShineCarouselProducts } from '@/lib/actions/homepage-showcase'
 
 async function ShowcaseContent() {
@@ -95,8 +96,14 @@ export default function HomepageShowcase() {
       <div className="max-w-[1440px] mx-auto">
         {/* Rhode-Style Header */}
         <div className="text-center mb-10">
-          <span className="text-[#8B7355] text-[11px] uppercase tracking-[0.2em] font-medium">Featured Collections</span>
-          <h2 className="text-[#3D3229] text-2xl md:text-3xl font-light mt-2" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Our Exclusive Designs</h2>
+          <StylizedTitle
+            text="Featured Collections"
+            className="text-[#583432] text-3xl md:text-5xl font-black italic mb-3 uppercase tracking-wider"
+            style={{ fontFamily: 'var(--font-montserrat)' }}
+          />
+          <p className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
+            Our Exclusive Designs
+          </p>
         </div>
         <Suspense fallback={<ShowcaseSkeleton />}>
           <ShowcaseContent />

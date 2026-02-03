@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import StylizedTitle from '@/components/common/StylizedTitle';
 
 export default function HeroReviewSection() {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -45,9 +46,19 @@ export default function HeroReviewSection() {
 
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">
-                        <span className="text-[#5C4D3C] text-[12px] md:text-[14px] uppercase tracking-[0.15em] font-medium">
-                            What Customers Say About Our Offline Store
-                        </span>
+                        <div className="text-left">
+                            <StylizedTitle
+                                text="What Customers Say"
+                                className="text-[#583432] text-xl md:text-3xl font-black italic uppercase tracking-wider mb-1"
+                                style={{ fontFamily: 'var(--font-montserrat)' }}
+                            />
+                            <p
+                                className="text-[#8B7355] text-sm md:text-base font-bold tracking-wide"
+                                style={{ fontFamily: 'var(--font-manrope)' }}
+                            >
+                                About Our Offline Store
+                            </p>
+                        </div>
                         <div className="flex items-center gap-1">
                             {[1, 2, 3, 4, 5].map((star) => (
                                 <svg key={star} className="w-3.5 h-3.5 text-[#5C4D3C]" fill="currentColor" viewBox="0 0 20 20">

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import SafeImage from '@/components/common/SafeImage';
+import StylizedTitle from '@/components/common/StylizedTitle';
 import {
   Carousel,
   CarouselContent,
@@ -35,10 +36,21 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
         <div className="bg-[#FAF9F7] rounded-2xl px-4 md:px-8 py-8 md:py-12 relative">
 
           {/* Heading + Toggle */}
-          <div className="text-center mb-8 relative">
-            <h2 className="uppercase text-[#8B7355] tracking-[0.2em] text-[11px] font-medium mb-2">SHOP BY CATEGORY</h2>
-            <h3 className="text-[#5C4D3C] text-2xl md:text-3xl font-light" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Intimate Collection</h3>
-            <p className="text-[#8B7355] text-sm mt-3 max-w-[500px] mx-auto">Explore our handcrafted accessories for every occasion</p>
+          <div className="text-center mb-6 relative">
+            <StylizedTitle
+              text="Shop By Category"
+              className="text-[#583432] text-3xl md:text-5xl font-black italic mb-3 uppercase tracking-wider"
+              style={{ fontFamily: 'var(--font-montserrat)' }}
+            />
+            <h3
+              className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide"
+              style={{ fontFamily: 'var(--font-manrope)' }}
+            >
+              Intimate Collection
+            </h3>
+            <p className="text-[#8B7355] text-sm mt-3 max-w-[500px] mx-auto hidden md:block opacity-80">
+              Explore our handcrafted accessories for every occasion
+            </p>
 
             {/* Toggle Button - Visible on all screens */}
             <div className="mt-4 flex justify-center relative z-10">

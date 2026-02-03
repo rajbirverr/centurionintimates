@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { Playfair_Display, Lato } from 'next/font/google';
+import { Playfair_Display, Lato, Audiowide, Montserrat, Manrope } from 'next/font/google';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -31,6 +31,24 @@ const lato = Lato({
   weight: ['400', '700'],
   subsets: ['latin'],
   variable: '--font-lato'
+});
+
+const audiowide = Audiowide({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-audiowide'
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['900'],
+  style: ['italic'],
+  variable: '--font-montserrat'
+});
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope'
 });
 
 export default function RootLayout({
@@ -53,7 +71,7 @@ export default function RootLayout({
           <PreloadImages />
         </Suspense>
       </head>
-      <body className={`antialiased ${playfair.variable} ${lato.variable} font-sans`}>
+      <body className={`antialiased ${playfair.variable} ${lato.variable} ${audiowide.variable} ${montserrat.variable} ${manrope.variable} font-sans`}>
         <Suspense fallback={null}>
           <SessionRefresher />
         </Suspense>

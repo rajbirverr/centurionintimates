@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
+import StylizedTitle from '@/components/common/StylizedTitle'
 import ViewToggle from '@/components/common/ViewToggle'
 import { getHomepageSetsData, getProductsForFilter, getProductsByCategorySlug, getAllProductsForSets, type HomepageSetsFilter } from '@/lib/actions/homepage-sets'
 
@@ -61,15 +62,28 @@ interface FeaturedSetsSectionProps {
 
 // Simple Rhode-style title - no animation, solid light brown text
 const InteractiveTitle = ({ section }: { section: any }) => {
+    // Split "Just for you - we have sets" or use full title if no separator
+    const [mainTitle, subTitle] = section.title.includes(' - ')
+        ? section.title.split(' - ')
+        : [section.title, ''];
+
     return (
-        <h2
-            className="font-medium text-[36px] leading-[100%] md:text-[56px] mx-auto max-w-[300px] md:max-w-[800px] text-center"
-            style={{
-                color: '#7AAFC9' // Solid light blue text
-            }}
-        >
-            {section.title}
-        </h2>
+        <div className="flex flex-col items-center">
+            <StylizedTitle
+                text={mainTitle}
+                className="text-[#583432] text-3xl md:text-5xl font-black italic mb-2 uppercase tracking-wider"
+                style={{ fontFamily: 'var(--font-montserrat)' }}
+            />
+            {subTitle && (
+                <p
+                    className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide mb-6"
+                    style={{ fontFamily: 'var(--font-manrope)' }}
+                >
+                    {subTitle}
+                </p>
+            )}
+            {!subTitle && <div className="mb-6" />}
+        </div>
     )
 }
 
@@ -227,13 +241,14 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                         key={filter.id}
                                         onClick={() => handleFilterClick(filter)}
                                         className={`
-                                            px-5 py-2.5 rounded-full text-sm font-medium tracking-wide
+                                            px-5 py-2.5 rounded-full text-sm font-bold tracking-wide
                                             transition-all duration-300 ease-out
                                             ${activeFilterId === filter.id
                                                 ? 'bg-[#E8E4DE] text-[#5C4D3C] shadow-sm'
                                                 : 'bg-transparent text-[#8B7355] hover:bg-[#F5F3F0] hover:text-[#5C4D3C]'
                                             }
                                         `}
+                                        style={{ fontFamily: 'var(--font-manrope)' }}
                                     >
                                         {filter.label}
                                     </button>

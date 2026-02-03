@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import SafeImage from '@/components/common/SafeImage';
+import StylizedTitle from '@/components/common/StylizedTitle';
 import ViewToggle from '@/components/common/ViewToggle';
 import {
     Carousel,
@@ -143,8 +144,14 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                     {/* Header + Toggle */}
                     <div className="flex flex-col items-center mb-4 md:mb-10 relative">
                         <div className="text-center">
-                            <h2 className="uppercase tracking-[0.2em] text-[11px] font-medium mb-2 text-[#8B7355]">EXPLORE</h2>
-                            <h3 className="text-2xl md:text-3xl font-light text-[#5C4D3C]" style={{ fontFamily: "'Rhode', sans-serif", letterSpacing: '0.01em' }}>Drip for Days Under ₹500</h3>
+                            <StylizedTitle
+                                text="Explore"
+                                className="text-[#583432] text-3xl md:text-5xl font-black italic mb-3 uppercase tracking-wider"
+                                style={{ fontFamily: 'var(--font-montserrat)' }}
+                            />
+                            <p className="text-[#8B7355] text-lg md:text-xl font-bold tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
+                                Drip for Days Under ₹500
+                            </p>
                         </div>
 
                         {/* Toggle Button - Visible on all screens */}

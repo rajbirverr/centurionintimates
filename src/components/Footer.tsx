@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { getFooterData } from '@/lib/actions/footer'
 import { addSubscriber } from '@/lib/actions/newsletter'
 import Link from 'next/link'
+import StylizedTitle from '@/components/common/StylizedTitle'
 
 // Calculate year at module level to avoid dynamic date issues
 const CURRENT_YEAR = new Date().getFullYear()
@@ -120,12 +121,12 @@ const Footer = () => {
   const socialMediaLinks = footerData?.socialMedia?.filter((s: any) => s.is_enabled) || []
 
   return (
-    <footer className="bg-[#f6f6f4] pt-16 pb-8 text-[#403b38] font-light">
+    <footer className="bg-[#f6f6f4] pt-16 pb-8 text-[#403b38]" style={{ fontFamily: 'var(--font-manrope)' }}>
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-4 gap-y-10 mb-16">
           {/* HELP column */}
           <div className="md:col-span-3 md:col-start-1 flex flex-col">
-            <h2 className="text-base uppercase font-normal tracking-wider mb-6">HELP</h2>
+            <StylizedTitle text="HELP" className="text-base uppercase font-black italic tracking-wider mb-6 text-[#583432]" style={{ fontFamily: 'var(--font-montserrat)' }} />
             <nav className="flex flex-col space-y-3">
               {helpLinks.map((link, idx) => (
                 <Link key={idx} href={link.url} className="text-sm hover:underline transition-all">
@@ -140,7 +141,7 @@ const Footer = () => {
             <div className="md:col-span-6 md:col-start-4 flex flex-col">
               {newsletterEnabled && (
                 <>
-                  <h2 className="text-base uppercase font-normal tracking-wider mb-6 text-center">STAY IN THE KNOW</h2>
+                  <StylizedTitle text="STAY IN THE KNOW" className="text-base uppercase font-black italic tracking-wider mb-6 text-center text-[#583432]" style={{ fontFamily: 'var(--font-montserrat)' }} />
                   <p className="text-sm text-center mb-6">
                     {newsletterDescription}
                   </p>
@@ -155,6 +156,7 @@ const Footer = () => {
                         className="flex-grow p-3 border border-[#cccbce] bg-white focus:outline-none text-sm"
                         required
                         disabled={subscribing}
+                        style={{ fontFamily: 'var(--font-manrope)' }}
                       />
                       <button
                         type="submit"
@@ -190,7 +192,7 @@ const Footer = () => {
                 <div className={`text-center ${newsletterEnabled ? 'mb-8' : 'mb-6'}`}>
                   {!newsletterEnabled && (
                     <>
-                      <h2 className="text-base uppercase font-normal tracking-wider mb-6 text-center">STAY IN THE KNOW</h2>
+                      <StylizedTitle text="STAY IN THE KNOW" className="text-base uppercase font-black italic tracking-wider mb-6 text-center text-[#583432]" style={{ fontFamily: 'var(--font-montserrat)' }} />
                     </>
                   )}
                   <div className="text-sm mb-2">{smsText}</div>
@@ -278,7 +280,7 @@ const Footer = () => {
 
           {/* MORE column */}
           <div className="md:col-span-3 md:col-start-10 flex flex-col">
-            <h2 className="text-base uppercase font-normal tracking-wider mb-6 text-right">MORE</h2>
+            <StylizedTitle text="MORE" className="text-base uppercase font-black italic tracking-wider mb-6 text-right text-[#583432]" style={{ fontFamily: 'var(--font-montserrat)' }} />
             <nav className="flex flex-col space-y-3 items-end">
               {moreLinks.map((link, idx) => (
                 <Link key={idx} href={link.url} className="text-sm hover:underline transition-all">
