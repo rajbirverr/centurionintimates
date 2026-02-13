@@ -1,5 +1,5 @@
 import { getHeroImageSettings, getHeroImageMobileSettings } from '@/lib/actions/homepage-hero'
-import Link from 'next/link'
+import HeroWidgetButton from './HeroWidgetButton'
 
 export default async function HomepageHeroImage() {
   // Fetch both desktop and mobile images
@@ -27,7 +27,7 @@ export default async function HomepageHeroImage() {
   const formatRatio = (ratio: string) => ratio.replace(':', '/')
 
   return (
-    <div className="w-full rounded-2xl overflow-hidden">
+    <div className="w-full rounded-2xl overflow-hidden relative">
       {/* Desktop Image */}
       <div
         className="hidden md:block w-full relative"
@@ -51,24 +51,34 @@ export default async function HomepageHeroImage() {
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
-      {/* Hero Overlay Content */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-end items-start text-left px-6 pb-12 md:px-12 md:pb-16 lg:pb-20">
-        {/* Subheading */}
-        <span className="text-[#583432] text-[10px] md:text-[12px] uppercase tracking-[0.2em] font-medium mb-3 md:mb-4 drop-shadow-md" style={{ fontFamily: 'var(--font-audiowide)' }}>
-          Comfort built on everyday life
-        </span>
+      {/* Subtle bottom gradient — rhodeskin style (very light) */}
+      <div className="absolute inset-0 z-[5] bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
 
-        {/* Heading */}
-        <h1 className="text-[#583432] text-2xl md:text-4xl lg:text-5xl font-normal mb-6 md:mb-8 drop-shadow-md max-w-[900px] leading-none tracking-tight" style={{ fontFamily: 'var(--font-audiowide)' }}>
-          Better Basics<br />Better Comfort
+      {/* Hero Content — Bottom Left, rhodeskin.com style */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-end items-start px-6 pb-8 md:px-10 md:pb-12 lg:px-14 lg:pb-14">
+        {/* Headline */}
+        <h1
+          className="text-[#F5EDE3] text-[22px] md:text-[32px] lg:text-[40px] font-bold leading-[1.15] tracking-tight mb-2 md:mb-3"
+          style={{ fontFamily: 'var(--font-montserrat)' }}
+        >
+          Skin First. Always.
         </h1>
+        <p
+          className="text-[#F5EDE3]/70 text-[14px] md:text-[18px] lg:text-[22px] font-light leading-[1.3] tracking-tight mb-2 md:mb-3"
+          style={{ fontFamily: 'var(--font-montserrat)' }}
+        >
+          Better Basics.<br />
+          Better Comfort.
+        </p>
+        <p
+          className="text-[#F5EDE3]/50 text-[10px] md:text-[12px] uppercase tracking-[0.3em] font-normal mb-4 md:mb-5"
+          style={{ fontFamily: 'var(--font-inter)' }}
+        >
+          Pure Cotton Intimates
+        </p>
 
-        {/* CTA Button */}
-        <Link href="/all-products" className="inline-block">
-          <button className="group bg-white text-[#5C4D3C] rounded-full px-8 py-2.5 md:px-9 md:py-3 text-[10px] md:text-[11px] uppercase tracking-[0.15em] font-medium hover:bg-[#FAF9F7] transition-all duration-500 ease-out hover:scale-105 hover:shadow-xl" style={{ fontFamily: 'var(--font-audiowide)' }}>
-            Shop
-          </button>
-        </Link>
+        {/* CTA */}
+        <HeroWidgetButton />
       </div>
     </div>
   )

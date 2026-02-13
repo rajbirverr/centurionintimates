@@ -414,11 +414,11 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                                     {/* Default State: 'intimate' */}
                                     <div className="flex items-center justify-center w-full h-12 flex-shrink-0">
                                         <span
-                                            className="text-3xl font-normal whitespace-nowrap"
+                                            className="text-3xl font-rhode whitespace-nowrap font-bold"
                                             style={{
-                                                fontFamily: "'Rhode', sans-serif",
+                                                color: '#E3C4BE',
                                                 letterSpacing: '0.01em',
-                                                color: '#E3C4BE'
+                                                fontWeight: 700
                                             }}
                                         >
                                             intimate
@@ -428,9 +428,10 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                                     {/* Hover State: 'centurion' */}
                                     <div className="flex items-center justify-center w-full h-12 flex-shrink-0">
                                         <span
-                                            className="text-3xl font-normal whitespace-nowrap"
+                                            className="font-rhode whitespace-nowrap"
                                             style={{
-                                                fontFamily: "'Rhode', sans-serif",
+                                                fontSize: '33px',
+                                                fontWeight: 700,
                                                 letterSpacing: '0.01em',
                                                 color: '#784D2C'
                                             }}

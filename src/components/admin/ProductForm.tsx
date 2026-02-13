@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createProduct, updateProduct, type Product, type CreateProductData, type UpdateProductData } from '@/lib/actions/products'
 import { getAllCategories, getSubcategoriesByCategoryId, type Category, type Subcategory } from '@/lib/actions/categories'
 import ImageUpload from './ImageUpload'
+import ProductAssociationsManager from './ProductAssociationsManager'
 import { Button, Input } from './ui'
 
 interface ProductFormProps {
@@ -463,14 +464,20 @@ export default function ProductForm({ product, initialImages = [] }: ProductForm
         </div>
 
         {product && (
-          <div className="md:col-span-2 border-t pt-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h3>
-            <ImageUpload
-              productId={product.id}
-              initialImages={initialImages}
-              productName={formData.name}
-            />
-          </div>
+          <>
+            <div className="md:col-span-2 border-t pt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Images</h3>
+              <ImageUpload
+                productId={product.id}
+                initialImages={initialImages}
+                productName={formData.name}
+              />
+            </div>
+
+            <div className="md:col-span-2 border-t pt-6">
+              <ProductAssociationsManager productId={product.id} />
+            </div>
+          </>
         )}
       </div>
 

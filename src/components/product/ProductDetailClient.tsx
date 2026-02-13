@@ -188,22 +188,38 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12 py-8">
         {/* Breadcrumb */}
         <nav className="mb-8">
-          <ol className="flex items-center space-x-2 text-xs text-[#5a4c46]">
-            <li><Link href="/" className="hover:underline">Home</Link></li>
-            <li>/</li>
-            <li><Link href="/all-products" className="hover:underline">Shop</Link></li>
+          <ol className="flex items-center space-x-2 text-[10px] md:text-xs uppercase tracking-[0.2em] font-medium" style={{ fontFamily: 'var(--font-inter)' }}>
+            <li>
+              <Link href="/" className="text-[#8B7355]/60 hover:text-[#5a4c46] transition-colors">Home</Link>
+            </li>
+            <li className="text-[#8B7355]/40">
+              <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </li>
+            <li>
+              <Link href="/all-products" className="text-[#8B7355]/60 hover:text-[#5a4c46] transition-colors">Shop</Link>
+            </li>
             {product.category && (
               <>
-                <li>/</li>
+                <li className="text-[#8B7355]/40">
+                  <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </li>
                 <li>
-                  <Link href={`/all-products?category=${product.category.slug}`} className="hover:underline">
+                  <Link href={`/all-products?category=${product.category.slug}`} className="text-[#8B7355]/60 hover:text-[#5a4c46] transition-colors">
                     {product.category.name}
                   </Link>
                 </li>
               </>
             )}
-            <li>/</li>
-            <li className="text-[#84756f]">{product.name}</li>
+            <li className="text-[#8B7355]/40">
+              <svg className="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </li>
+            <li className="text-[#5a4c46] font-semibold truncate max-w-[200px] md:max-w-none">{product.name}</li>
           </ol>
         </nav>
 
@@ -211,28 +227,40 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           {/* Product Images */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="aspect-[4/5] bg-[#f9f9f9] overflow-hidden relative">
+            {/* Main Image */}
+            <div className="aspect-[4/5] bg-[#f9f9f9] overflow-hidden relative rounded-2xl">
               {product.images && product.images.length > 0 ? (
-                <SafeImage
-                  src={product.images[activeImage]}
-                  alt={product.name || 'Product image'}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
+                <div
+                  className="flex h-full w-full transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] will-change-transform"
+                  style={{ transform: `translateX(-${activeImage * 100}%)` }}
+                >
+                  {product.images.map((img, idx) => (
+                    <div key={idx} className="min-w-full h-full relative shrink-0">
+                      <SafeImage
+                        src={img}
+                        alt={`${product.name} - View ${idx + 1}`}
+                        fill
+                        className="object-cover"
+                        priority={idx === 0}
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
                   No Image
                 </div>
               )}
               {/* Watermark Overlay - Show if product.watermark_enabled is true (defaults to true) */}
-              <WatermarkOverlay
-                show={product.watermark_enabled !== false}
-                color={product.watermark_color}
-                fontSize={product.watermark_font_size}
-                position={product.watermark_position}
-              />
+              <div className="absolute inset-0 pointer-events-none z-10">
+                <WatermarkOverlay
+                  show={product.watermark_enabled !== false}
+                  color={product.watermark_color}
+                  fontSize={product.watermark_font_size}
+                  position={product.watermark_position}
+                />
+              </div>
             </div>
 
             {/* Thumbnail Images */}
@@ -242,7 +270,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   <button
                     key={index}
                     onClick={() => setActiveImage(index)}
-                    className={`w-20 h-24 overflow-hidden border-2 transition-colors relative ${activeImage === index ? 'border-[#5a4c46]' : 'border-transparent hover:border-gray-300'
+                    className={`w-20 h-24 overflow-hidden border-2 transition-colors relative rounded-md ${activeImage === index ? 'border-[#5a4c46]' : 'border-transparent hover:border-gray-300'
                       }`}
                   >
                     <SafeImage
@@ -269,19 +297,24 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
           </div>
 
           {/* Product Info */}
-          <div className="space-y-6">
+          <div className="space-y-6 bg-[#fff5f7] p-8 md:p-10 rounded-2xl h-full flex flex-col justify-between">
             {/* Product Name */}
-            <h1 className="text-2xl md:text-3xl text-[#5a4c46] uppercase tracking-wide font-light">
+            <h1 className="text-2xl md:text-3xl text-[#6b4423] uppercase tracking-wide font-bold">
               {product.name}
             </h1>
 
             {/* Price */}
-            <div className="flex items-center space-x-3">
-              <p className="text-xl text-[#5a4c46]">₹{product.price.toLocaleString()}</p>
+            <div className="flex items-center gap-3">
+              <p className="text-2xl font-bold text-[#6b4423]">₹{product.price.toLocaleString()}</p>
               {product.compare_price && product.compare_price > product.price && (
-                <p className="text-sm text-gray-400 line-through">
-                  ₹{product.compare_price.toLocaleString()}
-                </p>
+                <>
+                  <p className="text-lg text-[#8B7355]/60 line-through font-medium">
+                    ₹{product.compare_price.toLocaleString()}
+                  </p>
+                  <span className="text-xs font-bold text-[#b91c1c] bg-[#fee2e2] px-2 py-1 rounded-full uppercase tracking-wider">
+                    {Math.round(((product.compare_price - product.price) / product.compare_price) * 100)}% Off
+                  </span>
+                </>
               )}
             </div>
 
@@ -313,9 +346,9 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     disabled={isSoldOut}
-                    className={`py-2 px-3 text-sm border transition-all ${selectedSize === size
-                      ? 'border-[#5a4c46] bg-[#5a4c46] text-white'
-                      : 'border-[#ddd] text-[#5a4c46] hover:border-[#5a4c46] disabled:opacity-50 disabled:cursor-not-allowed'
+                    className={`h-9 w-full flex items-center justify-center text-xs font-medium border rounded-full transition-all duration-200 ${selectedSize === size
+                      ? 'border-[#5a4c46] bg-[#5a4c46] text-white shadow-md'
+                      : 'border-[#e5e5e5] text-[#5a4c46] bg-white hover:border-[#5a4c46] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100'
                       }`}
                   >
                     {size}
@@ -329,19 +362,21 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
               <p className="text-xs uppercase tracking-wider text-[#5a4c46] mb-3">
                 Quantity
               </p>
-              <div className="flex items-center border border-[#ddd] w-fit">
+              <div className="flex items-center border border-[#e5e5e5] w-fit rounded-full bg-white overflow-hidden shadow-sm hover:border-[#5a4c46] transition-colors h-9">
                 <button
                   onClick={() => quantity > 1 && setQuantity(quantity - 1)}
                   disabled={isSoldOut}
-                  className="px-4 py-2 text-[#5a4c46] hover:bg-[#f5f5f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 h-full text-[#5a4c46] hover:bg-[#faf9f7] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg font-medium"
                 >
-                  -
+                  −
                 </button>
-                <span className="px-4 py-2 text-[#5a4c46]">{quantity}</span>
+                <div className="w-px h-4 bg-[#e5e5e5]"></div>
+                <span className="px-4 h-full text-[#5a4c46] flex items-center justify-center font-medium min-w-[3rem]">{quantity}</span>
+                <div className="w-px h-4 bg-[#e5e5e5]"></div>
                 <button
                   onClick={() => !isSoldOut && setQuantity(quantity + 1)}
                   disabled={isSoldOut || quantity >= product.inventory_count}
-                  className="px-4 py-2 text-[#5a4c46] hover:bg-[#f5f5f5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-4 h-full text-[#5a4c46] hover:bg-[#faf9f7] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg font-medium"
                 >
                   +
                 </button>
@@ -357,7 +392,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             <button
               onClick={handleAddToCart}
               disabled={isSoldOut || (!selectedSize && isLoggedIn) || isAdding || isLoading}
-              className="w-full py-4 bg-[#5a4c46] text-white uppercase text-sm tracking-widest hover:bg-[#4a3c36] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full h-12 rounded-full bg-[#5a4c46] text-white uppercase text-sm tracking-widest hover:bg-[#4a3c36] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none font-medium flex items-center justify-center mt-2"
             >
               {isSoldOut
                 ? 'Out of Stock'

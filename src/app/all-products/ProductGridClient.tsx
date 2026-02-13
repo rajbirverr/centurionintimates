@@ -2,18 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { Product, ProductGrid } from '@/components/allproducts'
-import RecommendedProducts from '@/components/allproducts/RecommendedProducts'
 import { FilterConfig } from '@/lib/actions/filter-config'
 
 interface ProductGridClientProps {
   products: Product[]
-  recommendedProducts: Product[]
   filterConfigs: FilterConfig[]
 }
 
 export default function ProductGridClient({
   products,
-  recommendedProducts,
   filterConfigs
 }: ProductGridClientProps) {
   const [isLoading, setIsLoading] = useState(true)
@@ -38,11 +35,6 @@ export default function ProductGridClient({
   return (
     <>
       <ProductGrid products={products} filterConfigs={filterConfigs} />
-      {recommendedProducts.length > 0 && (
-        <div className="mt-20 mb-6">
-          <RecommendedProducts products={recommendedProducts} />
-        </div>
-      )}
     </>
   )
 }

@@ -175,7 +175,6 @@ export default async function SalePage({
       <div className="max-w-[1440px] mx-auto px-2 md:px-8 py-1 md:py-2">
         <ProductGridClient
           products={productsWithImages}
-          recommendedProducts={recommendedProducts}
           filterConfigs={filterConfigs}
         />
       </div>

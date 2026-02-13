@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+/* Brown text selection highlight */
+::selection {
+  background-color: #583432;
+  color: #fff;
+}
+
+::-moz-selection {
+  background-color: #583432;
+  color: #fff;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -52,7 +63,7 @@
   }
 
   body {
-    font-family: 'CentraNo1', sans-serif;
+    font-family: var(--font-manrope), 'Inter', sans-serif;
     color: #403b38;
     background-color: #fff;
     letter-spacing: 0.02em;
@@ -94,30 +105,22 @@
   }
 }
 
-/* Custom font for Skims-like appearance */
-@font-face {
-  font-family: 'CentraNo1';
-  src: url('https://ext.same-assets.com/4274423344/527262303.woff2') format('woff2');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'CentraNo1';
-  src: url('https://ext.same-assets.com/4274423344/1659002562.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* Inter font is loaded via next/font/google in layout.tsx */
 
 /* Custom font for Rhode logo */
+/* 
 @font-face {
   font-family: 'Rhode';
   src: url('https://ext.same-assets.com/2896541614/344479640.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: block;
+} 
+*/
+
+.font-rhode {
+  font-family: var(--font-rhode), 'Rhode', sans-serif;
+  font-weight: normal;
 }
 
 @layer components {

@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import { getProductBySlug, getProductImagesByProductId, getCategoryById } from '@/lib/actions/product-cached'
 import ProductDetailWrapper from '@/components/product/ProductDetailWrapper'
 import ReviewsSection from '@/components/reviews/ReviewsSection'
+import FrequentlyBoughtCarousel from '@/components/product/FrequentlyBoughtCarousel'
 
 // Note: revalidate is not compatible with cacheComponents
 // Caching is handled automatically by cacheComponents and unstable_cache
@@ -47,7 +48,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   return (
     <div className="min-h-screen bg-white">
       <Suspense fallback={<div className="min-h-screen bg-white flex items-center justify-center">Loading product...</div>}>
-        <ProductDetailWrapper 
+        <ProductDetailWrapper
           product={{
             ...product,
             images: productImages,
@@ -66,8 +67,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           }}
         />
       </Suspense>
-      <ReviewsSection 
-        productId={product.id} 
+
+      <FrequentlyBoughtCarousel productId={product.id} />
+
+      <ReviewsSection
+        productId={product.id}
         productName={product.name}
       />
     </div>

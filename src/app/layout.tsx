@@ -20,18 +20,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { Playfair_Display, Lato, Audiowide, Montserrat, Manrope } from 'next/font/google';
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair'
-});
-
-const lato = Lato({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-lato'
-});
+import { Audiowide, Montserrat, Inter } from 'next/font/google';
 
 const audiowide = Audiowide({
   weight: '400',
@@ -41,14 +30,24 @@ const audiowide = Audiowide({
 
 const montserrat = Montserrat({
   subsets: ['latin'],
-  weight: ['900'],
-  style: ['italic'],
+  weight: ['400', '700', '900'],
+  style: ['normal', 'italic'],
   variable: '--font-montserrat'
 });
 
-const manrope = Manrope({
+const inter = Inter({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-manrope'
+});
+
+import localFont from 'next/font/local';
+
+// Exact font from rhodeskin.com - NNRektorat Web Heavy
+const rhode = localFont({
+  src: './fonts/NNRektoratWeb-Heavy.woff2',
+  variable: '--font-rhode',
+  display: 'swap',
 });
 
 export default function RootLayout({
@@ -59,19 +58,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link
-          rel="preload"
-          href="https://ext.same-assets.com/2896541614/344479640.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
         {/* Preload critical homepage images for instant reload */}
         <Suspense fallback={null}>
           <PreloadImages />
         </Suspense>
       </head>
-      <body className={`antialiased ${playfair.variable} ${lato.variable} ${audiowide.variable} ${montserrat.variable} ${manrope.variable} font-sans`}>
+      <body className={`antialiased ${audiowide.variable} ${montserrat.variable} ${inter.variable} ${rhode.variable} font-sans`}>
         <Suspense fallback={null}>
           <SessionRefresher />
         </Suspense>

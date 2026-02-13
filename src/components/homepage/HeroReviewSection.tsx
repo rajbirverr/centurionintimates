@@ -49,7 +49,7 @@ export default function HeroReviewSection() {
                         <div className="text-left">
                             <StylizedTitle
                                 text="What customers say"
-                                className="text-[#583432] text-xl md:text-3xl font-black italic tracking-wider mb-1"
+                                className="text-[#2C1810] text-xl md:text-3xl font-black italic tracking-wider mb-1"
                                 style={{ fontFamily: 'var(--font-montserrat)' }}
                             />
                             <p

@@ -46,7 +46,7 @@ export default function ReviewForm({ productId, productName, onReviewSubmitted }
         setAuthorName('')
         setAgeRange('')
         setFavoriteFeatures([])
-        
+
         if (onReviewSubmitted) {
           setTimeout(() => {
             onReviewSubmitted()
@@ -66,8 +66,8 @@ export default function ReviewForm({ productId, productName, onReviewSubmitted }
 
   return (
     <div className="border-t border-gray-200 pt-8">
-      <h3 className="text-xl font-light uppercase tracking-wide text-[#5a4c46] mb-6">
-        Write a Review
+      <h3 className="text-xl md:text-2xl font-bold tracking-tight text-[#6b4423] mb-6" style={{ fontFamily: 'var(--font-montserrat)' }}>
+        Write a Review.
       </h3>
 
       {error && (
@@ -94,11 +94,10 @@ export default function ReviewForm({ productId, productName, onReviewSubmitted }
                 key={star}
                 type="button"
                 onClick={() => setRating(star)}
-                className={`text-2xl transition-colors ${
-                  star <= rating
+                className={`text-2xl transition-colors ${star <= rating
                     ? 'text-yellow-400'
                     : 'text-gray-300 hover:text-yellow-300'
-                }`}
+                  }`}
               >
                 ★
               </button>
@@ -183,7 +182,7 @@ export default function ReviewForm({ productId, productName, onReviewSubmitted }
         <button
           type="submit"
           disabled={loading || rating === 0}
-          className="w-full md:w-auto px-8 py-3 bg-[#5a4c46] text-white uppercase text-sm tracking-widest hover:bg-[#4a3c36] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full md:w-auto px-8 h-12 rounded-full bg-[#5a4c46] text-white uppercase text-sm tracking-widest hover:bg-[#4a3c36] hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-md transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none font-medium flex items-center justify-center mt-2"
         >
           {loading ? 'Submitting...' : 'Submit Review'}
         </button>

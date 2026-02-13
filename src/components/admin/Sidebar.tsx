@@ -21,6 +21,7 @@ export default function Sidebar() {
     { href: '/admin/products', label: 'Products' },
     { href: '/admin/categories', label: 'Categories' },
     { href: '/admin/orders', label: 'Orders' },
+    { href: '/admin/reviews', label: 'Reviews' },
     { href: '/admin/filter-settings', label: 'Filter Settings' },
     { href: '/admin/footer', label: 'Footer' },
     { href: '/admin/blogs', label: 'Blogs' },

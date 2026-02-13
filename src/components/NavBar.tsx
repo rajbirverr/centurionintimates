@@ -414,27 +414,29 @@ const NavBar: React.FC<NavBarProps> = ({ onNavigate }) => {
                   {/* Default State: 'intimate' */}
                   <div className="flex items-center justify-center w-full h-12 flex-shrink-0">
                     <span
-                      className="text-3xl font-normal whitespace-nowrap"
+                      className="text-3xl font-rhode whitespace-nowrap font-bold"
                       style={{
-                        fontFamily: "'Rhode', sans-serif",
+                        color: '#E3C4BE',
                         letterSpacing: '0.01em',
-                        color: '#E3C4BE'
+                        fontWeight: 700
                       }}
                     >
                       intimate
                     </span>
                   </div>
 
-                  {/* Hover State: 'by centurionshoppe' */}
+                  {/* Hover State: 'centurion' */}
                   <div className="flex items-center justify-center w-full h-12 flex-shrink-0">
                     <span
-                      className="text-xs font-light uppercase tracking-[0.2em] whitespace-nowrap"
+                      className="font-rhode whitespace-nowrap"
                       style={{
-                        fontFamily: "'CentraNo1', sans-serif",
-                        color: '#E3C4BE'
+                        fontSize: '33px',
+                        fontWeight: 700,
+                        letterSpacing: '0.01em',
+                        color: '#784D2C'
                       }}
                     >
-                      by centurionshoppe
+                      centurion
                     </span>
                   </div>
 

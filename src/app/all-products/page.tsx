@@ -80,10 +80,10 @@ export default async function AllProductsPage({
   ] = await Promise.all([
     // Get category if category slug is provided (cached)
     params.category ? getCategoryBySlug(params.category).catch(() => ({ data: null, error: null })) : Promise.resolve({ data: null, error: null }),
-    
+
     // Fetch jewelry categories for filter bar (already cached in getJewelryCategories)
     getJewelryCategories(),
-    
+
     // Fetch filter configurations (already cached in getFilterConfigs)
     getFilterConfigs()
   ])
@@ -92,7 +92,7 @@ export default async function AllProductsPage({
   let categoryId: string | null = null
   let categoryName: string | null = null
   let categorySlug: string | null = null
-  
+
   if (categoryResult.data && !categoryResult.error) {
     categoryId = categoryResult.data.id
     categoryName = categoryResult.data.name
@@ -131,7 +131,7 @@ export default async function AllProductsPage({
       getSubcategoriesByCategoryId(categoryId), // Already cached
       params.subcategory ? getSubcategoryBySlug(categoryId, params.subcategory).catch(() => null) : Promise.resolve(null)
     ])
-    
+
     subcategories = subcategoriesData
     subcategoryId = subcategoryResult?.id || null
   }
@@ -214,7 +214,6 @@ export default async function AllProductsPage({
       <div className="max-w-[1440px] mx-auto px-2 md:px-8 py-1 md:py-2">
         <ProductGridClient
           products={productsWithImages}
-          recommendedProducts={recommendedProducts}
           filterConfigs={filterConfigs}
         />
       </div>

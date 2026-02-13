@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { fetchProductReviews } from '@/lib/actions/reviews'
+import { fetchProductReviews, markReviewHelpful } from '@/lib/actions/reviews'
 import ReviewForm from './ReviewForm'
 
 interface ReviewsSectionProps {
@@ -23,22 +23,61 @@ interface Review {
   created_at: string
 }
 
+// Helper to format "time ago"
+const timeAgo = (dateStr: string) => {
+  const date = new Date(dateStr)
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+
+  if (diffInSeconds < 60) return 'Just now'
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} mins ago`
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`
+  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`
+  if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`
+  return `${Math.floor(diffInSeconds / 31536000)} years ago`
+}
+
 export default function ReviewsSection({ productId, productName }: ReviewsSectionProps) {
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [helpfulClicked, setHelpfulClicked] = useState<Set<string>>(new Set())
 
   useEffect(() => {
+    // Load clicked state from localStorage on mount
+    const saved = localStorage.getItem(`helpful-reviews-${productId}`)
+    if (saved) {
+      setHelpfulClicked(new Set(JSON.parse(saved)))
+    }
     loadReviews()
   }, [productId])
+
+  const handleHelpfulClick = async (reviewId: string) => {
+    if (helpfulClicked.has(reviewId)) return
+
+    // Optimistic update
+    setReviews(prev => prev.map(r =>
+      r.id === reviewId ? { ...r, helpful_yes: r.helpful_yes + 1 } : r
+    ))
+
+    // Update local state
+    const newClicked = new Set(helpfulClicked)
+    newClicked.add(reviewId)
+    setHelpfulClicked(newClicked)
+    localStorage.setItem(`helpful-reviews-${productId}`, JSON.stringify(Array.from(newClicked)))
+
+    // Server action
+    await markReviewHelpful(reviewId, true)
+  }
 
   const loadReviews = async () => {
     try {
       setLoading(true)
       setError(null)
-      
+
       const result = await fetchProductReviews(productId, 'most_recent')
-      
+
       if (result.success && result.reviews) {
         setReviews(result.reviews)
       } else {
@@ -59,8 +98,11 @@ export default function ReviewsSection({ productId, productName }: ReviewsSectio
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 lg:px-12 py-12 border-t border-gray-200">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-2xl font-light uppercase tracking-wide text-[#5a4c46] mb-8">
-          Customer Reviews
+        <h2
+          className="text-2xl md:text-3xl font-bold tracking-tight text-[#6b4423] mb-8"
+          style={{ fontFamily: 'var(--font-montserrat)' }}
+        >
+          Customer Reviews.
         </h2>
 
         {/* Average Rating */}
@@ -75,11 +117,10 @@ export default function ReviewsSection({ productId, productName }: ReviewsSectio
                   {[1, 2, 3, 4, 5].map((star) => (
                     <svg
                       key={star}
-                      className={`w-5 h-5 ${
-                        star <= Math.round(averageRating)
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-300'
-                      }`}
+                      className={`w-5 h-5 ${star <= Math.round(averageRating)
+                        ? 'text-yellow-400 fill-current'
+                        : 'text-gray-300'
+                        }`}
                       viewBox="0 0 20 20"
                     >
                       <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
@@ -119,11 +160,10 @@ export default function ReviewsSection({ productId, productName }: ReviewsSectio
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg
                             key={star}
-                            className={`w-4 h-4 ${
-                              star <= review.rating
-                                ? 'text-yellow-400 fill-current'
-                                : 'text-gray-300'
-                            }`}
+                            className={`w-4 h-4 ${star <= review.rating
+                              ? 'text-yellow-400 fill-current'
+                              : 'text-gray-300'
+                              }`}
                             viewBox="0 0 20 20"
                           >
                             <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
@@ -132,14 +172,19 @@ export default function ReviewsSection({ productId, productName }: ReviewsSectio
                       </div>
                       <span className="text-sm text-gray-600">{review.author_name}</span>
                       {review.is_verified_purchase && (
-                        <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">
-                          Verified Purchase
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3.5 h-3.5 rounded-full bg-pink-500 flex items-center justify-center">
+                            <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          </div>
+                          <span className="text-xs font-medium text-gray-500">Verified</span>
+                        </div>
                       )}
                     </div>
                   </div>
-                  <span className="text-xs text-gray-500">
-                    {new Date(review.created_at).toLocaleDateString()}
+                  <span className="text-xs text-gray-400 font-medium">
+                    {timeAgo(review.created_at)}
                   </span>
                 </div>
                 <p className="text-sm text-gray-700 leading-relaxed mb-3">{review.content}</p>
@@ -159,7 +204,11 @@ export default function ReviewsSection({ productId, productName }: ReviewsSectio
                   </div>
                 )}
                 <div className="flex items-center space-x-4 text-xs text-gray-500">
-                  <button className="hover:text-[#5a4c46]">
+                  <button
+                    className={`hover:text-[#5a4c46] transition-colors ${helpfulClicked.has(review.id) ? 'text-[#5a4c46] font-medium cursor-default' : ''}`}
+                    onClick={() => handleHelpfulClick(review.id)}
+                    disabled={helpfulClicked.has(review.id)}
+                  >
                     Helpful ({review.helpful_yes})
                   </button>
                 </div>
@@ -174,4 +223,3 @@ export default function ReviewsSection({ productId, productName }: ReviewsSectio
     </div>
   )
 }
-
