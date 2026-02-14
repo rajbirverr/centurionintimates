@@ -192,8 +192,8 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                     <div className="flex flex-col items-center mb-6 md:mb-10">
                         <StylizedTitle
                             text="Explore"
-                            className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
-                            style={{ fontFamily: 'var(--font-montserrat)' }}
+                            className="text-[#BDBEBF] text-xl md:text-3xl mb-3 tracking-wider"
+                            style={{ fontFamily: 'var(--font-rhode)' }}
                         />
                         <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
                             Drip for Days Under ₹500

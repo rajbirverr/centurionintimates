@@ -49,8 +49,8 @@ export default function HeroReviewSection() {
                         <div className="text-left">
                             <StylizedTitle
                                 text="What customers say"
-                                className="text-[#2C1810] text-xl md:text-3xl font-black italic tracking-wider mb-1"
-                                style={{ fontFamily: 'var(--font-montserrat)' }}
+                                className="text-[#BDBEBF] text-lg md:text-2xl tracking-wider mb-1"
+                                style={{ fontFamily: 'var(--font-rhode)' }}
                             />
                             <p
                                 className="text-[#8B7355] text-sm md:text-base font-bold tracking-wide"

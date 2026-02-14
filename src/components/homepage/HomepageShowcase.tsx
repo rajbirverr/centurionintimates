@@ -98,8 +98,8 @@ export default function HomepageShowcase() {
         <div className="text-center mb-10">
           <StylizedTitle
             text="Featured"
-            className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
-            style={{ fontFamily: 'var(--font-montserrat)' }}
+            className="text-[#BDBEBF] text-xl md:text-3xl mb-3 tracking-wider"
+            style={{ fontFamily: 'var(--font-rhode)' }}
           />
           <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
             Our Exclusive Designs

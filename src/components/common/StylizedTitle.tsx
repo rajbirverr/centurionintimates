@@ -11,7 +11,7 @@ const StylizedTitle: React.FC<StylizedTitleProps> = ({ text, className, style })
 
     if (text.length <= 1) {
         return (
-            <h2 className={`${className || ''} text-[#A47864]`} style={style}>
+            <h2 className={className} style={style}>
                 {text}
             </h2>
         );
@@ -21,12 +21,12 @@ const StylizedTitle: React.FC<StylizedTitleProps> = ({ text, className, style })
     const mid = text.slice(1, -1);
     const last = text.charAt(text.length - 1);
 
-    // The parent className should define the base color (D7E8BC)
+    // The parent className should define the base color
     return (
         <h2 className={className} style={style}>
-            <span className="text-[#F4A492]">{first}</span>
-            <span className="text-[#F4A492]">{mid}</span>
-            <span className="text-[#F4A492]">{last}</span>
+            <span>{first}</span>
+            <span>{mid}</span>
+            <span>{last}</span>
         </h2>
     );
 };

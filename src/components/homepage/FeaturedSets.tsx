@@ -77,8 +77,8 @@ const InteractiveTitle = ({ section }: { section: any }) => {
         <div className="flex flex-col items-center">
             <StylizedTitle
                 text={mainTitle}
-                className="text-[#583432] text-2xl md:text-4xl font-black italic mb-2 tracking-wider"
-                style={{ fontFamily: 'var(--font-montserrat)' }}
+                className="text-[#BDBEBF] text-xl md:text-3xl mb-2 tracking-wider"
+                style={{ fontFamily: 'var(--font-rhode)' }}
             />
             {subTitle && (
                 <p
@@ -239,8 +239,13 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                     {/* Main Cream Card Container */}
                     <div className="bg-[#FAF9F7] rounded-2xl overflow-hidden">
 
-                        {/* Filters Section */}
-                        <div className="px-4 md:px-8 pt-4 pb-6 md:pt-6 md:pb-8">
+                        {/* Cream Rectangle Container - Title and Filters */}
+                        <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
+                            backgroundImage: 'url(/sets-background.webp)',
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundColor: '#d4cdc3' // Fallback
+                        }}>
                             <div className="flex flex-wrap justify-center gap-2 md:gap-3">
                                 {filters.map((filter: HomepageSetsFilter) => (
                                     <button

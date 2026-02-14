@@ -39,8 +39,8 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
           <div className="text-center mb-6 relative">
             <StylizedTitle
               text="Shop by category"
-              className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
-              style={{ fontFamily: 'var(--font-montserrat)' }}
+              className="text-[#BDBEBF] text-xl md:text-3xl mb-3 tracking-wider"
+              style={{ fontFamily: 'var(--font-rhode)' }}
             />
             <h3
               className="text-[#8B7355] text-lg md:text-xl tracking-wide"
