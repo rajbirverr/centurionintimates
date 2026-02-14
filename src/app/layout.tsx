@@ -68,7 +68,9 @@ export default function RootLayout({
           <SessionRefresher />
         </Suspense>
         <CartProvider>
-          <SiteHeader />
+          <Suspense fallback={null}>
+            <SiteHeader />
+          </Suspense>
           {children}
           <Footer />
         </CartProvider>

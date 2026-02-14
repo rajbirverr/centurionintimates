@@ -8,6 +8,7 @@ interface PageProps {
 }
 
 // Note: dynamic is not compatible with cacheComponents
+export const dynamic = 'force-dynamic';
 
 export default async function AdminEditBlogPage({ params }: PageProps) {
     const { id } = await params

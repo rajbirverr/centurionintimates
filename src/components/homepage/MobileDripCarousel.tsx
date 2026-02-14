@@ -198,7 +198,7 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                         <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
                             Drip for Days Under ₹500
                         </p>
-                        <div className="mt-4">
+                        <div className="mt-4 flex justify-center relative z-10">
                             <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
                         </div>
                     </div>
@@ -244,7 +244,7 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                                 </div>
                                 {/* Arrow Button */}
                                 <div className="flex-1 flex justify-end">
-                                    <CarouselNext className="relative static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
+                                    <CarouselNext className="static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
                                 </div>
                             </div>
                         </Carousel>
@@ -272,7 +272,7 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                                 </CarouselContent>
                                 {/* Desktop Arrow */}
                                 <div className="pt-6 pb-1 flex justify-end">
-                                    <CarouselNext className="relative static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
+                                    <CarouselNext className="static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
                                 </div>
                             </Carousel>
                         </div>

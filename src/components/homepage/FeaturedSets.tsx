@@ -409,7 +409,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                         ))}
                                     </CarouselContent>
                                     <div className="pt-6 flex justify-end">
-                                        <CarouselNext className="relative static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
+                                        <CarouselNext className="static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
                                     </div>
                                 </Carousel>
                             ) : (
