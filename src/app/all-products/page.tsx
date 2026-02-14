@@ -9,6 +9,7 @@ import { getProductsByCategory, getProductImages, getCategoriesByIds } from '@/l
 import CategoryFilterBar from '@/components/allproducts/CategoryFilterBar'
 import SubcategoryGrid from '@/components/allproducts/SubcategoryGrid'
 
+
 /**
  * Create a public Supabase client for cached queries (no cookies needed)
  */
@@ -210,6 +211,8 @@ export default async function AllProductsPage({
           categoryName={categoryName}
         />
       )}
+
+
 
       <div className="max-w-[1440px] mx-auto px-2 md:px-8 py-1 md:py-2">
         <ProductGridClient
