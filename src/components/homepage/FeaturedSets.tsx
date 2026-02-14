@@ -5,6 +5,12 @@ import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import StylizedTitle from '@/components/common/StylizedTitle'
 import ViewToggle from '@/components/common/ViewToggle'
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+} from '@/components/ui/carousel'
 import { getHomepageSetsData, getProductsForFilter, getProductsByCategorySlug, getAllProductsForSets, type HomepageSetsFilter } from '@/lib/actions/homepage-sets'
 
 // Default values outside component to avoid recreating on each render
@@ -259,130 +265,148 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                         {/* Products Section */}
                         <div className="px-4 md:px-8 py-6 md:py-8 border-t border-black/5">
 
-                            {/* Products Grid - EXACT Honeylove layout */}
+                            {/* Products Carousel */}
                             {products.length > 0 ? (
-                                <div className={`grid ${isSingleView ? 'grid-cols-1 md:grid-cols-3' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-5'} gap-5 mb-4 md:mb-6 transition-all duration-300`}>
-                                    {products.map((product) => (
-                                        <div
-                                            key={product.id}
-                                            className="flex flex-col justify-between items-start"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                            }}
-                                        >
-                                            <div className="flex flex-col justify-between items-start w-full grow">
-                                                <div className="flex flex-col justify-start items-start w-full">
-                                                    {/* Product Image - Conditional Aspect Ratio */}
-                                                    <div className={`relative box-border w-full mb-4 overflow-hidden bg-white rounded-2xl transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}>
-                                                        {(() => {
-                                                            const imageUrl = getAbsoluteImageUrl(product.image_url)
-                                                            return imageUrl ? (
-                                                                <img
-                                                                    key={imageUrl}
-                                                                    src={imageUrl}
-                                                                    alt={product.name}
-                                                                    className="absolute inset-0 w-full h-full object-cover rounded-2xl"
-                                                                    loading="lazy"
-                                                                    onError={(e) => {
-                                                                        console.error('Image failed to load:', imageUrl);
-                                                                        e.currentTarget.style.display = 'none';
-                                                                    }}
-                                                                />
-                                                            ) : (
-                                                                <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
-                                                                    <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                                    </svg>
-                                                                </div>
-                                                            )
-                                                        })()}
-                                                    </div>
-
-                                                    {/* Product Info - EXACT Honeylove structure */}
-                                                    <div className="text-left w-full">
-                                                        {/* Category Name - ABOVE product name */}
-                                                        {product.category && (
-                                                            <p className="text-xs md:text-sm text-[#8B7355] uppercase tracking-[0.15em] mb-1 font-light" style={{ fontFamily: 'var(--font-manrope)' }}>
-                                                                {product.category.name}
-                                                            </p>
-                                                        )}
-
-                                                        {/* Product Name */}
-                                                        <div className="mb-2">
-                                                            <h4 className="text-sm font-light text-[#5C4D3C] tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
-                                                                {expandedProductId === product.id ? (
-                                                                    <Link
-                                                                        href={`/product/${product.slug}`}
-                                                                        className="inline-block"
-                                                                    >
-                                                                        {product.name}
-                                                                    </Link>
-                                                                ) : (
-                                                                    <>
-                                                                        <Link
-                                                                            href={`/product/${product.slug}`}
-                                                                            className="inline-block"
-                                                                        >
-                                                                            {product.name.split(' ').slice(0, 4).join(' ')}
-                                                                            {product.name.split(' ').length > 4 && '...'}
-                                                                        </Link>
-                                                                        {product.name.split(' ').length > 4 && (
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={(e) => {
-                                                                                    e.preventDefault()
-                                                                                    e.stopPropagation()
-                                                                                    setExpandedProductId(product.id)
-                                                                                }}
-                                                                                className="block text-xs text-[#5a4c46]/50 hover:text-[#5a4c46] mt-0.5 font-light"
-                                                                                style={{ fontFamily: 'var(--font-manrope)' }}
-                                                                            >
-                                                                                more
-                                                                            </button>
-                                                                        )}
-                                                                    </>
-                                                                )}
-                                                            </h4>
-                                                        </div>
-
-                                                        {/* Price */}
-                                                        <p className="text-base text-[#403b38] font-light mb-3" style={{ fontFamily: 'var(--font-manrope)' }}>
-                                                            ₹{product.price.toLocaleString('en-IN')}
-                                                        </p>
-
-                                                        {/* Color Swatches */}
-                                                        {product.colors && product.colors.length > 0 && (
-                                                            <div className="flex items-center gap-1.5 mb-3">
-                                                                {product.colors.slice(0, 6).map((color: any, index: number) => (
-                                                                    <button
-                                                                        key={index}
-                                                                        type="button"
-                                                                        className="w-3 h-3 rounded-full border border-gray-300 hover:border-gray-400 transition-colors"
-                                                                        style={{ backgroundColor: color.code || '#ccc' }}
-                                                                        title={color.name}
-                                                                        aria-label={`Color: ${color.name}`}
-                                                                    />
-                                                                ))}
-                                                                {product.colors.length > 6 && (
-                                                                    <span className="text-[13px] text-[#757575] pt-2">+{product.colors.length - 6}</span>
-                                                                )}
+                                <Carousel
+                                    className="w-full mb-4 md:mb-6"
+                                    opts={{
+                                        align: "start",
+                                        loop: true,
+                                        slidesToScroll: 1,
+                                        duration: 30,
+                                        dragFree: true,
+                                    }}
+                                >
+                                    <CarouselContent>
+                                        {products.map((product) => (
+                                            <CarouselItem
+                                                key={product.id}
+                                                className={`${isSingleView ? 'basis-full md:basis-1/3' : 'basis-1/2 md:basis-1/3 lg:basis-1/5'} transition-[flex-basis] duration-300 pl-4`}
+                                            >
+                                                <div
+                                                    className="flex flex-col justify-between items-start"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                    }}
+                                                >
+                                                    <div className="flex flex-col justify-between items-start w-full grow">
+                                                        <div className="flex flex-col justify-start items-start w-full">
+                                                            {/* Product Image - Conditional Aspect Ratio */}
+                                                            <div className={`relative box-border w-full mb-4 overflow-hidden bg-white rounded-2xl transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}>
+                                                                {(() => {
+                                                                    const imageUrl = getAbsoluteImageUrl(product.image_url)
+                                                                    return imageUrl ? (
+                                                                        <img
+                                                                            key={imageUrl}
+                                                                            src={imageUrl}
+                                                                            alt={product.name}
+                                                                            className="absolute inset-0 w-full h-full object-cover rounded-2xl"
+                                                                            loading="lazy"
+                                                                            onError={(e) => {
+                                                                                console.error('Image failed to load:', imageUrl);
+                                                                                e.currentTarget.style.display = 'none';
+                                                                            }}
+                                                                        />
+                                                                    ) : (
+                                                                        <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
+                                                                            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                            </svg>
+                                                                        </div>
+                                                                    )
+                                                                })()}
                                                             </div>
-                                                        )}
 
-                                                        {/* Shop Link */}
-                                                        <Link
-                                                            href={`/product/${product.slug}`}
-                                                            className="inline-block text-base font-normal text-[#403b38] hover:underline"
-                                                            style={{ fontFamily: 'var(--font-manrope)' }}
-                                                        >
-                                                            Shop
-                                                        </Link>
+                                                            {/* Product Info - EXACT Honeylove structure */}
+                                                            <div className="text-left w-full">
+                                                                {/* Category Name - ABOVE product name */}
+                                                                {product.category && (
+                                                                    <p className="text-xs md:text-sm text-[#8B7355] uppercase tracking-[0.15em] mb-1 font-light" style={{ fontFamily: 'var(--font-manrope)' }}>
+                                                                        {product.category.name}
+                                                                    </p>
+                                                                )}
+
+                                                                {/* Product Name */}
+                                                                <div className="mb-2">
+                                                                    <h4 className="text-sm font-light text-[#5C4D3C] tracking-wide" style={{ fontFamily: 'var(--font-manrope)' }}>
+                                                                        {expandedProductId === product.id ? (
+                                                                            <Link
+                                                                                href={`/product/${product.slug}`}
+                                                                                className="inline-block"
+                                                                            >
+                                                                                {product.name}
+                                                                            </Link>
+                                                                        ) : (
+                                                                            <>
+                                                                                <Link
+                                                                                    href={`/product/${product.slug}`}
+                                                                                    className="inline-block"
+                                                                                >
+                                                                                    {product.name.split(' ').slice(0, 4).join(' ')}
+                                                                                    {product.name.split(' ').length > 4 && '...'}
+                                                                                </Link>
+                                                                                {product.name.split(' ').length > 4 && (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        onClick={(e) => {
+                                                                                            e.preventDefault()
+                                                                                            e.stopPropagation()
+                                                                                            setExpandedProductId(product.id)
+                                                                                        }}
+                                                                                        className="block text-xs text-[#5a4c46]/50 hover:text-[#5a4c46] mt-0.5 font-light"
+                                                                                        style={{ fontFamily: 'var(--font-manrope)' }}
+                                                                                    >
+                                                                                        more
+                                                                                    </button>
+                                                                                )}
+                                                                            </>
+                                                                        )}
+                                                                    </h4>
+                                                                </div>
+
+                                                                {/* Price */}
+                                                                <p className="text-base text-[#403b38] font-light mb-3" style={{ fontFamily: 'var(--font-manrope)' }}>
+                                                                    ₹{product.price.toLocaleString('en-IN')}
+                                                                </p>
+
+                                                                {/* Color Swatches */}
+                                                                {product.colors && product.colors.length > 0 && (
+                                                                    <div className="flex items-center gap-1.5 mb-3">
+                                                                        {product.colors.slice(0, 6).map((color: any, index: number) => (
+                                                                            <button
+                                                                                key={index}
+                                                                                type="button"
+                                                                                className="w-3 h-3 rounded-full border border-gray-300 hover:border-gray-400 transition-colors"
+                                                                                style={{ backgroundColor: color.code || '#ccc' }}
+                                                                                title={color.name}
+                                                                                aria-label={`Color: ${color.name}`}
+                                                                            />
+                                                                        ))}
+                                                                        {product.colors.length > 6 && (
+                                                                            <span className="text-[13px] text-[#757575] pt-2">+{product.colors.length - 6}</span>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Shop Link */}
+                                                                <Link
+                                                                    href={`/product/${product.slug}`}
+                                                                    className="inline-block text-base font-normal text-[#403b38] hover:underline"
+                                                                    style={{ fontFamily: 'var(--font-manrope)' }}
+                                                                >
+                                                                    Shop
+                                                                </Link>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                            </CarouselItem>
+                                        ))}
+                                    </CarouselContent>
+                                    <div className="pt-6 flex justify-end">
+                                        <CarouselNext className="relative static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
+                                    </div>
+                                </Carousel>
                             ) : (
                                 <div className="text-center py-12 px-4 md:px-6 lg:px-8">
                                     <p className="text-[#2B2B2B]/60">No products found for this filter.</p>

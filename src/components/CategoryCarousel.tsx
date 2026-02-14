@@ -67,6 +67,8 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
                 align: "start",
                 loop: true,
                 slidesToScroll: 1,
+                duration: 30,
+                dragFree: true,
               }}
             >
               <CarouselContent className={isSingleView ? '' : ''}>
@@ -111,6 +113,8 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
               opts={{
                 align: "start",
                 loop: false,
+                duration: 30,
+                dragFree: true,
               }}
             >
               <CarouselContent>

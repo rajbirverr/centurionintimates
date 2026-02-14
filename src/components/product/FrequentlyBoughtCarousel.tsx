@@ -78,6 +78,8 @@ export default function FrequentlyBoughtCarousel({ productId }: FrequentlyBought
                             align: "start",
                             loop: true,
                             slidesToScroll: 1,
+                            duration: 30,
+                            dragFree: true,
                         }}
                     >
                         <CarouselContent>

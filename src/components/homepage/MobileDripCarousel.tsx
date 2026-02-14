@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import SafeImage from '@/components/common/SafeImage';
 import StylizedTitle from '@/components/common/StylizedTitle';
 import ViewToggle from '@/components/common/ViewToggle';
+
 import {
     Carousel,
     CarouselContent,
@@ -25,6 +26,18 @@ interface DripProduct {
 interface ProductGridProps {
     products?: DripProduct[];
 }
+
+// Premium alternating card background colors - warm browns/creams/taupes
+const cardColors = [
+    'bg-[#f5ede3]', // warm cream
+    'bg-[#e8ddd0]', // soft beige
+    'bg-[#d9cdbf]', // warm taupe
+    'bg-[#f0e6d8]', // light champagne
+    'bg-[#e2d5c5]', // sandy cream
+    'bg-[#efe0ce]', // golden cream
+    'bg-[#ddd0c0]', // muted caramel
+    'bg-[#f3e9db]', // ivory sand
+];
 
 const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView: boolean }> = ({ product, index, isSingleView }) => {
     const [showSecondary, setShowSecondary] = useState(false);
@@ -56,10 +69,13 @@ const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView:
         }
     }, [isMobile, hasSecondaryImage]);
 
+    const bgColor = cardColors[index % cardColors.length];
+
     return (
-        <div className="flex flex-col items-center text-center h-full">
+        <div className={`flex flex-col rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 h-full ${bgColor}`}>
+            {/* Image Container */}
             <div
-                className={`mb-5 w-full overflow-hidden relative rounded-2xl cursor-pointer bg-white transition-all duration-300 ${isSingleView ? 'aspect-[4/5]' : 'aspect-[3/4]'}`}
+                className={`w-full overflow-hidden relative cursor-pointer transition-all duration-300 ${isSingleView ? 'aspect-[3/4]' : 'aspect-[3/4]'}`}
                 onClick={handleInteraction}
                 onMouseEnter={() => !isMobile && hasSecondaryImage && setShowSecondary(true)}
                 onMouseLeave={() => !isMobile && setShowSecondary(false)}
@@ -76,7 +92,6 @@ const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView:
                         src={product.image}
                         alt={product.name}
                         fill
-                        className="rounded-t-2xl"
                         style={{ objectFit: 'cover' }}
                         priority={index < 3}
                         loading={index < 3 ? 'eager' : 'lazy'}
@@ -97,7 +112,6 @@ const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView:
                             src={product.secondaryImage!}
                             alt={`${product.name} - alternate view`}
                             fill
-                            className="rounded-t-2xl"
                             style={{ objectFit: 'cover' }}
                             loading="lazy"
                             sizes={isSingleView ? "(max-width: 768px) 90vw, 50vw" : "(max-width: 1024px) 33vw, 20vw"}
@@ -105,62 +119,91 @@ const ProductCard: React.FC<{ product: DripProduct; index: number; isSingleView:
                     </div>
                 )}
             </div>
-            {/* Optimized text for single view */}
-            <h4 className={`font-light text-[#5C4D3C] mb-1 tracking-wide ${isSingleView ? 'text-lg' : 'text-sm'}`} style={{ fontFamily: 'var(--font-manrope)' }}>{product.name}</h4>
-            <div className={`text-[#8B7355] mb-5 px-4 leading-relaxed ${isSingleView ? 'max-w-[280px] text-sm' : 'max-w-[200px] text-xs'}`} style={{ fontFamily: 'var(--font-manrope)' }}>
-                <p className="line-clamp-2">
+
+            {/* Product Info */}
+            <div className="flex flex-col flex-1 p-4 pt-3 pb-4">
+                <h4
+                    className={`font-semibold text-[#3d2e22] mb-1 leading-snug uppercase tracking-wide line-clamp-2 min-h-[2.5em] ${isSingleView ? 'text-sm' : 'text-[11px]'}`}
+                    style={{ fontFamily: 'var(--font-manrope)' }}
+                >
+                    {product.name}
+                </h4>
+
+                {/* Price */}
+                <p
+                    className={`text-[#6b5744] font-medium mb-2 ${isSingleView ? 'text-base' : 'text-sm'}`}
+                    style={{ fontFamily: 'var(--font-manrope)' }}
+                >
+                    ₹{product.price.toLocaleString()}
+                </p>
+
+                {/* Description */}
+                <p
+                    className={`text-[#8B7355] leading-relaxed line-clamp-2 mb-3 ${isSingleView ? 'text-xs' : 'text-[10px]'}`}
+                    style={{ fontFamily: 'var(--font-manrope)' }}
+                >
                     {product.description}
                 </p>
+
+                {/* Preview Button */}
                 <button
-                    className="text-[#784D2C] text-xs underline mt-1 hover:no-underline"
+                    className="mt-auto w-full py-2.5 bg-white/60 text-[#3d2e22] text-[10px] uppercase tracking-[0.2em] font-semibold rounded-lg border border-[#3d2e22] hover:bg-[#3d2e22] hover:text-white active:scale-[0.98] transition-all duration-200"
+                    style={{ fontFamily: 'var(--font-manrope)' }}
                     onClick={(e) => {
                         e.preventDefault();
                         window.location.href = `/product/${product.id}`;
                     }}
                 >
-                    for more information click
+                    PREVIEW
                 </button>
             </div>
-            <button
-                className="mt-auto w-full max-w-[180px] py-2 px-4 bg-white text-[#5C4D3C] text-[11px] uppercase tracking-[0.2em] font-light border border-[#5C4D3C] hover:bg-[#5C4D3C] hover:text-white transition-all duration-200"
-                style={{ fontFamily: 'var(--font-manrope)' }}
-            >
-                SELECT A SIZE
-            </button>
         </div>
     );
 };
 
 const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
     const [api, setApi] = useState<CarouselApi | null>(null);
+    const progressRef = useRef<HTMLDivElement>(null);
     const [isSingleView, setIsSingleView] = useState(false);
+
+    useEffect(() => {
+        if (!api) return;
+        const onScroll = () => {
+            const progress = Math.max(0, Math.min(1, api.scrollProgress()));
+            if (progressRef.current) {
+                progressRef.current.style.width = `${Math.max(10, progress * 100)}%`;
+            }
+        };
+        api.on('scroll', onScroll);
+        api.on('reInit', onScroll);
+        return () => {
+            api.off('scroll', onScroll);
+            api.off('reInit', onScroll);
+        };
+    }, [api]);
 
     return (
         <div className="mb-16 px-4 md:px-8 lg:px-12">
-            {/* Rhode-style Cream Container */}
+            {/* Container */}
             <div className="max-w-[1440px] mx-auto">
                 <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 px-4 md:px-8 overflow-visible relative">
 
-                    {/* Header + Toggle */}
-                    <div className="flex flex-col items-center mb-4 md:mb-10 relative">
-                        <div className="text-center">
-                            <StylizedTitle
-                                text="Explore"
-                                className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
-                                style={{ fontFamily: 'var(--font-montserrat)' }}
-                            />
-                            <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
-                                Drip for Days Under ₹500
-                            </p>
-                        </div>
-
-                        {/* Toggle Button - Visible on all screens */}
+                    {/* Header */}
+                    <div className="flex flex-col items-center mb-6 md:mb-10">
+                        <StylizedTitle
+                            text="Explore"
+                            className="text-[#583432] text-2xl md:text-4xl font-black italic mb-3 tracking-wider"
+                            style={{ fontFamily: 'var(--font-montserrat)' }}
+                        />
+                        <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
+                            Drip for Days Under ₹500
+                        </p>
                         <div className="mt-4">
                             <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
                         </div>
                     </div>
 
-                    {/* Mobile View - Layout changes based on state */}
+                    {/* Mobile View */}
                     <div className="md:hidden">
                         <Carousel
                             setApi={setApi}
@@ -169,12 +212,14 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                                 align: "start",
                                 loop: true,
                                 slidesToScroll: 1,
+                                duration: 30,
+                                dragFree: true,
                             }}
                         >
                             <CarouselContent>
                                 {products.length > 0 ? (
                                     products.map((product, index) => (
-                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[10px]'} h-full transition-[flex-basis] duration-300`}>
+                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[6px]'} h-full transition-[flex-basis] duration-300`}>
                                             <ProductCard product={product} index={index} isSingleView={isSingleView} />
                                         </CarouselItem>
                                     ))
@@ -186,26 +231,50 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                                     </CarouselItem>
                                 )}
                             </CarouselContent>
-                            {/* Navigation Arrows */}
-                            <div className="pt-4 pb-1" style={{ backgroundColor: '#FAF9F7' }}>
-                                <div className="flex justify-center items-center">
-                                    <CarouselPrevious className="relative static transform-none mx-2 h-8 w-8 bg-transparent border-none text-[#5a4c46]" />
-                                    <CarouselNext className="relative static transform-none mx-2 h-8 w-8 bg-transparent border-none text-[#5a4c46]" />
+                            {/* Bottom: Progress Bar + Arrow */}
+                            <div className="pt-8 pb-2 flex items-center justify-between">
+                                <div className="flex-1" />
+                                {/* Progress Bar */}
+                                <div className="w-24 h-[3px] bg-[#e5ddd3] rounded-full overflow-hidden">
+                                    <div
+                                        ref={progressRef}
+                                        className="h-full bg-[#3d2e22] rounded-full"
+                                        style={{ width: '10%', transition: 'none' }}
+                                    />
+                                </div>
+                                {/* Arrow Button */}
+                                <div className="flex-1 flex justify-end">
+                                    <CarouselNext className="relative static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
                                 </div>
                             </div>
                         </Carousel>
                     </div>
 
-                    {/* Desktop Grid View */}
+                    {/* Desktop Carousel View */}
                     {products.length > 0 ? (
                         <div className="hidden md:block">
-                            <div className={`grid ${isSingleView ? 'grid-cols-3' : 'grid-cols-3 lg:grid-cols-5'} gap-5 transition-all duration-300`}>
-                                {products.map((product, index) => (
-                                    <div key={product.id} className="w-full">
-                                        <ProductCard product={product} index={index} isSingleView={isSingleView} />
-                                    </div>
-                                ))}
-                            </div>
+                            <Carousel
+                                className="w-full"
+                                opts={{
+                                    align: "start",
+                                    loop: true,
+                                    slidesToScroll: 1,
+                                    duration: 30,
+                                    dragFree: true,
+                                }}
+                            >
+                                <CarouselContent>
+                                    {products.map((product, index) => (
+                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-1/3 px-2' : 'basis-1/3 lg:basis-1/5 px-2'} h-full transition-[flex-basis] duration-300`}>
+                                            <ProductCard product={product} index={index} isSingleView={isSingleView} />
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                {/* Desktop Arrow */}
+                                <div className="pt-6 pb-1 flex justify-end">
+                                    <CarouselNext className="relative static transform-none h-10 w-14 rounded-full bg-[#3d2e22] text-white border-none hover:bg-[#2a1f17] transition-colors" />
+                                </div>
+                            </Carousel>
                         </div>
                     ) : (
                         <div className="hidden md:block text-center py-12 text-gray-500">
