@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
     ShopDropdown,
     AboutDropdown,
@@ -20,6 +21,8 @@ interface SiteHeaderProps {
 }
 
 const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
+    const pathname = usePathname();
+    const isHomepage = pathname === '/';
     const [isSticky, setIsSticky] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -323,14 +326,17 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
     };
 
     return (
-        <>
+        <header className={isHomepage ? 'absolute top-0 left-0 right-0 z-50' : ''}>
             {/* Announcement bar */}
-            <div className="bg-[#f3f0ef] py-2 text-center text-xs text-[#5a4c46]">
+            <div className={`py-2 text-center text-xs text-[#5a4c46] ${isHomepage && !isSticky ? 'bg-transparent' : 'bg-[#f3f0ef]'}`}>
                 <p>free shipping on orders over ₹1000</p>
             </div>
 
             <nav
-                className={`w-full bg-white py-4 ${activeDropdown ? 'z-[60]' : 'z-30'} relative ${isSticky ? 'fixed top-0 left-0 right-0 animate-slideDown shadow-sm border-b border-gray-100' : ''}`}
+                className={`w-full py-4 ${activeDropdown ? 'z-[60]' : 'z-30'} ${isSticky
+                    ? 'fixed top-0 left-0 right-0 animate-slideDown shadow-sm border-b border-gray-100 bg-white'
+                    : (isHomepage ? 'absolute top-0 left-0 right-0 bg-transparent' : 'relative bg-white')
+                    }`}
                 ref={navBarRef}
             >
                 <div className="max-w-[1440px] mx-auto px-4 md:px-8">
@@ -340,7 +346,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                             {/* Shop dropdown */}
                             <div className="relative">
                                 <button
-                                    className={`text-[#5a4c46] hover:text-[#91594c] tracking-[0.2em] text-xs font-light uppercase focus:outline-none ${activeDropdown === 'shop' ? 'text-[#91594c]' : ''}`}
+                                    className={`text-[#5a4c46] hover:text-[#91594c] font-montserrat text-xs font-medium uppercase tracking-wide focus:outline-none ${activeDropdown === 'shop' ? 'text-[#91594c]' : ''}`}
                                     onClick={() => toggleDropdown('shop')}
                                     onMouseEnter={() => handleNavItemMouseEnter('shop')}
                                     onMouseLeave={handleNavItemMouseLeave}
@@ -354,7 +360,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                             {/* About dropdown */}
                             <div className="relative">
                                 <button
-                                    className={`text-[#5a4c46] hover:text-[#91594c] tracking-[0.2em] text-xs font-light uppercase focus:outline-none ${activeDropdown === 'about' ? 'text-[#91594c]' : ''}`}
+                                    className={`text-[#5a4c46] hover:text-[#91594c] font-montserrat text-xs font-medium uppercase tracking-wide focus:outline-none ${activeDropdown === 'about' ? 'text-[#91594c]' : ''}`}
                                     onClick={() => toggleDropdown('about')}
                                     onMouseEnter={() => handleNavItemMouseEnter('about')}
                                     onMouseLeave={handleNavItemMouseLeave}
@@ -369,14 +375,14 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                             <div className="relative flex items-center">
                                 <Link
                                     href="/sale"
-                                    className="text-red-600 hover:text-red-700 tracking-[0.2em] text-xs font-light uppercase focus:outline-none"
+                                    className="text-red-600 hover:text-red-700 font-montserrat text-xs font-medium uppercase tracking-wide focus:outline-none"
                                 >
                                     SALE
                                 </Link>
-                                <span className="text-[#5a4c46] mx-0.5">/</span>
+                                <span className="text-[#5a4c46] mx-1">/</span>
                                 <Link
                                     href="/blogs"
-                                    className="text-[#5a4c46] hover:text-[#91594c] tracking-[0.2em] text-xs font-light uppercase focus:outline-none"
+                                    className="text-[#5a4c46] hover:text-[#91594c] font-montserrat text-xs font-medium uppercase tracking-wide focus:outline-none"
                                 >
                                     BLOG
                                 </Link>
@@ -449,7 +455,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                             {/* Search button */}
                             <div className="relative">
                                 <button
-                                    className={`text-[#5a4c46] hover:text-[#91594c] tracking-[0.2em] text-xs font-light uppercase focus:outline-none ${activeDropdown === 'search' ? 'text-[#91594c]' : ''}`}
+                                    className={`text-[#5a4c46] hover:text-[#91594c] font-montserrat text-xs font-medium uppercase tracking-wide focus:outline-none ${activeDropdown === 'search' ? 'text-[#91594c]' : ''}`}
                                     onClick={() => toggleDropdown('search')}
                                     onMouseEnter={() => handleNavItemMouseEnter('search')}
                                     onMouseLeave={handleNavItemMouseLeave}
@@ -463,7 +469,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                             {/* Account button */}
                             <div className="relative">
                                 <button
-                                    className={`text-[#5a4c46] hover:text-[#91594c] tracking-[0.2em] text-xs font-light uppercase focus:outline-none ${activeDropdown === 'account' ? 'text-[#91594c]' : ''}`}
+                                    className={`text-[#5a4c46] hover:text-[#91594c] font-montserrat text-xs font-medium uppercase tracking-wide focus:outline-none ${activeDropdown === 'account' ? 'text-[#91594c]' : ''}`}
                                     onClick={() => toggleDropdown('account')}
                                     onMouseEnter={() => handleNavItemMouseEnter('account')}
                                     onMouseLeave={handleNavItemMouseLeave}
@@ -780,7 +786,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                     </div>
                 </div>
             </div>
-        </>
+        </header>
     );
 };
 

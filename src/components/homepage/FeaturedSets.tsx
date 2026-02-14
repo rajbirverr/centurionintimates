@@ -226,21 +226,21 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
         >
             <div className="px-4 md:px-8 lg:px-12">
                 <div className="max-w-[1440px] mx-auto">
-                    {/* Title - Above the background */}
-                    <div className="text-center mb-2 relative">
-                        <InteractiveTitle section={section} />
-
-                        {/* Toggle Button - Visible on all screens */}
-                        <div className="mt-4 flex justify-center relative z-10">
-                            <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
-                        </div>
-                    </div>
-
                     {/* Main Cream Card Container */}
-                    <div className="bg-[#FAF9F7] rounded-2xl overflow-hidden">
+                    <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 px-6 md:px-10 overflow-hidden">
 
-                        {/* Cream Rectangle Container - Title and Filters */}
-                        <div className="rounded-t-2xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
+                        {/* Title - Inside the background */}
+                        <div className="text-center mb-6 relative">
+                            <InteractiveTitle section={section} />
+
+                            {/* Toggle Button - Visible on all screens */}
+                            <div className="mt-4 flex justify-center relative z-10">
+                                <ViewToggle isSingleView={isSingleView} onToggle={() => setIsSingleView(!isSingleView)} />
+                            </div>
+                        </div>
+
+                        {/* Cream Rectangle Container - Filters */}
+                        <div className="rounded-xl px-4 md:px-6 lg:px-8 py-8 md:py-10 lg:py-12 mb-6" style={{
                             backgroundImage: 'url(/sets-background.webp)',
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
@@ -422,8 +422,11 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                             <div className="flex justify-center">
                                 <Link
                                     href={section?.button_link || '/all-products'}
-                                    className="w-full max-w-[180px] py-2 px-4 bg-white text-[#5a4c46] text-[11px] uppercase tracking-[0.2em] font-light border border-[#ddd] shadow-sm hover:bg-transparent hover:border-[#5a4c46] hover:text-[#5a4c46] transition-all duration-200 mx-auto block text-center"
-                                    style={{ fontFamily: 'var(--font-manrope)' }}
+                                    className="inline-block pointer-events-auto px-8 py-2.5 rounded-lg border text-[10px] font-semibold uppercase tracking-[0.2em] transition-all duration-200 text-[#3d2e22] hover:bg-[#3d2e22] hover:text-white bg-white/60 backdrop-blur-sm active:scale-[0.98]"
+                                    style={{
+                                        fontFamily: 'var(--font-manrope)',
+                                        borderColor: '#3d2e22'
+                                    }}
                                 >
                                     SHOP BEST SETS
                                 </Link>

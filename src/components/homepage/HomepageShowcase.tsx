@@ -41,8 +41,8 @@ async function ShowcaseContent() {
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
 
-              <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none w-full">
-                <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight drop-shadow-md" style={{
+              <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 leading-tight drop-shadow-md" style={{
                   fontFamily: 'var(--font-manrope)',
                   fontWeight: '700',
                   letterSpacing: '-0.02em',
@@ -57,9 +57,7 @@ async function ShowcaseContent() {
                 }}>
                   {subtitle || "Collection"}
                 </p>
-                <div className="pointer-events-auto">
-                  <VisitShopButton />
-                </div>
+                <VisitShopButton />
               </div>
             </>
           ) : (
@@ -94,20 +92,22 @@ export default function HomepageShowcase() {
   return (
     <section className="bg-white pt-4 pb-12 md:pt-6 md:pb-16 px-4 md:px-8 lg:px-12" aria-label="Featured Collections">
       <div className="max-w-[1440px] mx-auto">
-        {/* Rhode-Style Header */}
-        <div className="text-center mb-10">
-          <StylizedTitle
-            text="Featured"
-            className="text-[#BDBEBF] text-xl md:text-3xl mb-3 tracking-wider"
-            style={{ fontFamily: 'var(--font-rhode)' }}
-          />
-          <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
-            Our Exclusive Designs
-          </p>
+        <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 px-6 md:px-10">
+          {/* Rhode-Style Header */}
+          <div className="text-center mb-8">
+            <StylizedTitle
+              text="Featured"
+              className="text-[#BDBEBF] text-xl md:text-3xl mb-3 tracking-wider"
+              style={{ fontFamily: 'var(--font-rhode)' }}
+            />
+            <p className="text-[#8B7355] text-lg md:text-xl tracking-wide" style={{ fontFamily: 'var(--font-audiowide)' }}>
+              Our Exclusive Designs
+            </p>
+          </div>
+          <Suspense fallback={<ShowcaseSkeleton />}>
+            <ShowcaseContent />
+          </Suspense>
         </div>
-        <Suspense fallback={<ShowcaseSkeleton />}>
-          <ShowcaseContent />
-        </Suspense>
       </div>
     </section>
   )

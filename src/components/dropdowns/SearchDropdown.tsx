@@ -58,19 +58,19 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
   // Save search to recent searches
   const saveRecentSearch = useCallback((query: string) => {
     if (!query || query.trim().length === 0) return;
-    
+
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
         let searches: string[] = stored ? JSON.parse(stored) : [];
-        
+
         // Remove if already exists
         searches = searches.filter(s => s.toLowerCase() !== query.toLowerCase());
         // Add to beginning
         searches.unshift(query);
         // Keep only last MAX_RECENT_SEARCHES
         searches = searches.slice(0, MAX_RECENT_SEARCHES);
-        
+
         localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(searches));
         setRecentSearches(searches);
       } catch (error) {
@@ -153,8 +153,8 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                 {isSearching ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#5a4c46]"></div>
                 ) : (
-                  <button 
-                    className="text-[#5a4c46] focus:outline-none" 
+                  <button
+                    className="text-[#5a4c46] focus:outline-none"
                     aria-label="Search"
                     onClick={handleViewAllResults}
                   >
@@ -184,10 +184,10 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                       >
                         <div className="flex items-center space-x-4">
                           <div className="bg-[#f3f0ef] w-20 h-20 flex items-center justify-center overflow-hidden">
-                            <img 
-                              src={result.image} 
-                              alt={result.name} 
-                              className="h-full w-full object-cover group-hover:opacity-90 transition-opacity" 
+                            <img
+                              src={result.image}
+                              alt={result.name}
+                              className="h-full w-full object-cover group-hover:opacity-90 transition-opacity"
                             />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -202,7 +202,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                     ))}
                   </div>
                   <div className="text-center mt-8">
-                    <button 
+                    <button
                       onClick={handleViewAllResults}
                       className="text-[#5a4c46] hover:text-[#91594c] text-sm underline"
                     >
@@ -236,7 +236,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
                   )}
                 </ul>
               </div>
-              
+
               {/* Recent searches */}
               <div>
                 <h3 className="text-[#5a4c46] uppercase text-xs tracking-wider mb-4 font-medium">RECENT SEARCHES</h3>

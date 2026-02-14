@@ -166,7 +166,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                 {/* Text overlay - bottom left corner */}
                                 <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-10 pointer-events-none">
                                     {/* Large bold product name */}
-                                    <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 leading-tight" style={{
+                                    <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 leading-tight drop-shadow-md" style={{
                                         fontFamily: 'var(--font-manrope)',
                                         fontWeight: '700',
                                         letterSpacing: '-0.02em',
@@ -175,28 +175,22 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                                         {product.name}
                                     </h3>
                                     {/* Smaller subtitle */}
-                                    <p className="text-sm sm:text-base font-normal mb-4" style={{
+                                    <p className="text-sm sm:text-base font-normal mb-4 text-[#8B7355]" style={{
                                         fontFamily: 'var(--font-manrope)',
                                         fontWeight: '400',
-                                        letterSpacing: '0.01em',
-                                        color: '#8B7355'
+                                        letterSpacing: '0.01em'
                                     }}>
                                         {product.location}
                                     </p>
                                     {/* Button with white border */}
                                     <Link
                                         href={product.slug ? `/product/${product.slug}` : `/product/${product.id}`}
-                                        className="inline-flex items-center space-x-2 pointer-events-auto px-6 py-2.5 rounded-full border-2 text-sm font-medium transition-all duration-200 text-[#8B7355] hover:bg-[#8B7355] hover:text-white bg-white/10 backdrop-blur-sm group relative z-30"
+                                        className="inline-block pointer-events-auto px-8 py-2.5 rounded-lg border text-[10px] font-semibold uppercase tracking-[0.2em] transition-all duration-200 text-[#3d2e22] hover:bg-[#3d2e22] hover:text-white bg-white/60 backdrop-blur-sm active:scale-[0.98] z-30"
                                         style={{
                                             fontFamily: 'var(--font-manrope)',
-                                            fontWeight: '500',
-                                            letterSpacing: '0.05em',
-                                            borderColor: '#8B7355'
+                                            borderColor: '#3d2e22'
                                         }}
                                     >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="group-hover:text-white transition-colors animate-pulse">
-                                            <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8B7355] group-hover:text-white" />
-                                        </svg>
                                         <span>VIEW PRODUCT</span>
                                     </Link>
                                 </div>
@@ -205,36 +199,7 @@ export default function ShineCarousel({ products }: ShineCarouselProps) {
                     })}
                 </div>
 
-                {/* Navigation Controls - minimal dots at bottom center */}
-                <div className="absolute bottom-4 left-0 right-0 flex justify-center items-center space-x-2 z-20 pointer-events-none">
-                    {products.map((_, index) => {
-                        const isActive = activeIndex === index
-                        return (
-                            <button
-                                key={index}
-                                aria-label={`Go to slide ${index + 1}`}
-                                className="relative transition-all duration-300 ease-out flex-shrink-0 focus:outline-none pointer-events-auto"
-                                onClick={() => {
-                                    pauseAutoRotation()
-                                    handleDotClick(index)
-                                    resumeAutoRotation()
-                                }}
-                            >
-                                <div className="relative flex items-center justify-center">
-                                    {isActive ? (
-                                        <div className="w-8 h-8 flex items-center justify-center">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-[#8B7355] shadow-sm transform scale-110" />
-                                        </div>
-                                    ) : (
-                                        <div className="w-6 h-6 flex items-center justify-center group">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-[#8B7355]/40 group-hover:bg-[#8B7355]/60 transition-colors duration-200" />
-                                        </div>
-                                    )}
-                                </div>
-                            </button>
-                        )
-                    })}
-                </div>
+
             </div>
         </div>
     )

@@ -27,7 +27,7 @@ export default async function HomepageHeroImage() {
   const formatRatio = (ratio: string) => ratio.replace(':', '/')
 
   return (
-    <div className="w-full rounded-2xl overflow-hidden relative">
+    <div className="w-full overflow-hidden relative">
       {/* Desktop Image */}
       <div
         className="hidden md:block w-full relative"
