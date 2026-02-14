@@ -10,8 +10,7 @@ const nextConfig: NextConfig = {
     },
     optimizeCss: true, // Optimize CSS output - requires 'critters' package
   },
-  // Enable Partial Prerendering via cacheComponents
-  cacheComponents: true,
+
 
   images: {
     remotePatterns: [

@@ -4,7 +4,7 @@ import { getAllBlogsForAdmin, deleteBlog } from '@/lib/actions/blogs';
 import { revalidatePath } from 'next/cache';
 
 // Note: dynamic is not compatible with cacheComponents
-export const dynamic = 'force-dynamic';
+
 
 export default async function AdminBlogsPage() {
     const result = await getAllBlogsForAdmin();

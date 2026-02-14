@@ -4,6 +4,9 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { checkAdminStatus } from '@/lib/actions/auth'
 import Sidebar from '@/components/admin/Sidebar'
 
+export const dynamic = 'force-dynamic';
+
+
 export default async function AdminLayout({
   children,
 }: {
@@ -12,16 +15,16 @@ export default async function AdminLayout({
   // Get current pathname from headers (set by proxy)
   const headersList = await headers()
   const pathname = headersList.get('x-pathname') || ''
-  
+
   // Don't protect the /admin login page itself
   if (pathname === '/admin') {
     return <>{children}</>
   }
-  
+
   // Server Layout Guard: Check authentication and admin role
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) {
     redirect('/admin')
   }
@@ -31,7 +34,7 @@ export default async function AdminLayout({
   if (!adminCheck.success || !adminCheck.isAdmin) {
     redirect('/admin')
   }
-  
+
   return (
     <div className="min-h-screen bg-[#fafafa] auth-page" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
       <Sidebar />
