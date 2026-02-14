@@ -263,7 +263,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                         </div>
 
                         {/* Products Section */}
-                        <div className="px-4 md:px-8 py-6 md:py-8 border-t border-black/5">
+                        <div className="py-6 md:py-8 border-t border-black/5">
 
                             {/* Products Carousel */}
                             {products.length > 0 ? (
@@ -277,11 +277,11 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                         dragFree: true,
                                     }}
                                 >
-                                    <CarouselContent>
+                                    <CarouselContent className="ml-0">
                                         {products.map((product) => (
                                             <CarouselItem
                                                 key={product.id}
-                                                className={`${isSingleView ? 'basis-full md:basis-1/3' : 'basis-1/2 md:basis-1/3 lg:basis-1/5'} transition-[flex-basis] duration-300 pl-4`}
+                                                className={`${isSingleView ? 'basis-full md:basis-1/3' : 'basis-1/2 md:basis-1/3 lg:basis-1/5'} transition-[flex-basis] duration-300 pl-0 pr-4 h-full flex flex-col`}
                                             >
                                                 <div
                                                     className="flex flex-col justify-between items-start"

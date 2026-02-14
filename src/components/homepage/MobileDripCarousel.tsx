@@ -186,7 +186,7 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
         <div className="mb-16 px-4 md:px-8 lg:px-12">
             {/* Container */}
             <div className="max-w-[1440px] mx-auto">
-                <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 px-4 md:px-8 overflow-visible relative">
+                <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 overflow-visible relative">
 
                     {/* Header */}
                     <div className="flex flex-col items-center mb-6 md:mb-10">
@@ -216,10 +216,10 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                                 dragFree: true,
                             }}
                         >
-                            <CarouselContent>
+                            <CarouselContent className="ml-0">
                                 {products.length > 0 ? (
                                     products.map((product, index) => (
-                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full px-4' : 'basis-[50%] px-[6px]'} h-full transition-[flex-basis] duration-300`}>
+                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-full pl-0 pr-4' : 'basis-[50%] pl-0 pr-2'} h-full flex flex-col transition-[flex-basis] duration-300`}>
                                             <ProductCard product={product} index={index} isSingleView={isSingleView} />
                                         </CarouselItem>
                                     ))
@@ -263,9 +263,9 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
                                     dragFree: true,
                                 }}
                             >
-                                <CarouselContent>
+                                <CarouselContent className="ml-0">
                                     {products.map((product, index) => (
-                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-1/3 px-2' : 'basis-1/3 lg:basis-1/5 px-2'} h-full transition-[flex-basis] duration-300`}>
+                                        <CarouselItem key={product.id} className={`${isSingleView ? 'basis-1/3 pl-0 pr-4' : 'basis-1/3 lg:basis-1/5 pl-0 pr-4'} h-full flex flex-col transition-[flex-basis] duration-300`}>
                                             <ProductCard product={product} index={index} isSingleView={isSingleView} />
                                         </CarouselItem>
                                     ))}

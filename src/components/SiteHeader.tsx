@@ -330,7 +330,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
             </div>
 
             <nav
-                className={`w-full bg-white border-b border-gray-100 py-4 shadow-sm ${activeDropdown ? 'z-[60]' : 'z-30'} relative ${isSticky ? 'fixed top-0 left-0 right-0 animate-slideDown' : ''}`}
+                className={`w-full bg-white py-4 ${activeDropdown ? 'z-[60]' : 'z-30'} relative ${isSticky ? 'fixed top-0 left-0 right-0 animate-slideDown shadow-sm border-b border-gray-100' : ''}`}
                 ref={navBarRef}
             >
                 <div className="max-w-[1440px] mx-auto px-4 md:px-8">
