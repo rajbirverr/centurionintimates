@@ -123,6 +123,12 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
         };
     }, [showMobileMenu]);
 
+    // Close dropdowns on navigation
+    useEffect(() => {
+        setActiveDropdown(null);
+        setShowMobileMenu(false);
+    }, [pathname]);
+
     // Fetch categories with subcategories
     useEffect(() => {
         const loadCategories = async () => {
@@ -333,9 +339,9 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
             </div>
 
             <nav
-                className={`w-full py-4 ${activeDropdown ? 'z-[60]' : 'z-30'} ${isSticky
+                className={`w-full py-4 ${activeDropdown || showMobileMenu ? 'z-[60]' : 'z-30'} ${isSticky
                     ? 'fixed top-0 left-0 right-0 animate-slideDown shadow-sm border-b border-gray-100 bg-white'
-                    : (isHomepage ? 'absolute top-0 left-0 right-0 bg-transparent' : 'relative bg-white')
+                    : (isHomepage && !activeDropdown && !showMobileMenu ? 'absolute top-0 left-0 right-0 bg-transparent' : (isHomepage ? 'absolute top-0 left-0 right-0 bg-white shadow-sm' : 'relative bg-white'))
                     }`}
                 ref={navBarRef}
             >
@@ -616,7 +622,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                 }}
             >
                 <div className="overflow-y-auto" style={{ maxHeight: `calc(100vh - ${mobileMenuTop || (navHeight || 73)}px)` }}>
-                    <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-6">
+                    <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-6 pb-20">
                         {/* Categories Section */}
                         {categories.length > 0 && (
                             <div className="mb-6">
@@ -775,14 +781,7 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
                             </Link>
                         </div>
 
-                        {/* Country selector */}
-                        <div className="mt-8 pb-8">
-                            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Country/region</p>
-                            <select className="w-full bg-[#f8f7f6] border-0 rounded-lg py-3 px-4 text-sm text-[#5a4c46] focus:outline-none focus:ring-2 focus:ring-[#5a4c46]/20" aria-label="Select country or region">
-                                <option>India (INR ₹)</option>
-                                <option>United States (USD $)</option>
-                            </select>
-                        </div>
+                        {/* Country selector removed */}
                     </div>
                 </div>
             </div>
