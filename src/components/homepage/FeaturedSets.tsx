@@ -227,7 +227,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
             <div className="px-4 md:px-8 lg:px-12">
                 <div className="max-w-[1440px] mx-auto">
                     {/* Main Cream Card Container */}
-                    <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 px-0 overflow-hidden">
+                    <div className="bg-white rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 px-0 overflow-hidden">
 
                         {/* Title - Inside the background */}
                         <div className="text-center mb-6 relative">

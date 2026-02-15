@@ -42,7 +42,7 @@ export default function HeroReviewSection() {
             <div className="py-10 md:py-12">
 
                 {/* Rhode-Style Clean Card */}
-                <div className="bg-[#FAF9F7] rounded-2xl p-8 md:p-10">
+                <div className="bg-white rounded-2xl p-8 md:p-10">
 
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-6">

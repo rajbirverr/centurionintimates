@@ -186,7 +186,7 @@ const MobileDripCarousel: React.FC<ProductGridProps> = ({ products = [] }) => {
         <div className="mb-16 px-4 md:px-8 lg:px-12">
             {/* Container */}
             <div className="max-w-[1440px] mx-auto">
-                <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 overflow-visible relative">
+                <div className="bg-white rounded-2xl pt-8 pb-6 md:pt-12 md:pb-12 overflow-visible relative">
 
                     {/* Header */}
                     <div className="flex flex-col items-center mb-6 md:mb-10">

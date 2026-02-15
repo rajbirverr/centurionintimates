@@ -33,7 +33,7 @@ const CategoryCarousel: React.FC<CategoryCarouselProps> = ({ categories = [] }) 
     <div className="mb-16 px-4 md:px-8 lg:px-12">
       <div className="max-w-[1440px] mx-auto">
         {/* Rhode-style Cream Container */}
-        <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-12 md:pb-12 overflow-hidden relative">
+        <div className="bg-white rounded-2xl pt-8 pb-8 md:pt-12 md:pb-12 overflow-hidden relative">
 
           {/* Heading + Toggle */}
           <div className="text-center mb-6 relative px-4">

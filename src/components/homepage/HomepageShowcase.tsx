@@ -92,7 +92,7 @@ export default function HomepageShowcase() {
   return (
     <section className="bg-white pt-4 pb-12 md:pt-6 md:pb-16 px-4 md:px-8 lg:px-12" aria-label="Featured Collections">
       <div className="max-w-[1440px] mx-auto">
-        <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 overflow-hidden">
+        <div className="pt-8 pb-8 md:pt-10 md:pb-12">
           {/* Rhode-Style Header */}
           <div className="text-center mb-8">
             <StylizedTitle
