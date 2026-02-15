@@ -227,7 +227,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
             <div className="px-4 md:px-8 lg:px-12">
                 <div className="max-w-[1440px] mx-auto">
                     {/* Main Cream Card Container */}
-                    <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 px-6 md:px-10 overflow-hidden">
+                    <div className="bg-[#FAF9F7] rounded-2xl pt-8 pb-8 md:pt-10 md:pb-12 px-0 overflow-hidden">
 
                         {/* Title - Inside the background */}
                         <div className="text-center mb-6 relative">
@@ -268,7 +268,7 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                         </div>
 
                         {/* Products Section */}
-                        <div className="py-6 md:py-8 border-t border-black/5">
+                        <div className="py-6 md:py-8">
 
                             {/* Products Carousel */}
                             {products.length > 0 ? (
@@ -282,11 +282,11 @@ export default function FeaturedSets({ initialData }: FeaturedSetsSectionProps) 
                                         dragFree: true,
                                     }}
                                 >
-                                    <CarouselContent className="ml-0">
+                                    <CarouselContent className="-ml-4">
                                         {products.map((product) => (
                                             <CarouselItem
                                                 key={product.id}
-                                                className={`${isSingleView ? 'basis-full md:basis-1/3' : 'basis-1/2 md:basis-1/3 lg:basis-1/5'} transition-[flex-basis] duration-300 pl-0 pr-4 h-full flex flex-col`}
+                                                className={`${isSingleView ? 'basis-full md:basis-1/3' : 'basis-1/2 md:basis-1/3 lg:basis-1/5'} transition-[flex-basis] duration-300 pl-4 pr-0 h-full flex flex-col`}
                                             >
                                                 <div
                                                     className="flex flex-col justify-between items-start"

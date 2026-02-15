@@ -4,6 +4,7 @@ import HomepageHero from '@/components/homepage/HomepageHero'
 import HomepageShowcase from '@/components/homepage/HomepageShowcase'
 import FeaturedDripGrid from '@/components/homepage/FeaturedDripGrid'
 import FeaturedSets from "@/components/homepage/FeaturedSets";
+import HomepageBlogs from '@/components/homepage/HomepageBlogs'
 import HomepageCategoryCarousel from '@/components/homepage/HomepageCategoryCarousel'
 import { getHomepageSetsData } from '@/lib/actions/homepage-sets'
 
@@ -35,10 +36,12 @@ export default async function HomePage() {
       {/* Product Grid - streams in with Suspense */}
       <FeaturedDripGrid />
 
-      {/* Homepage Sets Section - streams in with Suspense */}
       <Suspense fallback={<div className="mb-16 h-96 bg-gray-100 animate-pulse"></div>}>
         <HomepageSetsSectionWrapper dataPromise={homepageSetsDataPromise} />
       </Suspense>
+
+      {/* Blog Section */}
+      <HomepageBlogs />
 
       {/* Category Carousel - streams in with Suspense */}
       <HomepageCategoryCarousel />

@@ -144,13 +144,19 @@ interface ProductGridProps {
   filterConfigs?: unknown[];
 }
 
-const ProductGrid: React.FC<ProductGridProps> = ({ 
-  products: productsProp = []
+const ProductGrid: React.FC<ProductGridProps> = ({
+  products: productsProp = [],
+  filterConfigs: filterConfigsProp = []
 }) => {
   // Use provided products, don't fallback to hardcoded products
   // This ensures we show empty state when no products from DB
-  const productsToUse = productsProp;
-  
+  // Use provided products, don't fallback to hardcoded products
+  // This ensures we show empty state when no products from DB
+  const productsToUse = Array.isArray(productsProp) ? productsProp : [];
+
+  // Extra safety: ensure filterConfigs is array
+  const safeFilterConfigs = Array.isArray(filterConfigsProp) ? filterConfigsProp : [];
+
   const [wishlist, setWishlist] = useState<(number | string)[]>([]);
   const [showWishlistToast, setShowWishlistToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
@@ -178,16 +184,16 @@ const ProductGrid: React.FC<ProductGridProps> = ({
         setIsSyncing(true);
         try {
           const { getWishlistItems, syncWishlistFromLocalStorage } = await import('@/lib/actions/wishlist');
-          
+
           // Get localStorage wishlist
           const savedWishlist = localStorage.getItem('skims-wishlist');
           const localWishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
-          
+
           // Sync localStorage to database if there are items
           if (localWishlist.length > 0) {
             await syncWishlistFromLocalStorage(localWishlist.map((id: any) => String(id)));
           }
-          
+
           // Load from database
           const result = await getWishlistItems();
           if (result.success && result.items) {
@@ -235,20 +241,20 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       const loggedIn = !!session;
       setIsLoggedIn(loggedIn);
-      
+
       if (loggedIn && event === 'SIGNED_IN') {
         // User just logged in - sync wishlist
         setIsSyncing(true);
         try {
           const { getWishlistItems, syncWishlistFromLocalStorage } = await import('@/lib/actions/wishlist');
-          
+
           const savedWishlist = localStorage.getItem('skims-wishlist');
           const localWishlist = savedWishlist ? JSON.parse(savedWishlist) : [];
-          
+
           if (localWishlist.length > 0) {
             await syncWishlistFromLocalStorage(localWishlist.map((id: any) => String(id)));
           }
-          
+
           const result = await getWishlistItems();
           if (result.success && result.items) {
             const dbWishlist = result.items.map(item => item.product_id);
@@ -284,28 +290,28 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   // Save wishlist to localStorage and database whenever it changes
   useEffect(() => {
     localStorage.setItem('skims-wishlist', JSON.stringify(wishlist));
-    
+
     // If logged in, also save to database
     if (isLoggedIn && !isSyncing) {
       const syncToDatabase = async () => {
         try {
           const { addToWishlist, removeFromWishlist, getWishlistItems } = await import('@/lib/actions/wishlist');
-          
+
           // Get current database wishlist
           const dbResult = await getWishlistItems();
-          const dbWishlist = dbResult.success && dbResult.items 
+          const dbWishlist = dbResult.success && dbResult.items
             ? dbResult.items.map(item => item.product_id)
             : [];
-          
+
           // Find items to add and remove
           const toAdd = wishlist.filter(id => !dbWishlist.includes(String(id)));
           const toRemove = dbWishlist.filter(id => !wishlist.includes(id));
-          
+
           // Add new items
           for (const productId of toAdd) {
             await addToWishlist(String(productId));
           }
-          
+
           // Remove items
           for (const productId of toRemove) {
             await removeFromWishlist(String(productId));
@@ -314,7 +320,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
           console.error('Error syncing wishlist to database:', error);
         }
       };
-      
+
       syncToDatabase();
     }
   }, [wishlist, isLoggedIn, isSyncing]);
@@ -328,27 +334,23 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
   // Apply filters and sort products
   useEffect(() => {
-    console.log('=== APPLYING FILTERS AND SORTING ===');
-    console.log('Active filters:', activeFilters);
-    console.log('Products to filter:', productsToUse.length);
-
     // 1. First, filter the products
     let filtered = [...productsToUse];
 
     // Filter by product type (using category data)
-    if (activeFilters.productType.length > 0) {
+    if (activeFilters?.productType && activeFilters.productType.length > 0) {
       filtered = filtered.filter(product =>
         activeFilters.productType.some(type => {
           const productCategoryName = product.category?.name || '';
           const productCategorySlug = product.category?.slug || '';
           return productCategoryName.toLowerCase().includes(type.toLowerCase()) ||
-                 productCategorySlug.toLowerCase().includes(type.toLowerCase());
+            productCategorySlug.toLowerCase().includes(type.toLowerCase());
         })
       );
     }
 
     // Filter by color
-    if (activeFilters.color.length > 0) {
+    if (activeFilters?.color && activeFilters.color.length > 0) {
       filtered = filtered.filter(product =>
         (product.colors || []).some(color =>
           activeFilters.color.includes(color.name)
@@ -357,7 +359,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     }
 
     // Filter by price (handles both ₹ and $)
-    if (activeFilters.price.length > 0) {
+    if (activeFilters?.price && activeFilters.price.length > 0) {
       filtered = filtered.filter(product => {
         const price = getPriceNumber(product.price);
 
@@ -454,7 +456,7 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       toastTimeoutRef.current = null;
     }, 2000);
   };
-  
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -503,9 +505,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
 
       {/* Wishlist toast notification */}
       <div
-        className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black text-white py-2 px-4 rounded-full text-sm transition-opacity duration-300 z-50 ${
-          showWishlistToast ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-black text-white py-2 px-4 rounded-full text-sm transition-opacity duration-300 z-50 ${showWishlistToast ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
       >
         {toastMessage}
       </div>

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Product, ProductGrid } from '@/components/allproducts'
+import ProductGrid from '@/components/allproducts/ProductGrid'
+import { Product } from '@/components/allproducts'
 import { FilterConfig } from '@/lib/actions/filter-config'
 
 interface ProductGridClientProps {
@@ -32,9 +33,15 @@ export default function ProductGridClient({
     )
   }
 
+  // Defensive check: Ensure products is an array
+  const safeProducts = Array.isArray(products) ? products : [];
+
+  // Defensive check: Ensure filterConfigs is an array
+  const safeFilterConfigs = Array.isArray(filterConfigs) ? filterConfigs : [];
+
   return (
     <>
-      <ProductGrid products={products} filterConfigs={filterConfigs} />
+      <ProductGrid products={safeProducts} filterConfigs={safeFilterConfigs} />
     </>
   )
 }
