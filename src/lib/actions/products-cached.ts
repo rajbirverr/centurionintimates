@@ -25,7 +25,7 @@ export async function getProductsByCategory(
   return unstable_cache(
     async () => {
       const supabase = createPublicSupabaseClient()
-      
+
       let query = supabase
         .from('products')
         .select('*')
@@ -41,7 +41,7 @@ export async function getProductsByCategory(
       }
 
       const { data, error } = await query.order('created_at', { ascending: false })
-      
+
       if (error) {
         console.error('[PRODUCTS] Error:', error)
         return []
@@ -62,7 +62,7 @@ export async function getProductsByCategory(
  */
 export async function getProductImages(productIds: string[]) {
   if (productIds.length === 0) return []
-  
+
   return unstable_cache(
     async () => {
       const supabase = createPublicSupabaseClient()
@@ -70,7 +70,9 @@ export async function getProductImages(productIds: string[]) {
         .from('product_images')
         .select('product_id, image_url, is_primary')
         .in('product_id', productIds)
-        .eq('is_primary', true)
+        .in('product_id', productIds)
+        .order('is_primary', { ascending: false })
+        .order('sort_order', { ascending: true })
 
       if (error) {
         console.error('[PRODUCT IMAGES] Error:', error)
@@ -92,7 +94,7 @@ export async function getProductImages(productIds: string[]) {
  */
 export async function getCategoriesByIds(categoryIds: string[]) {
   if (categoryIds.length === 0) return []
-  
+
   return unstable_cache(
     async () => {
       const supabase = createPublicSupabaseClient()

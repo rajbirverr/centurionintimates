@@ -19,6 +19,7 @@ export type Product = {
   originalPrice?: string;
   discountPercent?: number;
   image: string;
+  hoverImage?: string;
   colors: Color[];
   category?: { id: string; name: string; slug: string } | null;
   isNew?: boolean;

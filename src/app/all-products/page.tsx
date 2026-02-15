@@ -158,9 +158,19 @@ export default async function AllProductsPage({
     categoriesData?.map(cat => [cat.id, cat]) || []
   )
 
+  // Create a map of product_id to images array for quick lookup
+  const imagesMap = new Map<string | number, typeof images>()
+  images.forEach(img => {
+    const existing = imagesMap.get(img.product_id) || []
+    imagesMap.set(img.product_id, [...existing, img])
+  })
+
   // Map images and categories to products
   const productsWithImages = safeProducts.map(product => {
-    const productImage = images.find(img => img.product_id === product.id)
+    const productImages = imagesMap.get(product.id) || []
+    const primaryImage = productImages[0]
+    const hoverImage = productImages.length > 1 ? productImages[1] : null
+
     const categoryId = product.category_id
     const category = categoryId ? categoryMap.get(categoryId) || null : null
 
@@ -171,13 +181,15 @@ export default async function AllProductsPage({
       : `₹${priceNumber.toLocaleString('en-IN')}`
 
     // Use placeholder if no image found
-    const productImageUrl = productImage?.image_url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkIi8+PC9zdmc+'
+    const productImageUrl = primaryImage?.image_url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmOWY5ZjkIi8+PC9zdmc+'
+    const productHoverImageUrl = hoverImage?.image_url
 
     return {
       id: product.id,
       name: product.name || 'Unnamed Product',
       slug: product.slug || '',
       image: productImageUrl,
+      hoverImage: productHoverImageUrl,
       price: formattedPrice,
       colors: [],
       category: category ? {

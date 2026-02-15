@@ -39,10 +39,11 @@ const FilterBar: React.FC<FilterBarProps> = ({
     sort: SORT_OPTIONS.FEATURED
   });
 
-  const [isSticky, setIsSticky] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [activeFilterCount, setActiveFilterCount] = useState(0);
 
+  // Re-enable sticky behavior as per user request
+  const [isSticky, setIsSticky] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const filterBarHeight = useRef<number>(0);
 
@@ -64,13 +65,11 @@ const FilterBar: React.FC<FilterBarProps> = ({
     setActiveFilterCount(count);
   }, [filters]);
 
-  // Set up scroll event listener
+  // Set up scroll event listener for sticky behavior
   useEffect(() => {
     if (filterBarRef.current) {
       filterBarHeight.current = filterBarRef.current.offsetHeight;
     }
-
-    let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -86,16 +85,12 @@ const FilterBar: React.FC<FilterBarProps> = ({
         setIsSticky(false);
       }
 
-      lastScrollY = currentScrollY;
       setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
 
   const toggleFilter = () => {
     setShowFilters(!showFilters);
@@ -225,15 +220,13 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
       <div
         ref={filterBarRef}
-        className={`filter-bar border-b border-gray-200 mb-3 w-full z-30 ${
-          showFilters ? 'bg-transparent' : 'bg-white'
-        } ${
-          isSticky ? 'fixed top-0 left-0 right-0 shadow-md px-4 md:px-8' : ''
-        }`}
+        className={`filter-bar mb-3 w-full z-30 ${showFilters ? 'bg-transparent' : 'bg-white'
+          } ${isSticky ? 'fixed top-0 left-0 right-0 shadow-md px-4 md:px-8 animate-slideDown' : ''
+          }`}
         style={{ overflow: 'visible' }}
       >
         {/* Top bar with product count and filter/sort buttons */}
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-2">
           <nav className="fashion-breadcrumb flex items-center gap-2.5 text-xs tracking-[0.2em] uppercase">
             <span className="text-[#403b38]/75 font-light italic transition-colors duration-300 hover:text-[#403b38]">Collection</span>
           </nav>
@@ -241,22 +234,20 @@ const FilterBar: React.FC<FilterBarProps> = ({
           <div className="flex items-center space-x-3" style={{ overflow: 'visible' }}>
             <button
               onClick={toggleFilter}
-              className={`group flex items-center gap-2 text-sm font-light px-6 py-2.5 rounded-full transition-all duration-300 ${
-                showFilters || activeFilterCount > 0
-                  ? 'bg-[#5a4c46] text-white shadow-lg'
-                  : 'bg-[#f5f5f5] text-[#5a4c46] hover:bg-[#e8e8e8]'
-              }`}
+              className={`group flex items-center gap-2 text-xs uppercase tracking-[0.15em] font-medium px-2.5 py-1 rounded-md transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 ${showFilters || activeFilterCount > 0
+                ? 'bg-[#3E2723] text-white ring-2 ring-offset-2 ring-gray-900'
+                : 'bg-[#5D4037] text-white'
+                }`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
               </svg>
               <span>Filter</span>
               {activeFilterCount > 0 && (
-                <span className={`text-xs font-medium rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center transition-colors ${
-                  showFilters || activeFilterCount > 0
-                    ? 'bg-white/20 text-white'
-                    : 'bg-[#5a4c46] text-white'
-                }`}>
+                <span className={`text-[10px] font-bold rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center transition-colors ${showFilters || activeFilterCount > 0
+                  ? 'bg-white text-[#3E2723]'
+                  : 'bg-white/20 text-white'
+                  }`}>
                   {activeFilterCount}
                 </span>
               )}
@@ -272,7 +263,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
         {/* Expanded filter panel */}
         {showFilters && (
-          <div 
+          <div
             className="white-glass-button filter-panel border-t border-gray-200/30 py-4 mt-2 rounded-2xl px-4"
             style={{
               background: 'rgba(245, 245, 245, 0.98)',
@@ -316,9 +307,8 @@ const FilterBar: React.FC<FilterBarProps> = ({
                   {filterOptions.color.map(color => (
                     <button
                       key={color.name}
-                      className={`w-6 h-6 rounded-full ${
-                        filters.color.includes(color.name) ? 'ring-2 ring-offset-1 ring-[#403b38]' : ''
-                      }`}
+                      className={`w-6 h-6 rounded-full ${filters.color.includes(color.name) ? 'ring-2 ring-offset-1 ring-[#403b38]' : ''
+                        }`}
                       style={{ backgroundColor: color.code }}
                       title={color.name}
                       onClick={() => handleFilterChange('color', color.name)}
@@ -352,11 +342,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
                   {filterOptions.size.map(size => (
                     <button
                       key={size}
-                      className={`py-1 px-2 text-xs border transition-all duration-200 ${
-                        filters.size.includes(size)
-                          ? 'border-[#403b38] bg-[#403b38] text-white hover:bg-[#403b38]'
-                          : 'border-gray-300/50 text-[#403b38] hover:bg-[rgba(230,230,230,0.9)] hover:border-gray-400/60'
-                      }`}
+                      className={`py-1 px-2 text-xs border transition-all duration-200 ${filters.size.includes(size)
+                        ? 'border-[#403b38] bg-[#403b38] text-white hover:bg-[#403b38]'
+                        : 'border-gray-300/50 text-[#403b38] hover:bg-[rgba(230,230,230,0.9)] hover:border-gray-400/60'
+                        }`}
                       onClick={() => handleFilterChange('size', size)}
                     >
                       {size}

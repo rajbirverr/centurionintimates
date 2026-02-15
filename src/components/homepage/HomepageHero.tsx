@@ -9,12 +9,14 @@ import HeroReviewSection from './HeroReviewSection'
 export default function HomepageHero() {
   return (
     <section className="relative" aria-label="Hero Section">
-      {/* Full-width image container */}
-      <div className="w-full relative">
-        {/* Background image - streams in with Suspense */}
-        <Suspense fallback={<div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100 animate-pulse"></div>}>
-          <HomepageHeroImage />
-        </Suspense>
+      {/* Full-width image container with max-width constraint for zoom fix */}
+      <div className="w-full relative flex justify-center">
+        <div className="w-full max-w-[1440px] relative">
+          {/* Background image - streams in with Suspense */}
+          <Suspense fallback={<div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100 animate-pulse"></div>}>
+            <HomepageHeroImage />
+          </Suspense>
+        </div>
       </div>
 
       {/* Constraints for Review Section */}

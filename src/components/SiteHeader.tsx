@@ -74,7 +74,11 @@ const SiteHeader: React.FC<SiteHeaderProps> = ({ onNavigate }) => {
             }
 
             // Update sticky state
-            if (currentScrollY < lastScrollY && currentScrollY > 100) {
+            // Update sticky state
+            // Disable sticky behavior on /all-products page as per user request
+            if (pathname === '/all-products') {
+                setIsSticky(false);
+            } else if (currentScrollY < lastScrollY && currentScrollY > 100) {
                 setIsSticky(true);
             } else if (currentScrollY <= 100) {
                 setIsSticky(false);
